@@ -1,0 +1,56 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'materialize/css/materialize.css' %}" type="text/css" />
+    <!--[if lt IE 9]>
+<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+    <link rel="shortcut icon" href="">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Dropdown Structure -->
+    <ul id="dropdown1" class="dropdown-content">
+        <li><a href="#!">one</a></li>
+        <li><a href="#!">two</a></li>
+        <li class="divider"></li>
+        <li><a href="#!">three</a></li>
+    </ul>
+
+    <nav>
+        <div class="nav-wrapper  teal darken-2">
+            <a href="#!" class="brand-logo hide-on-med-and-down">My Window Cleaner</a>
+            <a href="#!" class="brand-logo hide-on-large-only">MWC</a>
+            <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#!">Worksheets</a></li>
+                <li><a href="#!">Expenses</a></li>
+                <li><a href="#!">Logout</a></li>
+            </ul>
+            <ul class="side-nav" id="mobile-demo">
+                <li><a href="#!">Worksheets</a></li>
+                <li><a href="#!">Expenses</a></li>
+                <li><a href="#!">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    {% block content %}
+    {% endblock %}
+
+<script src="{% static 'jquery/jquery-3.2.1.js' %}"></script>
+<script src="{% static 'materialize/js/materialize.js' %}"></script> 
+
+</body>
+
+</html>
