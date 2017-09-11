@@ -25,7 +25,7 @@ class Jobs(models.Model):
         (26, 26),
         (52, 52)
     )
-    customer = models.ForeignKey('customers.Customer', null=False)
+    customer = models.ForeignKey('customers.Customer', null=False, related_name='jobs')
     scheduled_date = models.DateField(null=False)
     allocated_date = models.DateField(null=True)
     completed_date = models.DateField(null=True)
@@ -35,5 +35,5 @@ class Jobs(models.Model):
     job_status = models.ForeignKey(Job_status, null=False)
     payment_status = models.ForeignKey(Payment_status, null=True)
     job_notes = models.TextField(blank=True)
-    window_cleaner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=None, null=True)
+    window_cleaner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=None, null=True, related_name='jobs')
     

@@ -1,0 +1,52 @@
+{% extends "base.html" %} 
+{% block content %}
+ {% if form.errors %}
+<div class="row" id="alert_box">
+    <div class="col s12 m12">
+        <div class="card red darken-1">
+            <div class="row">
+                <div class="col s12 m10">
+                    <div class="card-content white-text">
+                        <p>Your username and password didn't match. Please try again.</p>
+                    </div>
+                </div>
+                <div class="col s12 m2">
+                    <i class="fa fa-times icon_style" id="alert_close" aria-hidden="true"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <table>
+        <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+        </tr>
+    </table>
+
+    <input type="submit" value="login" />
+    <input type="hidden" name="next" value="{{ next }}" />
+</form>
+{% endblock %}
+
+{% comment %} .icon_style{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+    color: white;
+    cursor:pointer; 
+}
+$('#alert_close').click(function(){
+    $( "#alert_box" ).fadeOut( "slow", function() {
+    });
+  }); {% endcomment %}

@@ -34,14 +34,20 @@
             <a href="#!" class="brand-logo hide-on-large-only">MWC</a>
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
-                <li><a href="#!">Worksheets</a></li>
-                <li><a href="#!">Expenses</a></li>
-                <li><a href="#!">Logout</a></li>
+                {% if user.is_authenticated %}
+                <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
+                {% endif %}
+                <li><a href="/worksheets">Worksheets</a></li>
+                <li><a href="/expenses">Expenses</a></li>
+                <li><a href="/logout">Logout</a></li>
             </ul>
-            <ul class="side-nav" id="mobile-demo">
-                <li><a href="#!">Worksheets</a></li>
-                <li><a href="#!">Expenses</a></li>
-                <li><a href="#!">Logout</a></li>
+            <ul class="side-nav" id="mobile-demo">  
+                {% if user.is_authenticated %}
+                <li><a href="#!">Logged in as {{ user.get_full_name|default:user.username }}</a></li>
+                {% endif %}             
+                <li><a href="/worksheets">Worksheets</a></li>
+                <li><a href="/expenses">Expenses</a></li>
+                <li><a href="/logout">Logout</a></li>                              
             </ul>
         </div>
     </nav>
@@ -50,6 +56,9 @@
 
 <script src="{% static 'jquery/jquery-3.2.1.js' %}"></script>
 <script src="{% static 'materialize/js/materialize.js' %}"></script> 
+<script>
+    $( document ).ready(function(){$(".button-collapse").sideNav();})
+</script>
 
 </body>
 
