@@ -15,12 +15,13 @@ class ExpensesList(LoginRequiredMixin, ListView):
 
 class ExpenseCreate(LoginRequiredMixin, CreateView):
     model = Expenses
-    fields = ['category', 'date', 'amount', 'notes', 'user']
+    fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
     success_url = "/expenses"  
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
     def form_valid(self, form):
+        form.instance.user = self.request.user
         return super(ExpenseCreate, self).form_valid(form)
 
 class ExpenseUpdate(LoginRequiredMixin, UpdateView):
