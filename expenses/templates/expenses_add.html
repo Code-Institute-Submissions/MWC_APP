@@ -1,11 +1,45 @@
-{% extends "base.html" %}
-{% load widget_tweaks %} {% comment %} for adding datepicker class to form.date for materialize {% endcomment %}
-
+{% extends "base.html" %} 
+{% load widget_tweaks %} {% comment %} for adding datepicker class to form.date for materialize {% endcomment %} 
 {% block content %}
-<div class="fieldWrapper">
-        {{ form.date.errors }}
-        <label for="{{ form.date.id_for_label }}">Date:</label>
-        {{ form.date|add_class:"datepicker" }}
-    </div>
-        
+<div class="container">
+    <form method="POST" class="post-form">{% csrf_token %}
+        <div class="fieldWrapper">
+            {{ form.category.errors }}
+            <label for="{{ form.category.id_for_label }}">Category:</label> {{ form.category }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.user.errors }}
+            <label for="{{ form.user.id_for_label }}">user:</label> {{ form.user }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.amount.errors }}
+            <label for="{{ form.amount.id_for_label }}">Amount:</label> {{ form.amount }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.date.errors }}
+            <label for="{{ form.date.id_for_label }}">Date:</label> {{ form.date|add_class:"datepicker" }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.notes.errors }}
+            <label for="{{ form.notes.id_for_label }}">Notes:</label> {{ form.notes|add_class:"materialize-textarea" }}
+        </div>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+</button>
+</div>
+</form>
+{% endblock %}
+{% block extra_js %}
+<script>
+    $('.datepicker').pickadate({
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 15, // Creates a dropdown of 15 years to control year,
+        today: 'Today',
+        clear: 'Clear',
+        close: 'Ok',
+        closeOnSelect: true,// Close upon selecting a date,
+        format: 'mm/dd/yyyy'
+    });
+
+</script>
 {% endblock %}

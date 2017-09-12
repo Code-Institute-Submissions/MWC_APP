@@ -5,5 +5,5 @@ from django import forms
 class ExpensesForm(ModelForm):
     class Meta:
         model = Expenses
-        fields = ['category', 'user', 'amount', 'date', 'notes']
+        fields = ['category', 'amount', 'date', 'notes']
         

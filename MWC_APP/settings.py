@@ -142,3 +142,4 @@ LOGIN_URL = '/login/'
 
 LOGIN_REDIRECT_URL = '/worksheets/'
 
+USE_L10N = True
