@@ -36,5 +36,4 @@ class ExpenseUpdate(LoginRequiredMixin, UpdateView):
 class ExpenseDelete(LoginRequiredMixin, DeleteView):
     model = Expenses
     success_url = "/expenses/"
-    template_name = 'expenses_delete.html'
-    
+       
