@@ -1,11 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+{% for ws in object_list %}
+{{ id }}
+{% endfor %}
+ok
     <ul class="collapsible" data-collapsible="accordion">
         <li>
             <div class="collapsible-header active teal darken-4 white-text">Sat 9 Sep '17
                 <span class="new badge blue" data-badge-caption="">12 jobs / £235</span>
             </div>
             <div class="collapsible-body">
+                <!-- {% regroup cities by country as country_list %} -->
                 <ul>
                     <li>
                         <div class="job_record">
