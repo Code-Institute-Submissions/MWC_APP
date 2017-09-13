@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 
 from expenses.models import Expenses
 
@@ -34,4 +35,5 @@ class ExpenseUpdate(LoginRequiredMixin, UpdateView):
 
 class ExpenseDelete(LoginRequiredMixin, DeleteView):
     model = Expenses
-    success_url = '/'
+    success_url = "/expenses/"
+    template_name = "expenses_delete.html"

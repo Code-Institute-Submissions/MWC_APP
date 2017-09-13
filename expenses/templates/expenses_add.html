@@ -19,9 +19,36 @@
             {{ form.notes.errors }}
             <label for="{{ form.notes.id_for_label }}">Notes:</label> {{ form.notes|add_class:"materialize-textarea" }}
         </div>
-        <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-        <i class="material-icons right">send</i>
-</button>
+        <button class="btn waves-effect waves-light" type="submit" name="action">Save
+        <i class="material-icons right">check_circle</i>
+        </button>
+        {% if form.instance.id %}
+        <a href="{% url 'expenses_delete' expenses.id %}" class="btn waves-effect waves-light red right">
+            <i class="material-icons right">delete</i>Delete
+        </a>
+        {% endif %}
+<!-- Modal Trigger -->
+<a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal bottom-sheet">
+    <div class="modal-content">
+            <h5>Are you sure you want to delete this record?</h5><br>            
+            <div class = "row">
+                <form method="post">
+                <button class="btn waves-effect waves-light left red"  type="submit" name="action">
+                    Yes, delete</button>
+                </form>
+                <a href="#!" class="btn waves-effect waves-light right modal-action modal-close">
+                        Cancel</a>    
+            </div>
+    </div>    
+  </div>
+
+
+
+
+        
 </div>
 </form>
 {% endblock %}
@@ -36,6 +63,14 @@
         closeOnSelect: true,// Close upon selecting a date,
         format: 'mm/dd/yyyy'
     });
+//TODO: with several $(document).ready(function() they get called in order; 
+// would be nice to append to the function defined in base.html instead
+// of having several.
+
+    $(document).ready(function(){
+        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+      });
 
 </script>
 {% endblock %}
