@@ -22,7 +22,7 @@
                 {% for expenses in object_list|dictsort:"date" %}
                 <tr>            
                     <td>{{ expenses.category }}</div></td>
-                    <td>{{ expenses.date }}</div></td>
+                    <td>{{ expenses.date|date:"d/m/y" }}</div></td>
                     <td>{{ expenses.amount }}</div></td>
                     <td  style="max-width:100px"><div class="truncate">{{ expenses.notes }}</div></td>
                     <td><a href={{ expenses.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">

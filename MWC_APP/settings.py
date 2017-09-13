@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'customers',
     'expenses',
     'widget_tweaks',
+    'franchises'
 ]
 
 MIDDLEWARE = [

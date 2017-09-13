@@ -1,11 +1,46 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
 from django.views.generic import ListView
-from models import Customer
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+#from django.http import JsonResponse
 
-class CustomerListView(LoginRequiredMixin, ListView):
+from customers.models import Customer
+
+class CustomersList(LoginRequiredMixin, ListView):
     model = Customer
-    template_name = "CustomerList.html"
+    fields = [
+        'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type'
+    ]
+    template_name = 'customer_list.html'
+
+class CustomerCreate(LoginRequiredMixin, CreateView):
+    model = Customer
+    fields = [
+        'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type'
+    ]
+    template_name = 'customers_add.html'
+    success_url = "/customers/"
+    # def form_invalid(self, form):
+    #     return JsonResponse(form.errors, status=400)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(CustomerCreate, self).form_valid(form)
+
+class CustomerUpdate(LoginRequiredMixin, UpdateView):
+    model = Customer
+    fields = [
+        'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type'
+    ]
+    template_name = 'customers_add.html'
+    success_url = "/customers/"
+    def form_valid(self, form):
+        return super(CustomerUpdate, self).form_valid(form)
+
+class CustomerDelete(LoginRequiredMixin, DeleteView):
+    model = Customer
+    success_url = "/customers/"

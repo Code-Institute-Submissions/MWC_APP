@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+<div class="row valign-wrapper">
+        <div class="col s10">
+            <h4 class="teal-text text-darken-3">Customers</h4>
+        </div>
+        <div class="col s2">
+            <a href="/customers/new/" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
+        </div>
+    </div>
+<table class="bordered striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for customer in object_list %}
+        <tr>
+            <td>{{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</td>
+            <td>{{ customer.address_line_1 }} </td>
+            <td><a href={{ customer.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
+                    <i class="material-icons">create</i>
+                </a>
+                </td>
+            
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+{% endblock %}
