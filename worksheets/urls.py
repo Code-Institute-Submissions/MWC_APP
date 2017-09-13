@@ -7,3 +7,5 @@ from . import views
 urlpatterns = [
     url(r'^$', WSView.as_view()),
 ]
+
+#some change
