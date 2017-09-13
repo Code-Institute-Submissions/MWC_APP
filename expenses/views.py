@@ -27,6 +27,10 @@ class ExpenseCreate(LoginRequiredMixin, CreateView):
 class ExpenseUpdate(LoginRequiredMixin, UpdateView):
     model = Expenses
     fields = ['category', 'date', 'amount', 'notes']
+    template_name = 'expenses_add.html'
+    success_url = "/expenses"  
+    def form_valid(self, form):
+        return super(ExpenseUpdate, self).form_valid(form)
 
 class ExpenseDelete(LoginRequiredMixin, DeleteView):
     model = Expenses

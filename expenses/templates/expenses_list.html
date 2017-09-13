@@ -1,4 +1,38 @@
-{% extends "base.html" %}
-{% block content %}
-this is the expenses list
+{% extends "base.html" %} {% block content %}
+<div class="container">
+    <div class="row valign-wrapper">
+        <div class="col s10">
+            <h4 class="teal-text text-darken-3">My expenses</h4>
+        </div>
+        <div class="col s2">
+            <a href="/expenses/new/" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
+        </div>
+    </div>
+
+    <table class="striped bordered">
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Notes</th>  
+                <th></th>              
+            </tr>
+            <tbody>
+                {% for expenses in object_list|dictsort:"date" %}
+                <tr>            
+                    <td>{{ expenses.category }}</div></td>
+                    <td>{{ expenses.date }}</div></td>
+                    <td>{{ expenses.amount }}</div></td>
+                    <td  style="max-width:100px"><div class="truncate">{{ expenses.notes }}</div></td>
+                    <td><a href={{ expenses.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
+                            <i class="material-icons">create</i>
+                        </a>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </thead>
+    </table>
+</div>
 {% endblock %}
