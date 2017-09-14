@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-#from django.http import JsonResponse
+from django.http import JsonResponse
 
 from customers.models import Customer
 
@@ -20,9 +20,9 @@ class CustomerCreate(LoginRequiredMixin, CreateView):
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
-        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type'
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type', 'franchise'
     ]
-    template_name = 'customers_add.html'
+    template_name = 'customer_add.html'
     success_url = "/customers/"
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
@@ -34,13 +34,22 @@ class CustomerUpdate(LoginRequiredMixin, UpdateView):
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
-        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type'
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type', 'franchise'
     ]
-    template_name = 'customers_add.html'
+    template_name = 'customer_add.html'
     success_url = "/customers/"
+    def form_invalid(self, form):
+        return JsonResponse(form.errors, status=400)
     def form_valid(self, form):
         return super(CustomerUpdate, self).form_valid(form)
 
 class CustomerDelete(LoginRequiredMixin, DeleteView):
     model = Customer
     success_url = "/customers/"
+
+class CustomerJobList(LoginRequiredMixin, ListView):
+    model = Customer
+    fields = [
+        'title', 'first_name', 'last_name', 'address_line_1', 'postcode'
+    ]
+    template_name = 'customer_job_list.html'

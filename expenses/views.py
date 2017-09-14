@@ -16,7 +16,7 @@ class ExpenseCreate(LoginRequiredMixin, CreateView):
     model = Expenses
     fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
-    success_url = "/expenses"
+    success_url = "/expenses/"
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
     def form_valid(self, form):
@@ -27,7 +27,7 @@ class ExpenseUpdate(LoginRequiredMixin, UpdateView):
     model = Expenses
     fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
-    success_url = "/expenses"
+    success_url = "/expenses/"
     def form_valid(self, form):
         return super(ExpenseUpdate, self).form_valid(form)
 

@@ -3,7 +3,7 @@
 <div class="container">
 <div class="row valign-wrapper">
         <div class="col s10">
-            <h4 class="teal-text text-darken-3">Customers</h4>
+            <h4 class="teal-text text-darken-3">Jobs</h4>
         </div>
         <div class="col s2">
             <a href="/customers/new/" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
@@ -18,17 +18,10 @@
         </tr>
     </thead> {% endcomment %}
     <tbody>
-        {% for customer in object_list %}
+        {% for customer.jobs in object_list %}
         <tr>            
-            <td><b>{{ customer.address_line_1 }} </b></td>
-            <td>{{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</td>
-            <td><a class="btn-flat disabled">{{ customer.id }}</a></td>
-            <td><a href={{ customer.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
-                    <i class="material-icons">create</i>
-                </a>
-            </td>
-            
-            
+            <td><b>{{ customer.jobs.price }} </b></td>
+                       
         </tr>
         {% endfor %}
 
