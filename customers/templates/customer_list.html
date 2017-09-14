@@ -22,7 +22,10 @@
         <tr>            
             <td><b>{{ customer.address_line_1 }} </b></td>
             <td>{{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</td>
-            <td><a class="btn-flat disabled">{{ customer.id }}</a></td>
+            
+            <td><a href={% url 'customer_job_list' customer.id %} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
+                    <i class="material-icons">view_list</i>
+                </a>
             <td><a href={{ customer.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
                     <i class="material-icons">create</i>
                 </a>

@@ -1,31 +1,51 @@
 {% extends "base.html" %} 
 {% block content %}
 <div class="container">
-<div class="row valign-wrapper">
-        <div class="col s10">
-            <h4 class="teal-text text-darken-3">Jobs</h4>
-        </div>
-        <div class="col s2">
-            <a href="/customers/new/" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
-        </div>
+  
+    
+    <div class="row valign-wrapper">
+            <div class="col s10">
+                <h2><a href={% url 'customers' %}>{{ customer.address_line_1 }}</a></h2>
+            </div>
+            <div class="col s2">
+                    <a href="!#" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
+                    {% comment %} TODO: link to new job in worksheets app. Hide if existing due job exists {% endcomment %}
+            </div>
     </div>
-<table class="bordered striped">
-    {% comment %} <thead>
-        <tr>
-            <th>Address</th>
-            <th>Name</th>
-            <th></th>
-        </tr>
-    </thead> {% endcomment %}
-    <tbody>
-        {% for customer.jobs in object_list %}
-        <tr>            
-            <td><b>{{ customer.jobs.price }} </b></td>
-                       
-        </tr>
-        {% endfor %}
-
-    </tbody>
-</table>
+    <div><h3>{{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</h3></div>
+        <table class="striped bordered">
+                <thead>
+                  <tr>
+                      <th>Due Date</th>
+                      <th>Completed Date</th>
+                      <th>Price</th>
+                      <th>Job Status</th>
+                      <th></th>
+                  </tr>
+                </thead>
+        
+                <tbody>
+                    {% for job in customer.jobs.all %} 
+                    {% comment %} no need for _set since related_name has been set {% endcomment %}
+                  <tr>
+                    <td>{{ job.scheduled_date }}</td>
+                    <td>{{ job.completed_date }}</td>
+                    <td>£{{ job.price }}</td>
+                    <td>{{ job.job_status }}</td>
+                    <td><a href={{ job.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
+                            <i class="material-icons">create</i>
+                        </a>
+                    {% comment %} TODO: link to worksheets app editing page for jobs {% endcomment %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  
+                </tbody>
+              </table>
+        
+        
+        
+         
+    
 </div>
 {% endblock %}

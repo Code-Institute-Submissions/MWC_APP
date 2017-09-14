@@ -3,13 +3,16 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
 
-class Job_status(models.Model):
-    job_status = models.IntegerField()
+class Job_status(models.Model):    
     job_status_description = models.CharField(max_length=50, blank=False, null=False)
+    def __str__(self):
+        return self.job_status_description
 
-class Payment_status(models.Model):
-    payment_status = models.IntegerField()
+
+class Payment_status(models.Model):    
     payment_status_description = models.CharField(max_length=50, blank=False, null=False)
+    def __str__(self):
+        return self.payment_status_description
 
 class Jobs(models.Model):
     FREQUENCY_CHOICES = (

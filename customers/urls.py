@@ -6,7 +6,7 @@ from customers.views import CustomersList, CustomerCreate, CustomerUpdate, Custo
 from . import views
 
 urlpatterns = [
-    url(r'^$', CustomersList.as_view()),
+    url(r'^$', CustomersList.as_view(), name='customers'),
     url(r'new/$', CustomerCreate.as_view(), name='customer_add'),
     url(r'(?P<pk>[0-9]+)/$', CustomerUpdate.as_view(), name='customer_update'),
     url(r'(?P<pk>[0-9]+)/delete/$', CustomerDelete.as_view(), name='customer_delete'),

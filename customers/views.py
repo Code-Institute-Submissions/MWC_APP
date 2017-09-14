@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 
 from customers.models import Customer
+from worksheets.models import Jobs
 
 class CustomersList(LoginRequiredMixin, ListView):
     model = Customer
@@ -47,9 +48,14 @@ class CustomerDelete(LoginRequiredMixin, DeleteView):
     model = Customer
     success_url = "/customers/"
 
-class CustomerJobList(LoginRequiredMixin, ListView):
+class CustomerJobList(LoginRequiredMixin, DetailView):
     model = Customer
-    fields = [
-        'title', 'first_name', 'last_name', 'address_line_1', 'postcode'
-    ]
+
+    # def get_context_data(self, **kwargs):
+    #     # Call the base implementation first to get a context
+    #     context = super(CustomerJobList, self).get_context_data(**kwargs)
+    #     # Add in a QuerySet of all the books
+    #     context['job_list'] = Job.objects.all()
+    #     return context
+
     template_name = 'customer_job_list.html'
