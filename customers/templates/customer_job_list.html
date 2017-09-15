@@ -4,8 +4,9 @@
   
     
     <div class="row valign-wrapper">
+            <a href={% url 'customers' %}>Back to customers</a>
             <div class="col s10">
-                <h2><a href={% url 'customers' %}>{{ customer.address_line_1 }}</a></h2>
+                <h2>{{ customer.address_line_1 }}</h2>                
             </div>
             <div class="col s2">
                     <a href="!#" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
