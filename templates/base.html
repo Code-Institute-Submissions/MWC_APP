@@ -35,22 +35,22 @@
             <a href="#!" class="brand-logo hide-on-med-and-down">My Window Cleaner</a>
             <a href="#!" class="brand-logo hide-on-large-only">MWC</a>
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-            <ul class="right hide-on-med-and-down">
+            <ul class="right hide-on-med-and-down">                
+                <li><a href="/worksheets">Worksheets</a></li>
+                <li><a href="/expenses">Expenses</a></li>
+                <li><a href="/customers">Customers</a></li>
                 {% if user.is_authenticated %}
                 <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
                 {% endif %}
-                <li><a href="/worksheets">Worksheets</a></li>
-                <li><a href="/expenses">Expenses</a></li>
-                <li><a href="/customers">Customers</a></li>
                 <li><a href="/logout">Logout</a></li>
             </ul>
-            <ul class="side-nav" id="mobile-demo">  
-                {% if user.is_authenticated %}
-                <li><a href="#!">Logged in as {{ user.get_full_name|default:user.username }}</a></li>
-                {% endif %}             
+            <ul class="side-nav" id="mobile-demo">                       
                 <li><a href="/worksheets">Worksheets</a></li>
                 <li><a href="/expenses">Expenses</a></li>
                 <li><a href="/customers">Customers</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="#!">Logged in as {{ user.get_full_name|default:user.username }}</a></li>
+                {% endif %}      
                 <li><a href="/logout">Logout</a></li>                              
             </ul>
         </div>

@@ -19,13 +19,14 @@ class JobCreate(LoginRequiredMixin, CreateView):
     ]
     template_name = 'job_add.html'
     success_url = "/customers/"
-    #todo do a redirect to the customer job list
+    #TODO do a redirect to the customer job list
+    initial = {'frequency': '4', 'job_status': '1'}
+
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
+    
     def form_valid(self, form):
         return super(JobCreate, self).form_valid(form)
-
-    initial = {'frequency': '4', 'job_status': '1'}
 
     def get_initial(self):
         #get customer id from kwargs and update 'initial' https://djangosnippets.org/snippets/2987/
@@ -39,16 +40,18 @@ class JobCreate(LoginRequiredMixin, CreateView):
 class JobUpdate(LoginRequiredMixin, UpdateView):
     model = Jobs
     fields = [
-        'scheduled_date', 'allocated_date', 'completed_date', 'price'
+        'customer','scheduled_date', 'allocated_date', 'completed_date', 'price'
         , 'job_notes', 'frequency', 'job_status', 'payment_status', 'job_notes', 'window_cleaner'
     ]
     template_name = 'job_add.html'
-    success_url = "/jobs/"
+    success_url = "/customers/"
+
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
+    
     def form_valid(self, form):
         return super(JobUpdate, self).form_valid(form)
 
 class JobDelete(LoginRequiredMixin, DeleteView):
     model = Jobs
-    success_url = "/jobs/"
+    success_url = "/customers/"

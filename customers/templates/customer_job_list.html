@@ -3,17 +3,21 @@
 <div class="container">
   
     
-    <div class="row valign-wrapper">
-            <a href="{% url 'customers' %}">Back to customers</a>
-            <div class="col s10">
-                <h2>{{ customer.address_line_1 }}</h2>                
+    <div class="row valign-wrapper">  
+        <div class="card-panel  teal lighten-2 z-depth-4 col s12 valign-wrapper">      
+            <div class="col s6 m10">
+                    <span><h4>{{ customer.address_line_1 }}, {{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</h4> </span>               
             </div>
-            <div class="col s2">
+            <div class="col s2 m1">
                     <a href="{% url 'job_add' customer.pk %}" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
-                    {% comment %} TODO: link to new job in worksheets app. Hide if existing due job exists {% endcomment %}
             </div>
+            <div class="col s2 m1">
+                    <a href="#!" class="btn-floating btn-small waves-effect waves-light orange darken-2"><i class="material-icons">location_on</i></a>
+            </div>
+                    {% comment %} TODO: Hide if existing due job exists {% endcomment %}
+        </div>        
     </div>
-    <div><h3>{{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</h3></div>
+    {% if customer.jobs.all %}
         <table class="striped bordered">
                 <thead>
                   <tr>
@@ -33,13 +37,23 @@
                     <td>{{ job.completed_date }}</td>
                     <td>£{{ job.price }}</td>
                     <td>{{ job.job_status }}</td>
-                    <td><a href={{ job.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
+                    <td><a href="{% url 'job_update' job.id %}" class="btn-floating btn-small waves-effect waves-light teal lighten-2">
                             <i class="material-icons">create</i>
                         </a>
                     {% comment %} TODO: link to worksheets app editing page for jobs {% endcomment %}
                     </td>
                   </tr>
                   {% endfor %}
+    {% else %}
+    <div class="row">
+        <div class="col s12">
+          <div class="card-panel teal z-depth-4">
+            <span class="white-text">There are no jobs set for this customer</span>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
                   
                 </tbody>
               </table>
