@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'customers',
     'expenses',
     'widget_tweaks',
-    'franchises'
+    'franchises',
+    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -51,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'MWC_APP.urls'
@@ -144,3 +146,9 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/worksheets/'
 
 USE_L10N = True
+
+INTERNAL_IPS = ('127.0.0.1', )
+
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+}

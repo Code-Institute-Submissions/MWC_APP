@@ -25,10 +25,9 @@ class CustomerCreate(LoginRequiredMixin, CreateView):
     ]
     template_name = 'customer_add.html'
     success_url = "/customers/"
-    # def form_invalid(self, form):
-    #     return JsonResponse(form.errors, status=400)
-    def form_valid(self, form):
-        form.instance.user = self.request.user
+    def form_invalid(self, form):
+        return JsonResponse(form.errors, status=400)    
+    def form_valid(self, form):        
         return super(CustomerCreate, self).form_valid(form)
 
 class CustomerUpdate(LoginRequiredMixin, UpdateView):

@@ -1,0 +1,100 @@
+{% extends "base.html" %} 
+{% load widget_tweaks %} {% comment %} for adding datepicker class to form.date for materialize {% endcomment %} 
+{% block content %}
+<div class="container">
+       
+        
+    <form method="POST" class="post-form">{% csrf_token %}            
+        <div class="row">
+               <div style="display:none"> <h3> {{ form.customer }} </h3></div>
+            
+            <div class="col s-2 fieldWrapper">
+                {{ form.scheduled_date.errors }}
+                <label for="{{ form.scheduled_date.id_for_label }}">Due Date:</label> {{ form.scheduled_date|add_class:"datepicker" }}
+            </div>
+            <div class="col s-2 fieldWrapper">
+                    {{ form.allocated_date.errors }}
+                    <label for="{{ form.allocated_date.id_for_label }}">Allocated Date:</label> {{ form.allocated_date|add_class:"datepicker" }}
+            </div>
+            <div class="col s-2 fieldWrapper">
+                    {{ form.completed_date.errors }}
+                    <label for="{{ form.completed_date.id_for_label }}">Completed Date:</label> {{ form.completed_date|add_class:"datepicker" }}
+            </div>
+            <div class="col s-2 fieldWrapper">
+                    {{ form.price.errors }}
+                    <label for="{{ form.price.id_for_label }}">Price:</label> {{ form.price }}
+            </div>
+            <div class="col s-1 fieldWrapper">
+                    {{ form.frequency.errors }}
+                    <label for="{{ form.frequency.id_for_label }}">Frequency (weeks):</label> {{ form.frequency }}
+            </div>
+            <div class="col s-2 fieldWrapper">
+                    {{ form.job_status.errors }}
+                    <label for="{{ form.job_status.id_for_label }}">Job Status:</label> {{ form.job_status }}
+            </div>
+            <div class="col s-2 fieldWrapper">
+                    {{ form.payment_status.errors }}
+                    <label for="{{ form.payment_status.id_for_label }}">Payment Status:</label> {{ form.payment_status }}
+            </div>
+            <div class="col s-2 fieldWrapper">
+                    {{ form.window_cleaner.errors }}
+                    <label for="{{ form.window_cleaner.id_for_label }}">Window Cleaner:</label> {{ form.window_cleaner }}
+            </div>
+            <div class="col s-12 fieldWrapper">
+                    {{ form.job_notes.errors }}
+                    <label for="{{ form.job_notes.id_for_label }}">Job Notes:</label> {{ form.job_notes }}
+            </div>
+        </div>
+    <div class="col s-8">
+            <button class="btn waves-effect waves-light left" type="submit" name="action">Save
+    <i class="material-icons right">check_circle</i>
+    </button>
+</form>
+</div>
+
+{% if form.instance.id %}
+<!-- Modal Trigger -->
+<div class="col s-2">
+    <a class="waves-effect waves-light btn modal-trigger red right" href="#modal_confirm"><i class="material-icons right">delete</i>Delete</a>
+</div>
+
+
+<!-- Modal Structure -->
+<div id="modal_confirm" class="modal bottom-sheet">
+    <div class="modal-content">
+        <h5>Are you sure you want to delete this job?</h5><br>
+        <div class="row">
+            <form method="POST" class="post-form" action="{% url 'job_delete' job.id %}">{% csrf_token %}
+                <button class="btn waves-effect waves-light left red" type="submit" name="action">
+                Yes, delete</button>
+            </form>
+            <a href="#!" class="btn waves-effect waves-light right modal-action modal-close">
+                    Cancel</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 
+
+{% block extra_js %}
+<script>
+    $('.datepicker').pickadate({
+        selectMonths: true, // Creates a dropdown to control month
+        selectYears: 15, // Creates a dropdown of 15 years to control year,
+        today: 'Today',
+        clear: 'Clear',
+        close: 'Ok',
+        closeOnSelect: true,// Close upon selecting a date,
+        format: 'dd/mm/yyyy'
+    });
+    //TODO: with several $(document).ready(function() they get called in order; 
+    // would be nice to append to the function defined in base.html instead
+    // of having several.
+
+    $(document).ready(function () {
+        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+        $('.modal').modal();
+    });
+
+</script>
+{% endblock %}

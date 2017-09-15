@@ -34,3 +34,5 @@ class Customer(models.Model):
     property_type = models.ForeignKey(Property_type, blank=False, null=False, on_delete=models.PROTECT)
     franchise = models.ForeignKey(Franchise, null=False, blank=False, on_delete=models.PROTECT)
     #don't forget to add new fields to views
+    def __str__(self):
+        return self.address_line_1

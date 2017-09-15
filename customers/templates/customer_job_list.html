@@ -4,12 +4,12 @@
   
     
     <div class="row valign-wrapper">
-            <a href={% url 'customers' %}>Back to customers</a>
+            <a href="{% url 'customers' %}">Back to customers</a>
             <div class="col s10">
                 <h2>{{ customer.address_line_1 }}</h2>                
             </div>
             <div class="col s2">
-                    <a href="!#" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
+                    <a href="{% url 'job_add' customer.pk %}" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
                     {% comment %} TODO: link to new job in worksheets app. Hide if existing due job exists {% endcomment %}
             </div>
     </div>
