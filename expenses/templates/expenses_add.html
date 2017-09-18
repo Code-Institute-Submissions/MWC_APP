@@ -24,7 +24,11 @@
                 <button class="btn waves-effect waves-light left" type="submit" name="action">Save
         <i class="material-icons right">check_circle</i>
         </button>
+        
     </form>
+    {% if not form.instance.id %}
+    <a href="{% url 'expenses' %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
+    {% endif %}
 </div>
 
 {% if form.instance.id %}

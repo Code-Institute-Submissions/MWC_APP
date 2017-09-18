@@ -1,0 +1,61 @@
+{% extends "base.html" %} 
+{% block content %} 
+{% regroup jobs by scheduled_date as jobs_by_date %}
+{% comment %} <ul>
+    {% for date in jobs_by_date %} date-{{ date.grouper }}
+    <ul>
+        {% for job in date.list|dictsort:"scheduled_date" %}
+        <li>
+            <div>{{ job.customer }} {{ job.scheduled_date }}</div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+</ul> {% endcomment %}
+
+
+<ul class="collapsible" data-collapsible="accordion">
+        {% for date in jobs_by_date %}
+    <li>
+        
+        <div class="collapsible-header active teal darken-4 white-text">{{ date.grouper }}
+            <!-- <a href="#!" class="btn-floating btn-small waves-effect waves-light orange darken-2 right"><i class="material-icons">location_on</i></a>                 -->
+            <!-- TODO: center icon and capture click?? -->
+            <span class="new badge blue" data-badge-caption="">{{date.list|length }} 
+                {% if date.list|length == 1 %}job{% else %}jobs{% endif %} / {{ price_sum }}</span>
+            
+        </div>
+        <div class="collapsible-body">
+            <ul>{% for job in date.list|dictsortreversed:"customer" %}
+                <li>
+                    <div class="job_record">
+                        <div class="row">
+                            <h6>{{ job.customer }} 
+                            </h6>
+                        </div>
+                        <div class="row">
+                            <div class="col s4 m3"><span>{{ job.price }}</span></div>
+                            <a class="right btn-floating btn-small waves-effect waves-light red"><i class="material-icons">mode_edit</i></a>
+                        </div>
+
+
+
+                        <div class="divider"></div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </li>
+    {% endfor %}
+    
+</ul>
+
+<!-- SCRIPTS -->
+<script>
+    $(document).ready(function () {
+        $('.collapsible').collapsible();
+    });
+    $(".button-collapse").sideNav();
+</script>
+{% endblock %}

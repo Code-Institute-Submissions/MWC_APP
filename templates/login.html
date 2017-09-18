@@ -1,5 +1,6 @@
 {% extends "base.html" %} 
 {% block content %}
+<div class="container">
  {% if form.errors %}
 <div class="row" id="alert_box">
     <div class="col s12 m12">
@@ -19,7 +20,7 @@
 </div>
 
 {% endif %}
-
+<div class="col s4">
 <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
     <table>
@@ -32,10 +33,13 @@
             <td>{{ form.password }}</td>
         </tr>
     </table>
-
-    <input type="submit" value="login" />
+    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+        <i class="material-icons right">send</i>
+      </button>
     <input type="hidden" name="next" value="{{ next }}" />
 </form>
+</div>
+</div>
 {% endblock %}
 
 {% comment %} .icon_style{

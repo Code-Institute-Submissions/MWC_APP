@@ -24,10 +24,6 @@
                     {{ form.price.errors }}
                     <label for="{{ form.price.id_for_label }}">Price:</label> {{ form.price }}
             </div>
-            <div class="col s-1 fieldWrapper">
-                    {{ form.frequency.errors }}
-                    <label for="{{ form.frequency.id_for_label }}">Frequency (weeks):</label> {{ form.frequency }}
-            </div>
             <div class="col s-2 fieldWrapper">
                     {{ form.job_status.errors }}
                     <label for="{{ form.job_status.id_for_label }}">Job Status:</label> {{ form.job_status }}
@@ -50,6 +46,9 @@
     <i class="material-icons right">check_circle</i>
     </button>
 </form>
+    {% if not form.instance.id %}
+    <a href="{% url 'worksheets' %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
+    {% endif %}
 </div>
 
 {% if form.instance.id %}

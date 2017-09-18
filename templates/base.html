@@ -22,26 +22,17 @@
 
 <body>
 
-    <!-- Dropdown Structure -->
-    <ul id="dropdown1" class="dropdown-content">
-        <li><a href="#!">one</a></li>
-        <li><a href="#!">two</a></li>
-        <li class="divider"></li>
-        <li><a href="#!">three</a></li>
-    </ul>
-
     <nav>
         <div class="nav-wrapper  teal darken-2">
             <a href="#!" class="brand-logo hide-on-med-and-down">My Window Cleaner</a>
             <a href="#!" class="brand-logo hide-on-large-only">MWC</a>
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+            {% if user.is_authenticated %}
             <ul class="right hide-on-med-and-down">                
                 <li><a href="/worksheets">Worksheets</a></li>
                 <li><a href="/expenses">Expenses</a></li>
-                <li><a href="/customers">Customers</a></li>
-                {% if user.is_authenticated %}
-                <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
-                {% endif %}
+                <li><a href="/customers">Customers</a></li>                
+                <li>Logged in as {{ user.get_full_name|default:user.username }}</li>                
                 <li><a href="/logout">Logout</a></li>
             </ul>
             <ul class="side-nav" id="mobile-demo">                       
@@ -53,6 +44,7 @@
                 {% endif %}      
                 <li><a href="/logout">Logout</a></li>                              
             </ul>
+            {% endif %}
         </div>
     </nav>    
     {% block content %}

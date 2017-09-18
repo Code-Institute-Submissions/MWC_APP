@@ -17,6 +17,20 @@ TITLE_CHOICES = (
     ('Dr', 'Dr')
 )
 
+FREQUENCY_CHOICES = (
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (4, 4),
+        (8, 8),
+        (12, 12),
+        (16, 16),
+        (20, 20),
+        (24, 24),
+        (26, 26),
+        (52, 52)
+    )
+    
 class Customer(models.Model):
     title = models.CharField(max_length=4, choices=TITLE_CHOICES)
     first_name = models.CharField(max_length=50)
@@ -30,9 +44,14 @@ class Customer(models.Model):
     city = models.CharField(max_length=100)
     county = models.CharField(max_length=100, blank=True, null=True)
     postcode = models.CharField(max_length=100, blank=False)
-    customer_notes = models.TextField( blank=True, null=True)
-    property_type = models.ForeignKey(Property_type, blank=False, null=False, on_delete=models.PROTECT)
-    franchise = models.ForeignKey(Franchise, null=False, blank=False, on_delete=models.PROTECT)
+    customer_notes = models.TextField(blank=True, null=True)
+    property_type = models.ForeignKey(
+        Property_type, blank=False, null=False, on_delete=models.PROTECT
+    )
+    franchise = models.ForeignKey(
+        Franchise, null=False, blank=False, on_delete=models.PROTECT
+    )
+    frequency = models.IntegerField(choices=FREQUENCY_CHOICES, null=False)
     #don't forget to add new fields to views
     def __str__(self):
         return self.address_line_1

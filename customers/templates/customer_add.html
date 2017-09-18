@@ -4,6 +4,7 @@
 <div class="container">
     <form method="POST" class="post-form">{% csrf_token %}        
         <div class="row">
+                        <div style="display:none"> <h3> {{ form.franchise }} </h3></div>
             <div class="col s-2 fieldWrapper">
                 {{ form.title.errors }}
                 <label for="{{ form.title.id_for_label }}">Title:</label> {{ form.title }}
@@ -25,6 +26,10 @@
                 {{ form.mobile.errors }}
                 <label for="{{ form.mobile.id_for_label }}">Mobile:</label> {{ form.mobile }}
             </div>
+            <div class="col s-2 fieldWrapper">
+                    {{ form.frequency.errors }}
+                    <label for="{{ form.frequency.id_for_label }}">Frequency:</label> {{ form.frequency }}
+                </div>
         </div>
         <div class="row">
             <div class="col s-4 fieldWrapper">
@@ -66,10 +71,6 @@
                         {{ form.property_type.errors }}
                         <label for="{{ form.property_type.id_for_label }}">Property Type:</label> {{ form.property_type }}
                 </div>
-                <div class="col s-12 fieldWrapper">
-                        {{ form.franchise.errors }}
-                        <label for="{{ form.franchise.id_for_label }}">Franchise:</label> {{ form.franchise }}
-                </div>
         </div>
 
        
@@ -79,6 +80,9 @@
     <i class="material-icons right">check_circle</i>
     </button>
 </form>
+{% if not form.instance.id %}
+<a href="{% url 'customers' %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
+{% endif %}
 </div>
 
 {% if form.instance.id %}
