@@ -41,7 +41,7 @@ class JobCreate(LoginRequiredMixin, CreateView):
         return super(JobCreate, self).form_valid(form)
 
     def get_initial(self):
-        #get customer id from kwargs and update 'initial' https://djangosnippets.org/snippets/2987/
+        #https://djangosnippets.org/snippets/2987/
         initials = super(JobCreate, self).get_initial()
         initials['customer'] = self.kwargs['customer']
         return initials

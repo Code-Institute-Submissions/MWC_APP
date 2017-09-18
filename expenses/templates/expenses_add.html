@@ -3,6 +3,7 @@
 {% block content %}
 <div class="container">
     <form method="POST" class="post-form">{% csrf_token %}
+            <div style="display:none"> <h3> {{ form.user }} </h3></div>
         <div class="fieldWrapper">
             {{ form.category.errors }}
             <label for="{{ form.category.id_for_label }}">Category:</label> {{ form.category }}

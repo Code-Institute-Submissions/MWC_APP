@@ -66,3 +66,7 @@ class CustomerJobList(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'customer_job_list.html'
     paginate_by = 10
+    def get_queryset(self):
+        franchise = self.request.user.franchise
+        queryset = Customer.objects.filter(franchise=franchise)
+        return queryset

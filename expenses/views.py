@@ -11,6 +11,10 @@ from expenses.models import Expenses
 class ExpensesList(LoginRequiredMixin, ListView):
     model = Expenses
     template_name = 'expenses_list.html'
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Expenses.objects.filter(user=user)
+        return queryset
 
 class ExpenseCreate(LoginRequiredMixin, CreateView):
     model = Expenses
@@ -22,6 +26,12 @@ class ExpenseCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(ExpenseCreate, self).form_valid(form)
+
+    def get_initial(self):
+        #https://djangosnippets.org/snippets/2987/
+        initials = super(ExpenseCreate, self).get_initial()
+        initials['user'] = self.request.user
+        return initials
 
 class ExpenseUpdate(LoginRequiredMixin, UpdateView):
     model = Expenses
