@@ -6,6 +6,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.http import HttpResponse
+from django.urls import reverse_lazy
 from braces.views import GroupRequiredMixin
 from worksheets.models import Jobs
 from django.db import connection
@@ -32,8 +33,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         , 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
     ]
     template_name = 'job_add.html'
-    success_url = "/customers/"
-    #TODO do a redirect to the customer job list
+    success_url = 'customer_job_list'
     initial = {'frequency': '4', 'job_status': '1'} #1 = 'due'
 
     def form_invalid(self, form):
@@ -89,5 +89,19 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
             except Exception as e:
                 return HttpResponse(status=500)
 
+    group_required = u"window_cleaner"
+
+class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
+    template_name = "invoices.html"
+    model = Jobs
+    fields = [
+        'customer', 'allocated_date', 'price'
+        , 'job_notes'
+    ]
+    context_object_name = 'invoices'
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Jobs.objects.filter(window_cleaner=user, job_status='2')
+        return queryset
     group_required = u"window_cleaner"
   

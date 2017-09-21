@@ -36,7 +36,7 @@
                 {% if request.user|has_group:"window_cleaner"%}             
                 <li><a href="/worksheets">Worksheets</a></li>
                 <li><a href="/expenses">Expenses</a></li>
-                <li><a href="!#">Invoices</a></li>
+                <li><a href="/invocies">Invoices</a></li>
                 {% endif %}
                 {% if not request.user|has_group:"window_cleaner"%}
                 <li><a href="/customers">Customers</a></li>  
@@ -50,7 +50,7 @@
                 {% if request.user|has_group:"window_cleaner"%}                     
                 <li><a href="/worksheets">Worksheets</a></li>
                 <li><a href="/expenses">Expenses</a></li>
-                <li><a href="!#">Invoices</a></li>
+                <li><a href="/invoices">Invoices</a></li>
                 {% endif %}
                 {% if not request.user|has_group:"window_cleaner"%}
                 <li><a href="/customers">Customers</a></li>

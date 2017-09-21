@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from worksheets.views import WorkSheet
 from django.conf import settings
-from worksheets.views import JobCreate, JobUpdate, JobDelete, JobCheckIn
+from worksheets.views import JobCreate, JobUpdate, JobDelete, JobCheckIn, Invoice
 
 from . import views
 
@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'(?P<pk>[0-9]+)/edit/$', JobUpdate.as_view(), name='job_update'),
     url(r'(?P<pk>[0-9]+)/delete/$', JobDelete.as_view(), name='job_delete'),
     url(r'(?P<pk>[0-9]+)/check_in/$', JobCheckIn.as_view(), name='job_check_in'),
+    url(r'(?P<pk>[0-9]+)/invoices/$', Invoice.as_view(), name='invoices'),
 ]
