@@ -5,17 +5,15 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-
 from customers.models import Customer
-from worksheets.models import Jobs
-from accounts.models import User
+from braces.views import GroupRequiredMixin
 
-class CustomersList(LoginRequiredMixin, ListView):
+class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
-        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type','frequency', 'franchise'
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes',
+        'property_type', 'frequency', 'franchise'
     ]
     template_name = 'customer_list.html'
     paginate_by = 10
@@ -23,8 +21,11 @@ class CustomersList(LoginRequiredMixin, ListView):
         franchise = self.request.user.franchise
         queryset = Customer.objects.filter(franchise=franchise)
         return queryset
+    
+    group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
 
-class CustomerCreate(LoginRequiredMixin, CreateView):
+
+class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
@@ -44,12 +45,15 @@ class CustomerCreate(LoginRequiredMixin, CreateView):
         initials['franchise'] = self.request.user.franchise
         initials['frequency'] = '4'
         return initials
+    
+    group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
 
-class CustomerUpdate(LoginRequiredMixin, UpdateView):
+class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
-        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type', 'franchise', 'frequency'
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 
+        'property_type', 'franchise', 'frequency'
     ]
     template_name = 'customer_add.html'
     success_url = "/customers/"
@@ -58,11 +62,15 @@ class CustomerUpdate(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         return super(CustomerUpdate, self).form_valid(form)
 
-class CustomerDelete(LoginRequiredMixin, DeleteView):
+    group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
+
+class CustomerDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Customer
     success_url = "/customers/"
 
-class CustomerJobList(LoginRequiredMixin, DetailView):
+    group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
+
+class CustomerJobList(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'customer_job_list.html'
     paginate_by = 10
@@ -70,3 +78,5 @@ class CustomerJobList(LoginRequiredMixin, DetailView):
         franchise = self.request.user.franchise
         queryset = Customer.objects.filter(franchise=franchise)
         return queryset
+
+    group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]

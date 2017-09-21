@@ -23,10 +23,11 @@ class Jobs(models.Model):
     job_notes = models.TextField(blank=True, null=True)
     job_status = models.ForeignKey(Job_status, null=False)
     payment_status = models.ForeignKey(Payment_status, blank=True, null=True)
-    job_notes = models.TextField(blank=True)
-    window_cleaner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=None, blank=True, null=True, related_name='jobs')
-    
+    job_notes = models.TextField(blank=True, null=True)
+    window_cleaner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=None, blank=True, null=True, related_name='jobs'
+                        , limit_choices_to={'groups__name': 'window_cleaner'})
+
     class Meta:
         ordering = ["-scheduled_date"]
-    
     

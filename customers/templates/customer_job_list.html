@@ -31,8 +31,8 @@
     <tbody>
       {% for job in customer.jobs.all %} {% comment %} no need for _set since related_name has been set {% endcomment %}
       <tr>
-        <td>{{ job.scheduled_date }}</td>
-        <td>{{ job.completed_date }}</td>
+        <td>{{ job.scheduled_date|date:"d/m/y" }}</td>
+        <td>{{ job.completed_date|date:"d/m/y" }}</td>
         <td>£{{ job.price }}</td>
         <td>{{ job.job_status }}</td>
         <td>{{ job.payment_status }}</td>
