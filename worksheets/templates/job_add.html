@@ -47,10 +47,9 @@
     </button>
 </form>
     {% if not form.instance.id %}
-    <a href="{% url 'worksheets' %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
+    <a href="{% url 'customer_job_list' pk=view.kwargs.customer %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
     {% endif %}
 </div>
-
 {% if form.instance.id %}
 <!-- Modal Trigger -->
 <div class="col s-2">
@@ -84,7 +83,7 @@
         clear: 'Clear',
         close: 'Ok',
         closeOnSelect: true,// Close upon selecting a date,
-        format: 'dd/mm/yyyy'
+        format: 'mm/dd/yyyy'
     });
     //TODO: with several $(document).ready(function() they get called in order; 
     // would be nice to append to the function defined in base.html instead

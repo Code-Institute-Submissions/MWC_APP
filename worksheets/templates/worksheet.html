@@ -1,5 +1,7 @@
 {% extends "base.html" %} 
+{% load job_filters %}
 {% block content %} 
+{% load staticfiles %}
 {% regroup jobs by scheduled_date as jobs_by_date %}
 {% comment %} <ul>
     {% for date in jobs_by_date %} date-{{ date.grouper }}
@@ -23,7 +25,7 @@
             <!-- <a href="#!" class="btn-floating btn-small waves-effect waves-light orange darken-2 right"><i class="material-icons">location_on</i></a>                 -->
             <!-- TODO: center icon and capture click?? -->
             <span class="new badge blue" data-badge-caption="">{{date.list|length }} 
-                {% if date.list|length == 1 %}job{% else %}jobs{% endif %} / {{ price_sum }}</span>            
+                {% if date.list|length == 1 %}job{% else %}jobs{% endif %} / £{{ date.list|running_total }}</span>            
         </div>
         <div class="collapsible-body">
                 <div class="row">
@@ -32,9 +34,10 @@
                         <div class="card blue-grey darken-1 z-depth-3" id="card_{{ job.id }}">
                         <div class="card-content white-text">
                             <span class="card-title">{{ job.customer }}</span>
-                            <div class="row">
+                            <div class="row">                                    
                             <div style="border-style: solid;  padding:5px">Price: £{{ job.price }}</div>
                             <div style="padding:5px"><span>{{ job.job_notes }}</span></div>
+                            <div style="padding:5px"><span></span></div>
                         </div>
                         </div>
                         <div class="card-action">
@@ -60,72 +63,17 @@
 
 <!-- Modal to confirm checkin -->
 <div id="confirmation_modal" class="modal bottom-sheet">
-        <div class="modal-content">
-          <div id="modal_address"><h4>Address</h4></div>
-          <p id="modal_message">Job has been checked in as completed/paid</p>
-        </div>
-        <div class="modal-footer">
-          <a href="#!" id="modal_btn" class="btn modal-action modal-close waves-effect waves-green btn-flat">OK</a>
-        </div>
-      </div>
+    <div class="modal-content">
+        <div id="modal_address"><h5>Address</h5></div>
+        <p id="modal_message">Job has been checked in as completed/paid</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" id="modal_btn" class="btn modal-action modal-close waves-effect waves-green">OK</a>
+    </div>
+</div>
 
 {% endblock %}
 {% block extra_js %}
 <!-- SCRIPTS -->
-<script>
-     //ajax to complete jobs:     
-    $(document).ready(function () {
-        $(".compl_btn").click(function() {
-            var parent_id = 'card_' + $(this).attr('id'); //id of the card displaying the job, used to dismiss later
-            var compl_address = $(this).attr('data_address'); //customer address
-            var payment_status = $(this).attr('data_payment'); //paid or owed
-            var jobid = $(this).attr('id');// id of the job to be checked in
-            $.ajax({
-                url: $(this).attr('data_url'), 
-                type: "POST",
-                data: {
-                    csrfmiddlewaretoken:'{{ csrf_token }}',
-                    payment_status,
-                    jobid  
-
-                },
-                success: function(result){    
-                    $('#modal_address').html('<h4>'+ compl_address +'</h4>');
-                    if(payment_status='paid'){
-                        $('#modal_message').html('<p>Job has been checked in as Completed/Paid</p>');
-                    }
-                    else {               //owed        
-                        $('#modal_message').html('<p>Job has been checked in as Completed/Owed</p>');
-                    }
-                    $('#modal_btn').attr('data_parentid', parent_id)
-                    $('#confirmation_modal').modal('open');                   
-            }
-            ,
-            error: function (jqXHR, status, err) {
-                $('#modal_address').html('<h4>'+ compl_address +'</h4>');
-                $('#confirmation_modal').addClass('red');
-                $('#modal_message').html('<p>There was an error when trying to check in this job. Status: ' + status + '</p>');
-              
-            },
-            complete: function (jqXHR, status) {                
-                
-                //TODO:move this to the modal button
-            }
-            });            
-        });  
-        $("#modal_btn").click(function() {
-            var div_id = $(this).attr('data_parentid')
-            alert(div_id);
-            $('#'+div_id ).slideUp();
-            //TODO check if div is empty and replace html
-        });      
-    });
-
-    //Materialize initializations:
-    $('.collapsible').collapsible();    
-    $(".button-collapse").sideNav();
-    $('.modal').modal();
-</script>
-
-    
+<script src="{% static 'complete_job.js' %}"></script>    
 {% endblock %}

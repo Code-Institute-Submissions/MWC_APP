@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'expenses',
     'widget_tweaks',
     'franchises',
-    'debug_toolbar',
+    'debug_toolbar',    
 ]
 
 MIDDLEWARE = [

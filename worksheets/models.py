@@ -26,8 +26,17 @@ class Jobs(models.Model):
     job_notes = models.TextField(blank=True, null=True)
     window_cleaner = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=None, blank=True, null=True, related_name='jobs'
-                        , limit_choices_to={'groups__name': 'window_cleaner'})
+        , limit_choices_to={'groups__name': 'window_cleaner'})
+    invoiced = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-scheduled_date"]
+    
+    @property
+    def total(self):
+        qs = Jobs.objects.filter(id=self).aggregate(sum('price'))
+        sum = qs['price__sum']
+        if not sum:
+            sum = 10.00
+        return sum
     

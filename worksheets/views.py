@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.views.generic import UpdateView, DeleteView, CreateView, ListView
+from django.views.generic import UpdateView, DeleteView, CreateView, ListView, DetailView
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -10,6 +10,9 @@ from django.urls import reverse_lazy
 from braces.views import GroupRequiredMixin
 from worksheets.models import Jobs
 from django.db import connection
+from django.urls import reverse
+from datetime import datetime, timedelta
+
 
 
 class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -33,8 +36,10 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         , 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
     ]
     template_name = 'job_add.html'
-    success_url = 'customer_job_list'
     initial = {'frequency': '4', 'job_status': '1'} #1 = 'due'
+
+    def get_success_url(self):
+        return reverse('customer_job_list', kwargs={'pk': self.kwargs['customer']})
 
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
@@ -60,7 +65,8 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         , 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
     ]
     template_name = 'job_add.html'
-    success_url = "/customers/"
+    def get_success_url(self):
+        return reverse('customer_job_list', kwargs={'pk': id})
 
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
@@ -87,12 +93,13 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
                 cursor.execute('{CALL dbo.sp_complete_job (%d,%d)}' % params)
                 return HttpResponse(status=201)
             except Exception as e:
+                print e
                 return HttpResponse(status=500)
 
     group_required = u"window_cleaner"
 
 class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
-    template_name = "invoices.html"
+    template_name = "invoice.html"
     model = Jobs
     fields = [
         'customer', 'allocated_date', 'price'
@@ -101,7 +108,17 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
     context_object_name = 'invoices'
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.filter(window_cleaner=user, job_status='2')
+        queryset = Jobs.objects.filter(
+            window_cleaner=user, 
+            job_status='3', #3='completed'
+            invoiced=False,
+            scheduled_date__gt = (datetime.today() - timedelta(weeks=12))
+            #TODO: temporary 12 week filter as jobs have not been invoiced
+        )
         return queryset
     group_required = u"window_cleaner"
-  
+
+class JobDetails(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+    model = Jobs
+    template_name = "job_details.html"
+    group_required = u"window_cleaner"

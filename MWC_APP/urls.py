@@ -29,5 +29,10 @@ urlpatterns = [
     url(r'^customers/', include('customers.urls')),
     url(r'^expenses/', include('expenses.urls')),
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/login/'}, name='logout'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/login/'}, name='logout'),    
 ]
+
+if settings.DEBUG:
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    urlpatterns += staticfiles_urlpatterns()
+# necessary to collect static files from app/static directories

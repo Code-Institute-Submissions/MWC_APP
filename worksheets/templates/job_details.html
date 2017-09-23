@@ -1,0 +1,37 @@
+{% block content %}
+<div class="container">
+  <div><h5>{{ jobs.customer }}</h5></div>
+  <form action="">
+    <div class="row">    
+        <div class="input-field col s3">
+          <input value="£{{ jobs.price }}" type="text" readonly>
+          <label class="active" for="price">Price</label>
+        </div>
+        <div class="input-field col s3">
+            <input value="{{ jobs.allocated_date }}" type="text" readonly>
+            <label class="active" for="Allocated Date">Allocated Date</label>
+        </div>
+        <div class="input-field col s3">
+            <input value="{{ jobs.completed_date }}" type="text" readonly>
+            <label class="active" for="Completed Date">Completed Date</label>
+        </div>
+        <div class="input-field col s3">
+            <input value="{{ jobs.job_status }}" type="text" readonly>
+            <label class="active" for="Job Status">Job Status</label>
+        </div>
+    </div>
+    <div class="row">    
+        <div class="input-field col s3">
+          <input value="{{ jobs.payment_status }}" type="text" readonly>
+          <label class="active" for="payment_status">Payment Status</label>
+        </div>
+        <div class="input-field col s-9">          
+            <label class="active" for="job_notes">Job Notes:</label> {{ jobs.job_notes }}
+    </div>
+    </div>
+        
+      </form>
+
+  </div>
+
+{% endblock %}

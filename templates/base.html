@@ -31,39 +31,35 @@
             {% if user.is_authenticated %}
             <ul class="right hide-on-med-and-down"> 
                 {% if user.is_authenticated %}
-                <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
+                    <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
                 {% endif %}     
                 {% if request.user|has_group:"window_cleaner"%}             
-                <li><a href="/worksheets">Worksheets</a></li>
-                <li><a href="/expenses">Expenses</a></li>
-                <li><a href="/invocies">Invoices</a></li>
+                    <li><a href="/worksheets">Worksheets</a></li>
+                    <li><a href="/expenses">Expenses</a></li>
+                    <li><a href="/worksheets/invoices">Invoices</a></li>
                 {% endif %}
                 {% if not request.user|has_group:"window_cleaner"%}
-                <li><a href="/customers">Customers</a></li>  
+                    <li><a href="/customers">Customers</a></li>  
                 {% endif %}              
                 <li><a href="/logout">Logout</a></li>
             </ul>
             <ul class="side-nav" id="mobile-demo"> 
                 {% if user.is_authenticated %}
-                <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
+                    <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
                 {% endif %}    
                 {% if request.user|has_group:"window_cleaner"%}                     
-                <li><a href="/worksheets">Worksheets</a></li>
-                <li><a href="/expenses">Expenses</a></li>
-                <li><a href="/invoices">Invoices</a></li>
+                    <li><a href="/worksheets">Worksheets</a></li>
+                    <li><a href="/expenses">Expenses</a></li>
+                    <li><a href="/worksheets/invoices">Invoices</a></li>
                 {% endif %}
                 {% if not request.user|has_group:"window_cleaner"%}
-                <li><a href="/customers">Customers</a></li>
-                {% endif %}
-                   
+                    <li><a href="/customers">Customers</a></li>
+                {% endif %}                   
                 <li><a href="/logout">Logout</a></li>                              
-            </ul>
-            
+            </ul>            
         </div>
-    </nav>   
-    
-    
-    {% endif %} 
+    </nav>
+        {% endif %} 
     
     {% block content %}
     {% endblock %}
