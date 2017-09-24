@@ -19,6 +19,7 @@ from django.contrib.auth import views as auth_views
 
 from django.conf import settings
 import debug_toolbar
+from views import LoginSuccess
 
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     url(r'^expenses/', include('expenses.urls')),
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/login/'}, name='logout'),    
+    url(r'login_success/$', LoginSuccess.as_view(), name='login_success')
 ]
 
 if settings.DEBUG:

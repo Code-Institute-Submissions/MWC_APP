@@ -2,18 +2,12 @@
 {% load job_filters %}
 {% block content %} 
 {% load staticfiles %}
+
+
+{% if scheduled_date.all %}
+
+
 {% regroup jobs by scheduled_date as jobs_by_date %}
-{% comment %} <ul>
-    {% for date in jobs_by_date %} date-{{ date.grouper }}
-    <ul>
-        {% for job in date.list|dictsort:"scheduled_date" %}
-        <li>
-            <div>{{ job.customer }} {{ job.scheduled_date }}</div>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endfor %}
-</ul> {% endcomment %}
 
 <div class="container">
 <ul class="collapsible" data-collapsible="accordion">
@@ -71,7 +65,21 @@
         <a href="#!" id="modal_btn" class="btn modal-action modal-close waves-effect waves-green">OK</a>
     </div>
 </div>
-
+{% else %}
+<div class="row" id="alert_box">
+        <div class="col s12 m12">
+            <div class="card teal lighten-4">
+                <div class="row">
+                    <div class="col s12 m10">
+                        <div class="card-content">
+                            <h5>There are no jobs to show</h5>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}
 {% block extra_js %}
 <!-- SCRIPTS -->

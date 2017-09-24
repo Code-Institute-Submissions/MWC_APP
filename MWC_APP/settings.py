@@ -144,7 +144,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGIN_URL = '/login/'
 
-LOGIN_REDIRECT_URL = '/worksheets/'
+LOGIN_REDIRECT_URL = 'login_success'
 
 USE_L10N = True
 
