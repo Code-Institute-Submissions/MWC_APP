@@ -6,12 +6,15 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.conf import settings
 from braces.views import GroupRequiredMixin
 from worksheets.models import Jobs
 from django.db import connection
 from django.urls import reverse
 from datetime import datetime, timedelta
+import stripe
 
 
 
@@ -118,7 +121,27 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
         return queryset
     group_required = u"window_cleaner"
 
+    stripe_public_key = settings.STRIPE_PUBLIC_KEY
+    title = "TITLE"
+
 class JobDetails(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     model = Jobs
     template_name = "job_details.html"
     group_required = u"window_cleaner"
+
+class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
+    group_required = u"window_cleaner"    
+
+    def post(self, request, *args, **kwargs):
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        token = request.POST['stripeToken']
+        amount = int(request.POST['amount'])
+        print amount
+        charge = stripe.Charge.create(
+            amount = amount,
+            currency='gbp',
+            description="Window Cleaner Commission Payment",
+            source=token,
+        )
+        return redirect('invoices')
+        # TODO: return charge etc.

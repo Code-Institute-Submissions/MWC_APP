@@ -31,12 +31,12 @@ class Jobs(models.Model):
 
     class Meta:
         ordering = ["-scheduled_date"]
-    
+
     @property
     def total(self):
         qs = Jobs.objects.filter(id=self).aggregate(sum('price'))
         sum = qs['price__sum']
         if not sum:
-            sum = 10.00
+            sum = 0.00
         return sum
     

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'expenses',
     'widget_tweaks',
     'franchises',
-    'debug_toolbar',    
+    'debug_toolbar',
+    'stripe',    
 ]
 
 MIDDLEWARE = [
@@ -152,3 +153,6 @@ INTERNAL_IPS = ('127.0.0.1', )
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
+
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLISHABLE')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET')
