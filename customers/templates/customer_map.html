@@ -1,0 +1,56 @@
+{% extends "base.html" %} 
+
+{% block extra_head %}
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+
+    <title>Customer Location</title>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+
+        html,
+        body {
+            height: 100%;
+            margin: 10;
+            padding: 10;
+        }
+    </style>
+
+{% endblock %} 
+
+{% block content %}
+<div id="coord" data-lat={{ customer.latitude }} data-lng='{{ customer.longitude }}'></div>
+    <div id="map"></div>
+{% endblock %} 
+
+{% block extra_js %}
+<script>
+    function initMap() {
+        var coord = document.getElementById('coord');
+        var latitude = coord.getAttribute('data-lat');
+        var longitude = coord.getAttribute('data-lng');
+                
+        var myLatLng = { lat: 51, lng: 0.1 };
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 14,
+            center: myLatLng
+        });
+
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            title: 'Hello World!'
+        });
+    }
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LQTdn114Lqs-kaY5JBFGab7slbEMFgc&callback=initMap">
+
+</script>
+{% endblock %}

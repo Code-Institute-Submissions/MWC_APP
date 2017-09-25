@@ -1,11 +1,14 @@
 {% extends "base.html" %} 
-{% load staticfiles %}
 {% load job_filters %}
-
+{% load staticfiles %}
+ 
 {% block extra_head %}
-
+<script src="{% static 'job_details.js' %}"></script>
 {% endblock %}
-{% block content %} 
+
+{% block content %}
+<!-- {% if scheduled_date.all %} -->
+
 
 {% regroup jobs by scheduled_date as jobs_by_date %}
 
@@ -43,7 +46,7 @@
                                          data_payment = 'paid'
                                          >Completed/Paid</button>
                             <button class="compl_owed btn waves-effect waves-light" type="button" value="Click" data_url>Completed/Owed</button>
-                            <a class="job_details_btn btn-floating  waves-effect waves-light teal accent-4 right"><i class="material-icons">more_horiz</i></a>
+                            <a class="btn-floating  waves-effect waves-light teal accent-4 right"><i class="material-icons">more_horiz</i></a>
                         </div>
                         </div>
                     </div>
@@ -55,7 +58,6 @@
 </ul>
 </div>
 
-
 <!-- Modal to confirm checkin -->
 <div id="confirmation_modal" class="modal bottom-sheet">
     <div class="modal-content">
@@ -66,7 +68,7 @@
         <a href="#!" id="modal_btn" class="btn modal-action modal-close waves-effect waves-green">OK</a>
     </div>
 </div>
-{% comment %}{% else %}{% endcomment %}
+<!-- {% else %} -->
 <div class="row" id="alert_box">
         <div class="col s12 m12">
             <div class="card teal lighten-4">
@@ -80,16 +82,9 @@
             </div>
         </div>
     </div>
-{% comment %}{% endif %}{% endcomment %}
-                
-      
-
-
-
+<!-- {% endif %} -->
 {% endblock %}
-
 {% block extra_js %}
 <!-- SCRIPTS -->
 <script src="{% static 'complete_job.js' %}"></script>    
-<!-- <script src="{% static 'job_details.js' %}"></script> -->
 {% endblock %}

@@ -1,4 +1,5 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
+
 {% block content %}
 <div class="container">
   <div class="row valign-wrapper">
@@ -10,14 +11,14 @@
         <a href="{% url 'job_add' customer.pk %}" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
       </div>
       <div class="col s2 m1">
-        <a href="#!" class="btn-floating btn-small waves-effect waves-light orange darken-2"><i class="material-icons">location_on</i></a>
+        <a href="{% url 'customer_map' customer.pk %}" class="btn-floating btn-small waves-effect waves-light orange darken-2 modal-trigger"><i class="material-icons">location_on</i></a>
       </div>
       {% comment %} TODO: Hide if existing due job exists {% endcomment %}
     </div>
   </div>
   {% if customer.jobs.all %}
   <table class="striped bordered">
-    <thead>
+    <thead> 
       <tr>
         <th>Due Date</th>
         <th>Completed Date</th>
@@ -71,3 +72,4 @@
 {% endif %}
 </div>
 {% endblock %}
+

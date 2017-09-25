@@ -1,10 +1,25 @@
 {% extends "base.html" %} 
 {% load widget_tweaks %} {% comment %} for adding datepicker class to form.date for materialize {% endcomment %} 
+{% load staticfiles %}
+
+{% block extra_head %}
+ <script src="{% static 'customer.js' %}"></script>
+ {% endblock %}
+
 {% block content %}
 <div class="container">
-    <form method="POST" class="post-form">{% csrf_token %}        
+    <form method="POST" class="post-form">{% csrf_token %}     
+        <!-- Google Places API Fields: ___________________________   -->
+        <input class="field" id="street_number" disabled="true" style="display: none"></input>
+        <input class="field" id="route" disabled="true" style="display: none"></input>
+        <input class="field" id="postal_town" disabled="true" style="display: none"></input>
+        <input class="field" id="postal_code" disabled="true" style="display: none"></input>
+        <input class="field" id="url" disabled="true" style="display: none"></input>
+        <input class="field" id="longitude" disabled="true" style="display: none"></input>
+        <input class="field" id="latitude" disabled="true" style="display: none"></input>
+        <!-- ______________________________________________________  -->
         <div class="row">
-                        <div style="display:none"> <h3> {{ form.franchise }} </h3></div>
+            <div style="display:none">{{ form.franchise }}</div>
             <div class="col s-2 fieldWrapper">
                 {{ form.title.errors }}
                 <label for="{{ form.title.id_for_label }}">Title:</label> {{ form.title }}
@@ -16,12 +31,11 @@
             <div class="col s-3 fieldWrapper">
                     {{ form.last_name.errors }}
                     <label for="{{ form.last_name.id_for_label }}">Last Name:</label> {{ form.last_name }}
-                </div>
+            </div>
             <div class="col s-3 fieldWrapper">
                     {{ form.email.errors }}
                     <label for="{{ form.email.id_for_label }}">Email:</label> {{ form.email }}
-            </div>
-            
+            </div>            
             <div class="col s-2 fieldWrapper">
                 {{ form.mobile.errors }}
                 <label for="{{ form.mobile.id_for_label }}">Mobile:</label> {{ form.mobile }}
@@ -29,7 +43,13 @@
             <div class="col s-2 fieldWrapper">
                     {{ form.frequency.errors }}
                     <label for="{{ form.frequency.id_for_label }}">Frequency:</label> {{ form.frequency }}
-                </div>
+            </div>
+        </div>
+        <div class="row">
+                <div id="locationField">
+                        <input id="autocomplete" placeholder="Search for an address"
+                               onFocus="geolocate()" type="text"></input>
+                      </div>
         </div>
         <div class="row">
             <div class="col s-4 fieldWrapper">
@@ -58,7 +78,6 @@
                     {{ form.postcode.errors }}
                     <label for="{{ form.postcode.id_for_label }}">Postcode:</label> {{ form.postcode }}
             </div>
-            
         </div>
         <div class="row">
                 <div class="col s-12 fieldWrapper">
@@ -71,7 +90,19 @@
                         {{ form.property_type.errors }}
                         <label for="{{ form.property_type.id_for_label }}">Property Type:</label> {{ form.property_type }}
                 </div>
-        </div>       
+        </div> 
+        <div class="fieldWrapper" style="display: none">
+                {{ form.property_type.errors }}
+                <label for="{{ form.url.id_for_label }}"></label> {{ form.url }}
+        </div>    
+        <div class="fieldWrapper" style="display: none">
+                {{ form.longitude.errors }}
+                <label for="{{ form.longitude.id_for_label }}"></label> {{ form.longitude }}
+        </div>   
+        <div class="fieldWrapper" style="display: none">
+                {{ form.latitude.errors }}
+                <label for="{{ form.latitude.id_for_label }}">Latitude:</label> {{ form.latitude }}
+        </div>      
         
     <div class="col s-8">
             <button class="btn waves-effect waves-light left" type="submit" name="action">Save
@@ -82,13 +113,11 @@
 <a href="{% url 'customers' %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
 {% endif %}
 </div>
-
 {% if form.instance.id %}
 <!-- Modal Trigger -->
 <div class="col s-2">
     <a class="waves-effect waves-light btn modal-trigger red right" href="#modal_confirm"><i class="material-icons right">delete</i>Delete</a>
 </div>
-
 
 <!-- Modal Structure -->
 <div id="modal_confirm" class="modal bottom-sheet">
@@ -108,24 +137,28 @@
 {% endblock %} 
 
 {% block extra_js %}
-<script>
-    $('.datepicker').pickadate({
-        selectMonths: true, // Creates a dropdown to control month
-        selectYears: 15, // Creates a dropdown of 15 years to control year,
-        today: 'Today',
-        clear: 'Clear',
-        close: 'Ok',
-        closeOnSelect: true,// Close upon selecting a date,
-        format: 'mm/dd/yyyy'
-    });
-    //TODO: with several $(document).ready(function() they get called in order; 
-    // would be nice to append to the function defined in base.html instead
-    // of having several.
-
-    $(document).ready(function () {
-        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
-        $('.modal').modal();
-    });
-
-</script>
+        <!-- TODO: this won't work form an external .js file loaded from STATIC -->
+        <!-- <script src="{% static 'customer.js' %}"></script> -->
+        <script>
+                $('.datepicker').pickadate({
+                    selectMonths: true, // Creates a dropdown to control month
+                    selectYears: 15, // Creates a dropdown of 15 years to control year,
+                    today: 'Today',
+                    clear: 'Clear',
+                    close: 'Ok',
+                    closeOnSelect: true,// Close upon selecting a date,
+                    format: 'mm/dd/yyyy'
+                });
+                //TODO: with several $(document).ready(function() they get called in order; 
+                // would be nice to append to the function defined in base.html instead
+                // of having several.
+                
+                $(document).ready(function () {
+                    // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
+                    $('.modal').modal();
+                }); 
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LQTdn114Lqs-kaY5JBFGab7slbEMFgc&libraries=places&callback=initAutocomplete"
+            async defer>
+            </script>
 {% endblock %}

@@ -52,6 +52,10 @@ class Customer(models.Model):
         Franchise, null=False, blank=False, on_delete=models.PROTECT
     )
     frequency = models.IntegerField(choices=FREQUENCY_CHOICES, null=False)
+    url = models.URLField(blank=True, null=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True)
+
     #don't forget to add new fields to views
     def __str__(self):
         return self.address_line_1

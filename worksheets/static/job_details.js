@@ -1,4 +1,4 @@
- //ajax to complete jobs:     
+//ajax to complete jobs:   
  $(document).ready(function () {
     $(".job_details_btn").click(function() {
         //for returning the csrf token (Django doesn't render external js files):--------------
@@ -36,9 +36,9 @@
         $.ajax({
             url: $(this).attr('data_url'), 
             type: "GET",
-            // data: {                
-            //     jobid  
-            // },
+            data: {                
+                csrftoken  
+            },
             success: function(result){    
                 $('#modal_message').html(result);
                 $('#job_details_modal').modal('open');        
@@ -54,10 +54,11 @@
         });            
     });  
 
-    
-});
-
-//Materialize initializations:
+ //Materialize initializations:
 $('.collapsible').collapsible();    
 $(".button-collapse").sideNav();
-$('.modal').modal();
+$('.modal').modal();   
+}
+);
+
+

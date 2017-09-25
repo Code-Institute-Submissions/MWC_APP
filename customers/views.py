@@ -29,7 +29,9 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
-        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type', 'franchise', 'frequency'
+        'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type', 'franchise', 
+        'frequency', 'url', 'latitude', 'longitude'
+
     ]
     template_name = 'customer_add.html'
     success_url = "/customers/"
@@ -53,7 +55,7 @@ class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
         'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 
-        'property_type', 'franchise', 'frequency'
+        'property_type', 'franchise', 'frequency', 'url', 'latitude', 'longitude'
     ]
     template_name = 'customer_add.html'
     success_url = "/customers/"
@@ -79,4 +81,9 @@ class CustomerJobList(GroupRequiredMixin, LoginRequiredMixin, DetailView):
         queryset = Customer.objects.filter(franchise=franchise)
         return queryset
 
+    group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
+
+class CustomerMap(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+    model = Customer
+    template_name = 'customer_map.html'
     group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
