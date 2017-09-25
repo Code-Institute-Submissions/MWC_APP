@@ -25,13 +25,21 @@
           <input value="{{ jobs.payment_status }}" type="text" readonly>
           <label class="active" for="payment_status">Payment Status</label>
         </div>
-        <div class="input-field col s-9">          
-            <label class="active" for="job_notes">Job Notes:</label> {{ jobs.job_notes }}
-    </div>
+        </div>
+    <div class="row"> 
+        <div>
+            <div class="input-field col s12">
+            <label class="active" for="job_notes">Job Notes</label>
+            <textarea rows="4" cols="50" readonly class="materialize-textarea">{{ jobs.job_notes }}</textarea>
+        </div>   </div>   
+              
     </div>
         
       </form>
 
   </div>
+  <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn">OK</a>
+      </div>
 
 {% endblock %}

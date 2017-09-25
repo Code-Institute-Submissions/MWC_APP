@@ -41,7 +41,7 @@
                         </div>
                         </div>
                         <div class="card-action">
-                            <button id="{{ job.id }}" 
+                            <button data_job="{{ job.id }}" 
                                     class="compl_btn btn waves-effect waves-light"
                                          type="button" value="Click" 
                                          data_url='{% url "job_check_in" job.id %}'
@@ -49,7 +49,9 @@
                                          data_payment = 'paid'
                                          >Completed/Paid</button>
                             <button class="compl_owed btn waves-effect waves-light" type="button" value="Click" data_url>Completed/Owed</button>
-                            <a class="btn-floating  waves-effect waves-light teal accent-4 right"><i class="material-icons">more_horiz</i></a>
+                            <a class="job_details_btn btn-floating  waves-effect waves-light teal accent-4 right"
+                            data_url='{% url "job_details" job.id %}'>
+                                    <i class="material-icons">more_horiz</i></a>
                         </div>
                         </div>
                     </div>
@@ -71,6 +73,13 @@
         <a href="#!" id="modal_btn" class="btn modal-action modal-close waves-effect waves-green">OK</a>
     </div>
 </div>
+
+<!-- Job Details Modal -->
+<div id="job_details_modal" class="modal">
+        <div class="modal-content" id="job_details_message">
+        </div>
+      </div>
+              
 
 {% endblock %}
 {% block extra_js %}
