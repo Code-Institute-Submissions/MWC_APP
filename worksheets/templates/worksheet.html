@@ -38,7 +38,13 @@
                                          data_address = '{{ job.customer }}'
                                          data_payment = 'paid'
                                          >Completed/Paid</button>
-                            <button class="compl_owed btn waves-effect waves-light" type="button" value="Click" data_url>Completed/Owed</button>
+                            <button data_job="{{ job.id }}" 
+                                    class="compl_btn btn waves-effect waves-light"
+                                        type="button" value="Click" 
+                                        data_url='{% url "job_check_in" job.id %}'
+                                        data_address = '{{ job.customer }}'
+                                        data_payment = 'owed'
+                                        >Completed/Owed</button>
                             <a class="job_details_btn btn-floating  waves-effect waves-light teal accent-4 right"
                             data_url='{% url "job_details" job.id %}'>
                                     <i class="material-icons">more_horiz</i></a>
@@ -57,7 +63,7 @@
 <div id="confirmation_modal" class="modal bottom-sheet">
     <div class="modal-content">
         <div id="modal_address"><h5>Address</h5></div>
-        <p id="modal_message">Job has been checked in as completed/paid</p>
+        <div id="modal_message"></div>
     </div>
     <div class="modal-footer">
         <a href="#!" id="modal_btn" class="btn modal-action modal-close waves-effect waves-green">OK</a>

@@ -47,7 +47,7 @@
             },
             success: function(result){    
                 $('#modal_address').html('<h5>'+ compl_address +'</h5>');
-                if(payment_status='paid'){
+                if(payment_status=='paid'){
                     $('#modal_message').html('<p>Job has been checked in as Completed/Paid</p>');
                 }
                 else {               //owed        
@@ -133,6 +133,6 @@
     //Materialize initializations:
     $('.collapsible').collapsible();    
     $(".button-collapse").sideNav();
-    $('.modal').modal();       
+    $('.modal').modal({dismissible: false});     //user has to click button to fire sliding up of card  
 });
 
