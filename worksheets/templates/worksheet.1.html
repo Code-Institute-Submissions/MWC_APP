@@ -5,6 +5,15 @@
 {% regroup jobs by scheduled_date as jobs_by_date %}
 
 
+{% comment %}
+    {% for date in jobs_by_date %} date-{{ date.grouper }}
+    <ul>
+        {% for job in date.list|dictsort:"scheduled_date" %}
+        <li>
+        {% endfor %}
+    </ul>
+</ul> {% endcomment %}
+
 <div class="container">
 <ul class="collapsible" data-collapsible="accordion">
     {% for date in jobs_by_date %}

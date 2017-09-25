@@ -38,7 +38,7 @@
         });
         //if JQuery script is run on the page then can pass the token via renderer: {{ CSRF_token}}
         //-----------------------------------------------------------------------------------------
-        $.ajax({
+        $.ajax({            
             url: $(this).attr('data_url'), 
             type: "POST",
             data: {                
@@ -71,7 +71,7 @@
 
 
     $("#modal_btn").click(function() {
-        var div_id = $(this).attr('data_parentid')
+        var div_id = $(this).attr('data_parentid');
         $('#'+div_id ).slideUp();
         //TODO check if div is empty and replace html
     });   
