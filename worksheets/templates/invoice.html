@@ -47,7 +47,7 @@
                         <td><button id="{{ job.id }}" 
                             class="job_details_btn btn-floating waves-effect waves-light"
                                  type="button" value="Click" 
-                                 data_url='{% url "job_check_in" job.id %}'
+                                 data_url='{% url "job_details" job.id %}'
                                  >
                                  <i class="material-icons">more_horiz</i></button></td>
                         </td>
@@ -92,9 +92,7 @@
             JQuery replaces content here from AJAX call
         </div>
     </div>
-    <div class="modal-footer">
-            <a href="#!" class="modal-action modal-close waves-effect waves-green btn">OK</a>
-    </div>
+    
 </div>
 
 

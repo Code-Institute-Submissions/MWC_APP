@@ -3,16 +3,15 @@
 {% block content %} 
 {% load staticfiles %}
 {% regroup jobs by scheduled_date as jobs_by_date %}
-{% comment %} <ul>
+
+
+{% comment %}
     {% for date in jobs_by_date %} date-{{ date.grouper }}
     <ul>
         {% for job in date.list|dictsort:"scheduled_date" %}
         <li>
-            <div>{{ job.customer }} {{ job.scheduled_date }}</div>
-        </li>
         {% endfor %}
     </ul>
-    {% endfor %}
 </ul> {% endcomment %}
 
 <div class="container">
@@ -84,5 +83,5 @@
 {% endblock %}
 {% block extra_js %}
 <!-- SCRIPTS -->
-<script src="{% static 'complete_job.js' %}"></script>    
+<script src="{% static 'jobs.js' %}"></script>    
 {% endblock %}
