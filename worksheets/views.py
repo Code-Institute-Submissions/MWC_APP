@@ -7,12 +7,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
 from django.conf import settings
-from braces.views import GroupRequiredMixin
-from worksheets.models import Jobs, Payment_status
 from django.db import connection
 from django.urls import reverse
+from braces.views import GroupRequiredMixin, JSONResponseMixin
+from worksheets.models import Jobs, Payment_status
 from datetime import datetime, timedelta
 import stripe
 
@@ -114,7 +113,7 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
         user = self.request.user
         queryset = Jobs.objects.filter(
             window_cleaner=user, 
-            job_status='3', #3='completed'
+            job_status__job_status_description='completed', 
             invoiced=False,
             scheduled_date__gt = (datetime.today() - timedelta(weeks=12))
             #TODO: temporary 12 week filter as jobs have not been invoiced
@@ -162,9 +161,25 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
     
     group_required = u"window_cleaner"
 
-class OwingPaid(GroupRequiredMixin, LoginRequiredMixin, View):
+class OwingPaid(JSONResponseMixin, GroupRequiredMixin, LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
-        print self.kwargs['pk']
-        return HttpResponse(status=201)
+        try:
+            job = Jobs.objects.get(pk=self.kwargs['pk'])
+            paid_status = Payment_status.objects.get(payment_status_description='paid')
+            job.payment_status=paid_status
+            job.save()
+            json_dict = {
+                'message': "Job has been checked in as paid",
+                'result': "success"
+
+            }
+        except Exception as e:
+            json_dict = {
+                'message': "There was an error ("+e.msg+")",
+                'result': "failure"
+            }        
+        return self.render_json_response(json_dict)
     
     group_required = u"window_cleaner"
+
+

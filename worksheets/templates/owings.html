@@ -40,8 +40,10 @@
 </div>
 
 <!-- Modal to confirm payment -->
+
 <div id="modal_confirm" class="modal bottom-sheet">
         <div class="modal-content">
+        <div class="container">
             <div><h5>Confirm <span id="modal_title"></span> has been paid?</h5></div>
             <div class="row">
                 {% comment %} note: GET/POST form defeats the objective of AJAX call as it forces a refresh {% endcomment %}
@@ -52,7 +54,20 @@
                         No</a>
             </div>
         </div>
+        </div>
     </div>  
+
+<!-- AJAX error modal -->
+    <div id="ajax_err_modal" class="modal">
+        <div class="modal-content">
+            <div class="container" id="ajax_err_modal_content">
+
+            </div>
+        </div>
+        <div class="modal-footer">
+          <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+        </div>
+      </div>
 {% endblock %}
 
  {% block extra_js %}

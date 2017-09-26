@@ -44,17 +44,18 @@ $(document).ready(function () {
         $.ajax({            
             url: $(this).attr('data_url'), 
             type: "POST",
-            success: function(result){  
-                $('#row_'+rowID).slideUp();
-
-                                            
+            success: function(data){  
+                if (data.result=="success"){
+                    $('#row_'+rowID).slideUp();            
+                }
+                else {
+                    $('#ajax_err_modal_content').html('<h4>There was an error: '+ data.message+'</h4>')
+                    $('#ajax_err_modal').modal('open');                      
+                }
         },
-        error: function (jqXHR, status, err) {            
-            $('#modal_confirm').html('<h4>'+ $(this).attr('data_address') +'</h4>');
-            $('#confirmation_modal').addClass('red');
-            $('#modal_message').html('<p>There was an error when trying to check in this job. Status: ' + status + '</p>' +
-            '<a href="#!" class="btn waves-effect waves-light right modal-action modal-close">OK</a>');
-          
+        error: function (jqXHR, status, err) {
+            $('#ajax_err_modal_content').html('<h4>Sorry there was an error when trying to save the job (Error:'+err+')</h4>')
+            $('#ajax_err_modal').modal('open');
         },
         complete: function (jqXHR, status) {             
         }
