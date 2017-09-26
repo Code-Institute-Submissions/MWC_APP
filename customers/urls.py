@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from customers.views import CustomersList, CustomerCreate, CustomerUpdate, CustomerDelete, CustomerJobList, CustomerMap
+from customers.views import CustomersList, CustomerCreate, CustomerUpdate, CustomerDelete, CustomerJobList, CustomerMap, CustomerJobList2
 #from django.conf import settings
 
 
@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'(?P<pk>[0-9]+)/$', CustomerUpdate.as_view(), name='customer_update'),
     url(r'(?P<pk>[0-9]+)/delete/$', CustomerDelete.as_view(), name='customer_delete'),
     url(r'(?P<pk>[0-9]+)/jobs/$', CustomerJobList.as_view(), name='customer_job_list'),
+    url(r'(?P<pk>[0-9]+)/jobs_alt/$', CustomerJobList2.as_view(), name='customer_job_list2'),
     url(r'(?P<pk>[0-9]+)/map/$', CustomerMap.as_view(), name='customer_map'),
 ]

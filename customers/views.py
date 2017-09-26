@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from customers.models import Customer
 from braces.views import GroupRequiredMixin
+from worksheets.models import Jobs
 
 class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Customer
@@ -80,6 +82,26 @@ class CustomerJobList(GroupRequiredMixin, LoginRequiredMixin, DetailView):
         franchise = self.request.user.franchise
         queryset = Customer.objects.filter(franchise=franchise)
         return queryset
+
+    group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
+
+class CustomerJobList2(GroupRequiredMixin, LoginRequiredMixin, SingleObjectMixin, ListView):
+       
+    template_name = 'customer_job_list2.html'
+    paginate_by = 10
+    model = Customer
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=Customer.objects.all())
+        return super(CustomerJobList2, self).get_context_data(**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomerJobList2, self).get_context_data(**kwargs)
+        context['customer'] = self.object
+        return context
+
+    def get_queryset(self):
+        return self.object.jobs.all()
 
     group_required = [u"office_staff", u"office_admin", u"super_admin", u"franchise_admin"]
 

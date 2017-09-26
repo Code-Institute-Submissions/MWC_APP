@@ -15,7 +15,7 @@
                 <!-- <a href="#!" class="btn-floating btn-small waves-effect waves-light orange darken-2 right"><i class="material-icons">location_on</i></a>                 -->
                 <!-- TODO: center icon and capture click?? -->
                 <span class="new badge blue" data-badge-caption="" id='{{ date.grouper }}'>
-                    {{date.list|length }}{% if date.list|length == 1 %}job{% else %}jobs{% endif %} / £{{ date.list|running_total }}</span>
+                    {{date.list|length }}{% if date.list|length == 1 %} job{% else %} jobs{% endif %} / £{{ date.list|running_total }}</span>
             </div>
             <div class="collapsible-body">
                 <div class="row">
