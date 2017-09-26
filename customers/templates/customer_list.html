@@ -10,13 +10,6 @@
         </div>
     </div>
 <table class="bordered striped">
-    {% comment %} <thead>
-        <tr>
-            <th>Address</th>
-            <th>Name</th>
-            <th></th>
-        </tr>
-    </thead> {% endcomment %}
     <tbody>
         {% for customer in object_list %}
         <tr>            
@@ -29,8 +22,10 @@
             <td><a href={{ customer.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
                     <i class="material-icons">create</i>
                 </a>
-            </td>       
-            
+            </td> 
+            <td>
+                <a href="{% url 'customer_map' customer.id %}" class="btn-floating btn-small waves-effect waves-light orange darken-2 modal-trigger {% if customer.latitude is None or customer.longitude is none %}disabled{% endif %}"><i class="material-icons">location_on</i></a>
+            </td>           
         </tr>
         {% endfor %}
 

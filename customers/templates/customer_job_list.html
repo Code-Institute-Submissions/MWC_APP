@@ -11,7 +11,8 @@
         <a href="{% url 'job_add' customer.pk %}" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
       </div>
       <div class="col s2 m1">
-        <a href="{% url 'customer_map' customer.pk %}" class="btn-floating btn-small waves-effect waves-light orange darken-2 modal-trigger"><i class="material-icons">location_on</i></a>
+        <a href="{% url 'customer_map' customer.pk %}" class="btn-floating btn-small waves-effect waves-light 
+        orange darken-2 modal-trigger {% if customer.latitude is None or customer.longitude is none %}disabled{% endif %}"><i class="material-icons">location_on</i></a>
       </div>
       {% comment %} TODO: Hide if existing due job exists {% endcomment %}
     </div>

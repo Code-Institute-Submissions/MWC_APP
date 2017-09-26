@@ -1,19 +1,20 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% load staticfiles %}
-{% block content %}
-
+{% block content %} 
+<div class="row" style="visibility: hidden">extra line</div>
+<!-- because this is a auth_views.login form, rather than recreate a login form this line allows the form to work with css  -->
 <div class="container">
     {% if form.errors %}
         <div class="row" id="alert_box">
-            <div class="col s12 m12">
+            <div class="col s12">
                 <div class="card red darken-1">
                     <div class="row">
-                        <div class="col s12 m10">
+                        <div class="col s12">
                             <div class="card-content white-text">
                                 <p>Your username and password didn't match. Please try again.</p>
                             </div>
                         </div>
-                        <div class="col s12 m2">
+                        <div class="col s12">
                             <i class="fa fa-times icon_style" id="alert_close" aria-hidden="true"></i>
                         </div>
                     </div>
@@ -22,7 +23,7 @@
         </div>
     {% endif %}
     <div class="row">
-        <div class="col s4">
+        <div class="col s12 m4">
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <table>
@@ -36,24 +37,17 @@
                 </tr>
             </table>
             <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                <i class="material-icons left">send</i>
+                <!-- <i class="material-icons left">send</i> -->
             </button>
             <input type="hidden" name="next" value="{{ next }}" />
         </form>
         </div>
     </div>
+
 </div>
 {% endblock %}
 
-{% comment %} .icon_style{
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    font-size: 20px;
-    color: white;
-    cursor:pointer; 
-}
-{% endcomment %}
+
 {% block extra_js %}
 <script>
 $('#alert_close').click(function(){

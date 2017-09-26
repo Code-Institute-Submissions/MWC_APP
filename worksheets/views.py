@@ -42,6 +42,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     initial = {'frequency': '4', 'job_status': '1'} #1 = 'due'
 
     def get_success_url(self):
+        print self.kwargs['customer']
         return reverse('customer_job_list', kwargs={'pk': self.kwargs['customer']})
 
     def form_invalid(self, form):

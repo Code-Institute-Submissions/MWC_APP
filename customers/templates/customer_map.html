@@ -24,7 +24,7 @@
 {% endblock %} 
 
 {% block content %}
-<div id="coord" data-lat={{ customer.latitude }} data-lng='{{ customer.longitude }}'></div>
+<div id="coord" data-lat='{{ customer.latitude }}' data-lng='{{ customer.longitude }}' data-address='{{ customer }}'></div>
     <div id="map"></div>
 {% endblock %} 
 
@@ -32,10 +32,11 @@
 <script>
     function initMap() {
         var coord = document.getElementById('coord');
-        var latitude = coord.getAttribute('data-lat');
-        var longitude = coord.getAttribute('data-lng');
+        var latitude = Number(coord.getAttribute('data-lat'));
+        var longitude = Number(coord.getAttribute('data-lng'));
+        var address = coord.getAttribute('data-address');
                 
-        var myLatLng = { lat: 51, lng: 0.1 };
+        var myLatLng = { lat: latitude, lng: longitude };
 
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 14,
@@ -45,7 +46,7 @@
         var marker = new google.maps.Marker({
             position: myLatLng,
             map: map,
-            title: 'Hello World!'
+            title: address
         });
     }
 

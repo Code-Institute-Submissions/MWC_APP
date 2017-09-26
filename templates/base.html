@@ -28,52 +28,51 @@
             <a href="#!" class="brand-logo hide-on-med-and-down">My Window Cleaner</a>
             <a href="#!" class="brand-logo hide-on-large-only">MWC</a>
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-            {% if user.is_authenticated %}
+            <!-- {% if user.is_authenticated %} -->
             <ul class="right hide-on-med-and-down"> 
-                {% if user.is_authenticated %}
+                <!-- {% if user.is_authenticated %} -->
                     <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
-                {% endif %}     
-                {% if request.user|has_group:"window_cleaner"%}             
+                <!-- {% endif %}      -->
+                <!-- {% if request.user|has_group:"window_cleaner"%}              -->
                     <li><a href="/worksheets">Worksheets</a></li>
                     <li><a href="/expenses">Expenses</a></li>
                     <li><a href="/worksheets/invoices">Invoices</a></li>
-                {% endif %}
-                {% if not request.user|has_group:"window_cleaner"%}
+                <!-- {% endif %} -->
+                <!-- {% if not request.user|has_group:"window_cleaner"%} -->
                     <li><a href="/customers">Customers</a></li>  
-                {% endif %}              
+                <!-- {% endif %}               -->
                 <li><a href="/logout">Logout</a></li>
             </ul>
             <ul class="side-nav" id="mobile-demo"> 
-                {% if user.is_authenticated %}
+                <!-- {% if user.is_authenticated %} -->
                     <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
-                {% endif %}    
-                {% if request.user|has_group:"window_cleaner"%}                     
+                <!-- {% endif %}     -->
+                <!-- {% if request.user|has_group:"window_cleaner"%}                      -->
                     <li><a href="/worksheets">Worksheets</a></li>
                     <li><a href="/expenses">Expenses</a></li>
                     <li><a href="/worksheets/invoices">Invoices</a></li>
-                {% endif %}
-                {% if not request.user|has_group:"window_cleaner"%}
+                <!-- {% endif %} -->
+                <!-- {% if not request.user|has_group:"window_cleaner"%} -->
                     <li><a href="/customers">Customers</a></li>
-                {% endif %}                   
+                <!-- {% endif %}                    -->
                 <li><a href="/logout">Logout</a></li>                              
             </ul>            
         </div>
     </nav>
-        {% endif %} 
+        <!-- {% endif %}  -->
     
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
+
+</body>
 
 <script src="{% static 'jquery/jquery-3.2.1.js' %}"></script>
 <script src="{% static 'materialize/js/materialize.js' %}"></script> 
-
 <script>
     $( document ).ready(function(){
         $(".button-collapse").sideNav();
         $('select').material_select();  //for Materialize drop down on forms 
     })
 </script>
-{% block extra_js %}{% endblock %}
-</body>
-
+{% block extra_js %}
+{% endblock %}
 </html>

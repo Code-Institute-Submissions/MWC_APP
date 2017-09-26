@@ -63,8 +63,8 @@
             navigator.geolocation.getCurrentPosition(function(position) {
                 var geolocation = {
                 //use position. to use current location
-                lat: 51.61, //position.coords.latitude,
-                lng: -0.11 //position.coords.longitude
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
                 };
                 var circle = new google.maps.Circle({
                 center: geolocation,
