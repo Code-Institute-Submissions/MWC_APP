@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from worksheets.views import WorkSheet
 from django.conf import settings
-from worksheets.views import JobCreate, JobUpdate, JobDelete, JobCheckIn, Invoice, JobDetails, Payment
+from worksheets.views import JobCreate, JobUpdate, JobDelete, JobCheckIn, Invoice, JobDetails, Payment, Owings
 
 from . import views
 
@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'invoices/$', Invoice.as_view(), name='invoices'),
     url(r'(?P<pk>[0-9]+)/details/$', JobDetails.as_view(), name='job_details'),
     url(r'payment/$', Payment.as_view(), name='payment'),
+    url(r'owings/$', Owings.as_view(), name='payment'),
 ]

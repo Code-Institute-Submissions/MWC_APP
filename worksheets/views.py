@@ -146,3 +146,17 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         )
         return redirect('invoices')
         # TODO: return charge etc.
+
+class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
+    template_name = "owings.html"
+    model = Jobs
+    fields = [
+        'customer', 'allocated_date', 'price'
+        , 'job_notes'
+    ]
+    context_object_name = 'jobs'
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Jobs.objects.filter(window_cleaner=user, payment_status='owed')
+        return queryset
+    group_required = u"window_cleaner"
