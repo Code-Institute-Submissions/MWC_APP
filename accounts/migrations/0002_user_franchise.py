@@ -17,7 +17,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='franchise',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.PROTECT, to='franchises.Franchise'),
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.PROTECT, to='franchises.Franchise'),
             preserve_default=False,
         ),
     ]

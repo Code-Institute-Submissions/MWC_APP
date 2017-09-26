@@ -23,7 +23,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv('DEBUG', False)))
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',') if os.getenv('ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(
+    ',') if os.getenv('ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'franchises',
     'debug_toolbar',
-    'stripe',    
+    'stripe',
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'MWC_APP.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-#https://github.com/michiya/django-pyodbc-azure
+# https://github.com/michiya/django-pyodbc-azure
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',

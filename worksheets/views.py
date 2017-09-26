@@ -16,33 +16,33 @@ from datetime import datetime, timedelta
 import stripe
 
 
-
 class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
     template_name = "worksheet.html"
     model = Jobs
     fields = [
-        'customer', 'allocated_date', 'price'
-        , 'job_notes'
+        'customer', 'allocated_date', 'price', 'job_notes'
     ]
     context_object_name = 'jobs'
+
     def get_queryset(self):
         user = self.request.user
         queryset = Jobs.objects.filter(window_cleaner=user, job_status='1')
         return queryset
     group_required = u"window_cleaner"
 
+
 class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     model = Jobs
     fields = [
-        'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price'
-        , 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
+        'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
     ]
     template_name = 'job_add.html'
-    initial = {'frequency': '4', 'job_status': '1'} #1 = 'due'
+    initial = {'frequency': '4', 'job_status': '1'}  # 1 = 'due'
 
     def get_success_url(self):
         print self.kwargs['customer']
-        return reverse('customer_job_list', kwargs={'pk': self.kwargs['customer']})
+        return reverse('customer_job_list', kwargs={
+                       'pk': self.kwargs['customer']})
 
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
@@ -51,7 +51,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         return super(JobCreate, self).form_valid(form)
 
     def get_initial(self):
-        #https://djangosnippets.org/snippets/2987/
+        # https://djangosnippets.org/snippets/2987/
         initials = super(JobCreate, self).get_initial()
         initials['customer'] = self.kwargs['customer']
         return initials
@@ -61,13 +61,14 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
 
     group_required = u"window_cleaner"
 
+
 class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Jobs
     fields = [
-        'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price'
-        , 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
+        'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
     ]
     template_name = 'job_add.html'
+
     def get_success_url(self):
         return reverse('customer_job_list', kwargs={'pk': id})
 
@@ -79,10 +80,12 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 
     group_required = u"window_cleaner"
 
+
 class JobDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Jobs
     success_url = "/customers/"
     group_required = u"window_cleaner"
+
 
 class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
@@ -101,22 +104,23 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
 
     group_required = u"window_cleaner"
 
+
 class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
     template_name = "invoice.html"
     model = Jobs
     fields = [
-        'customer', 'allocated_date', 'price'
-        , 'job_notes'
+        'customer', 'allocated_date', 'price', 'job_notes'
     ]
     context_object_name = 'invoices'
+
     def get_queryset(self):
         user = self.request.user
         queryset = Jobs.objects.filter(
-            window_cleaner=user, 
-            job_status__job_status_description='completed', 
+            window_cleaner=user,
+            job_status__job_status_description='completed',
             invoiced=False,
-            scheduled_date__gt = (datetime.today() - timedelta(weeks=12))
-            #TODO: temporary 12 week filter as jobs have not been invoiced
+            scheduled_date__gt=(datetime.today() - timedelta(weeks=12))
+            # TODO: temporary 12 week filter as jobs have not been invoiced
         )
         return queryset
     group_required = u"window_cleaner"
@@ -124,13 +128,15 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
     stripe_public_key = settings.STRIPE_PUBLIC_KEY
     title = "TITLE"
 
+
 class JobDetails(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     model = Jobs
     template_name = "job_details.html"
     group_required = u"window_cleaner"
 
+
 class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
-    group_required = u"window_cleaner"    
+    group_required = u"window_cleaner"
 
     def post(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -138,7 +144,7 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         amount = int(request.POST['amount'])
         print amount
         charge = stripe.Charge.create(
-            amount = amount,
+            amount=amount,
             currency='gbp',
             description="Window Cleaner Commission Payment",
             source=token,
@@ -146,29 +152,35 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         return redirect('invoices')
         # TODO: return charge etc.
 
+
 class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
     template_name = "owings.html"
     model = Jobs
     fields = [
-        'customer', 'allocated_date', 'price'
-        , 'job_notes'
+        'customer', 'allocated_date', 'price', 'job_notes'
     ]
     context_object_name = 'jobs'
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.filter(window_cleaner=user, payment_status__payment_status_description='owed', job_status__job_status_description='completed')
+        queryset = Jobs.objects.filter(
+            window_cleaner=user,
+            payment_status__payment_status_description='owed',
+            job_status__job_status_description='completed')
         return queryset
-    
+
     group_required = u"window_cleaner"
 
-class OwingPaid(JSONResponseMixin, GroupRequiredMixin, LoginRequiredMixin, View):
-    
+
+class OwingPaid(JSONResponseMixin, GroupRequiredMixin,
+                LoginRequiredMixin, View):
+
     def post(self, request, *args, **kwargs):
         try:
             job = Jobs.objects.get(pk=self.kwargs['pk'])
-            paid_status = Payment_status.objects.get(payment_status_description='paid')
-            job.payment_status=paid_status
+            paid_status = Payment_status.objects.get(
+                payment_status_description='paid')
+            job.payment_status = paid_status
             job.save()
             json_dict = {
                 'message': "Job has been checked in as paid",
@@ -177,11 +189,9 @@ class OwingPaid(JSONResponseMixin, GroupRequiredMixin, LoginRequiredMixin, View)
             }
         except Exception as e:
             json_dict = {
-                'message': "There was an error ("+e.message+")",
+                'message': "There was an error (" + e.message + ")",
                 'result': "failure"
-            }        
+            }
         return self.render_json_response(json_dict)
-    
+
     group_required = u"window_cleaner"
-
-

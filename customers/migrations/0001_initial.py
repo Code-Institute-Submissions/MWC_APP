@@ -18,32 +18,39 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Customer',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(choices=[('Mr', 'Mr'), ('Ms', 'Ms'), ('Mrs', 'Mrs'), ('Miss', 'Miss'), ('Dr', 'Dr')], max_length=4)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(choices=[
+                 ('Mr', 'Mr'), ('Ms', 'Ms'), ('Mrs', 'Mrs'), ('Miss', 'Miss'), ('Dr', 'Dr')], max_length=4)),
                 ('first_name', models.CharField(max_length=50)),
                 ('last_name', models.CharField(max_length=50)),
                 ('email', models.EmailField(max_length=254)),
                 ('mobile', models.CharField(blank=True, max_length=16)),
                 ('address_line_1', models.CharField(max_length=100)),
-                ('address_line_2', models.CharField(blank=True, max_length=100, null=True)),
-                ('address_line_3', models.CharField(blank=True, max_length=100, null=True)),
+                ('address_line_2', models.CharField(
+                    blank=True, max_length=100, null=True)),
+                ('address_line_3', models.CharField(
+                    blank=True, max_length=100, null=True)),
                 ('city', models.CharField(max_length=100)),
                 ('county', models.CharField(max_length=100, null=True)),
                 ('postcode', models.CharField(max_length=100)),
                 ('customer_notes', models.TextField(null=True)),
-                ('franchise', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='franchises.Franchise')),
+                ('franchise', models.ForeignKey(
+                    on_delete=django.db.models.deletion.PROTECT, to='franchises.Franchise')),
             ],
         ),
         migrations.CreateModel(
             name='Property_type',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('property_type', models.CharField(max_length=255)),
             ],
         ),
         migrations.AddField(
             model_name='customer',
             name='property_type',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='customers.Property_type'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT, to='customers.Property_type'),
         ),
     ]

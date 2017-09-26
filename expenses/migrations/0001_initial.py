@@ -19,19 +19,23 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='expense_categories',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('category', models.CharField(max_length=256)),
             ],
         ),
         migrations.CreateModel(
             name='Expenses',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('date', models.DateField()),
                 ('notes', models.TextField(blank=True, null=True)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='expenses.expense_categories')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='expenses', to=settings.AUTH_USER_MODEL)),
+                ('category', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='expenses.expense_categories')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                           related_name='expenses', to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]

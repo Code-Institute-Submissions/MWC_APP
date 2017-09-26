@@ -20,7 +20,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Job_status',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('job_status', models.IntegerField()),
                 ('job_status_description', models.CharField(max_length=50)),
             ],
@@ -28,21 +29,26 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Jobs',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('scheduled_date', models.DateField()),
                 ('allocated_date', models.DateField(null=True)),
                 ('completed_date', models.DateField(null=True)),
                 ('price', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('frequency', models.IntegerField(choices=[(0, 0), (1, 1), (2, 2), (4, 4), (8, 8), (12, 12), (16, 16), (20, 20), (24, 24), (26, 26), (52, 52)])),
+                ('frequency', models.IntegerField(choices=[(0, 0), (1, 1), (2, 2), (4, 4), (
+                    8, 8), (12, 12), (16, 16), (20, 20), (24, 24), (26, 26), (52, 52)])),
                 ('job_notes', models.TextField(blank=True)),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='jobs', to='customers.Customer')),
-                ('job_status', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='worksheets.Job_status')),
+                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                               related_name='jobs', to='customers.Customer')),
+                ('job_status', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='worksheets.Job_status')),
             ],
         ),
         migrations.CreateModel(
             name='Payment_status',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('payment_status', models.IntegerField()),
                 ('payment_status_description', models.CharField(max_length=50)),
             ],
@@ -50,11 +56,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='jobs',
             name='payment_status',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='worksheets.Payment_status'),
+            field=models.ForeignKey(
+                null=True, on_delete=django.db.models.deletion.CASCADE, to='worksheets.Payment_status'),
         ),
         migrations.AddField(
             model_name='jobs',
             name='window_cleaner',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='jobs', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE,
+                                    related_name='jobs', to=settings.AUTH_USER_MODEL),
         ),
     ]

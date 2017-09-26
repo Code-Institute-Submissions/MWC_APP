@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customer',
             name='frequency',
-            field=models.IntegerField(choices=[(0, 0), (1, 1), (2, 2), (4, 4), (8, 8), (12, 12), (16, 16), (20, 20), (24, 24), (26, 26), (52, 52)], default=4),
+            field=models.IntegerField(choices=[(0, 0), (1, 1), (2, 2), (4, 4), (8, 8), (
+                12, 12), (16, 16), (20, 20), (24, 24), (26, 26), (52, 52)], default=4),
             preserve_default=False,
         ),
     ]
