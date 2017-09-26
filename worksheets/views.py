@@ -154,6 +154,7 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
         , 'job_notes'
     ]
     context_object_name = 'jobs'
+
     def get_queryset(self):
         user = self.request.user
         queryset = Jobs.objects.filter(window_cleaner=user, payment_status__payment_status_description='owed', job_status__job_status_description='completed')
@@ -162,6 +163,7 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
     group_required = u"window_cleaner"
 
 class OwingPaid(JSONResponseMixin, GroupRequiredMixin, LoginRequiredMixin, View):
+    
     def post(self, request, *args, **kwargs):
         try:
             job = Jobs.objects.get(pk=self.kwargs['pk'])
@@ -175,7 +177,7 @@ class OwingPaid(JSONResponseMixin, GroupRequiredMixin, LoginRequiredMixin, View)
             }
         except Exception as e:
             json_dict = {
-                'message': "There was an error ("+e.msg+")",
+                'message': "There was an error ("+e.message+")",
                 'result': "failure"
             }        
         return self.render_json_response(json_dict)
