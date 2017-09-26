@@ -1,7 +1,64 @@
 {% extends "base.html" %} 
 {% load staticfiles %}
 {% block content %} 
-some content
+<table class="striped">
+    <thead>
+      <tr>
+          <th>Customer</th>
+          <th>Price</th>
+          <th>Date Completed</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for job in jobs %}
+      <tr id="row_{{ job.id }}">
+        <td>{{ job.customer }}</td>
+        <td>£{{ job.price }}</td>
+        <td>{{ job.completed_date }}</td> 
+        <td><a  class="paid_btn waves-effect waves-light btn" 
+                data_rowID="{{ job.id}}" 
+                data_url='{% url "job_paid" job.id %}'
+                data_address="{{ job.customer }}" >Paid
+            </a>
+        </td>           
+        <td><a class="job_details_btn btn-floating  waves-effect waves-light teal accent-4 right" 
+            data_url='{% url "job_details" job.id %}'>
+                <i class="material-icons">more_horiz</i></a>
+        </td>     
+        
+      </tr>
+    {% endfor %}
+    
+    </tbody>
+  </table>
+
+  <!-- Job Details Modal -->
+<div id="job_details_modal" class="modal">
+        <div class="modal-content" id="job_details_message">
+        </div>
+</div>
+
+<!-- Modal to confirm payment -->
+<div id="modal_confirm" class="modal bottom-sheet">
+        <div class="modal-content">
+            <div><h5>Confirm <span id="modal_title"></span> has been paid?</h5></div>
+            <div class="row">
+                {% comment %} note: GET/POST form defeats the objective of AJAX call as it forces a refresh {% endcomment %}
+                    <button id="modal_paid_btn" class="modal-close btn waves-effect waves-light left red" type="submit" name="action"
+                    data_url="">
+                    Yes</button>
+                <a href="#!" class="btn waves-effect waves-light right modal-action modal-close">
+                        No</a>
+            </div>
+        </div>
+    </div>  
+{% endblock %}
+
+ {% block extra_js %}
+<!-- SCRIPTS -->
+<script src="{% static 'jobs.js' %}"></script>
+<script src="{% static 'invoices.js' %}"></script>
 
 {% endblock %}
 

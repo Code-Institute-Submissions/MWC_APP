@@ -112,10 +112,7 @@
         //-----------------------------------------------------------------------------------------
         $.ajax({
             url: $(this).attr('data_url'), 
-            type: "GET",
-            // data: {                
-            //     csrftoken  
-            // },
+            type: "GET",            
             success: function(result){    
                 $('#job_details_message').html(result);
                 $('#job_details_modal').modal('open');        

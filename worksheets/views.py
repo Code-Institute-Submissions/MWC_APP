@@ -10,7 +10,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.conf import settings
 from braces.views import GroupRequiredMixin
-from worksheets.models import Jobs
+from worksheets.models import Jobs, Payment_status
 from django.db import connection
 from django.urls import reverse
 from datetime import datetime, timedelta
@@ -157,6 +157,14 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
     context_object_name = 'jobs'
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.filter(window_cleaner=user, payment_status='owed')
+        queryset = Jobs.objects.filter(window_cleaner=user, payment_status__payment_status_description='owed', job_status__job_status_description='completed')
         return queryset
+    
+    group_required = u"window_cleaner"
+
+class OwingPaid(GroupRequiredMixin, LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        print self.kwargs['pk']
+        return HttpResponse(status=201)
+    
     group_required = u"window_cleaner"
