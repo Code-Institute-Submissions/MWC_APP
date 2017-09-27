@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.conf import settings
 from django.db import connection, DatabaseError
+from django.db.models import Sum
 from django.urls import reverse
 from braces.views import GroupRequiredMixin, JSONResponseMixin
 from worksheets.models import Jobs, Payment_status
@@ -144,7 +145,19 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         token = request.POST['stripeToken']
-        amount = int(request.POST['amount'])
+        # amount = int(request.POST['amount'])
+        date = request.POST['date']
+        user = self.request.user
+        print date
+        sum_price = Jobs.objects.filter(
+            completed_date=date,
+            window_cleaner=user,
+            job_status__job_status_description='completed'
+            ).aggregate(Sum('price'))
+        amount = int(sum_price['price__sum'] * 100)
+        print amount
+        print 'POST date is: ' 
+        print date
         print amount
         charge = stripe.Charge.create(
             amount=amount,

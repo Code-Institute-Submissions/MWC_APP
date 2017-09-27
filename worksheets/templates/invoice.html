@@ -46,6 +46,8 @@
                             {% csrf_token %}
                             <input type="hidden" name="amount" value="{{ date.list|running_total|mul:100|floatformat }}"></input>
                             <!-- floatformat necessary to return an int -->
+                            <input  name="date" value="{{ date.grouper|date:"c" }}"></input>
+                            
                             <script
                                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                                 //TODO: would be better to pass list of jobs
@@ -57,7 +59,7 @@
                                 data-description="Widget"
                                 data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
                                 data-locale="auto"
-                                data-zip-code="true"
+                                data-zip-code="false"
                                 data-currency="gbp">
                               </script>
                             </form>

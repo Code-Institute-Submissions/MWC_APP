@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 from django.conf import settings
 from django.db import models
+from django.db.models import Sum
+
 
 
 class Job_status(models.Model):
@@ -42,7 +44,7 @@ class Jobs(models.Model):
 
     @property
     def total(self):
-        qs = Jobs.objects.filter(id=self).aggregate(sum('price'))
+        qs = Jobs.objects.filter(id=self).aggregate(Sum('price'))
         sum = qs['price__sum']
         if not sum:
             sum = 0.00
