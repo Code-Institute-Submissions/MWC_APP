@@ -1,7 +1,13 @@
 {% extends "base.html" %} 
 {% load staticfiles %}
 {% block content %} 
-<table class="striped">
+      <div class="row">
+        <div class="input-field col s6">
+          <i class="material-icons prefix">search</i>
+          <input id="input_search" type="search">
+        </div>
+      </div>
+<table class="striped" id="list"s>
     <thead>
       <tr>
           <th>Customer</th>
@@ -13,7 +19,7 @@
     <tbody>
     {% for job in jobs %}
       <tr id="row_{{ job.id }}">
-        <td>{{ job.customer }}</td>
+        <td class="address">{{ job.customer }}</td>
         <td>£{{ job.price }}</td>
         <td>{{ job.completed_date }}</td> 
         <td><a  class="paid_btn waves-effect waves-light btn" 
@@ -75,5 +81,39 @@
 <script src="{% static 'jobs.js' %}"></script>
 <script src="{% static 'invoices.js' %}"></script>
 
+<script>
+    $(document).ready(function () {
+        //adapted from http://blog.grapii.com/2010/08/how-to-build-a-simple-search-filter-with-jquery/
+            (function ($) {
+              jQuery.expr[':'].Contains = function(a,i,m){
+                  return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+              };
+             
+              function listFilter(list) {
+                $('#input_search')
+                  .change( function () {
+                    var filter = $(this).val();
+                    if(filter) {
+                      $(list).find(".address:not(:Contains(" + filter + "))").parent().slideUp();
+                      $(list).find(".adress:Contains(" + filter + ")").parent().slideDown();
+                    } else {
+                      $(list).find("tr").slideDown();
+                    }
+                    return false;
+                  })
+                  .keyup( function () {
+                    $(this).change();                  
+                })
+                .keydown( function () {
+                    $(this).change();                  
+                });
+              }            
+              $(function () {
+                listFilter($("#list"));
+              });
+            }(jQuery));
+    })
+
+</script>
 {% endblock %}
 
