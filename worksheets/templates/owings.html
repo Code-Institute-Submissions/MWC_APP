@@ -1,13 +1,62 @@
 {% extends "base.html" %} 
 {% load staticfiles %}
+
+{% block extra_head %}
+<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+<script> 
+        
+        (function ($) {
+            jQuery.expr[':'].Contains = function(a,i,m){
+                return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
+            };
+           
+            function listFilter(header, list) {
+              var form = $("<form>").attr({"class":"filterform","action":"#"}),
+                  input = $("<input>").attr({"class":"filterinput","type":"text"});
+              $(form).append(input).appendTo(header);
+           
+              $(input)
+                .change( function () {
+                  var filter = $(this).val();
+                  if(filter) {
+                    $(list).find("a:not(:Contains(" + filter + "))").parent().slideUp();
+                    $(list).find("a:Contains(" + filter + ")").parent().slideDown();
+                  } else {
+                    $(list).find("li").slideDown();
+                  }
+                  return false;
+                })
+              .keyup( function () {
+                  $(this).change();
+              });
+            }
+          
+            $(function () {
+              listFilter($("#header"), $("#list"));
+            });
+          }(jQuery));
+        
+         </script> 
+{% endblock %}
 {% block content %} 
+
+<div id="wrap"> 
+        <h1 id="header">DVD Collection</h1> 
+        <ul id="list"> 
+            <li><a href="#">Batman</a></li> 
+            <li><a href="#">Ice Age</a></li> 
+            <li><a href="#">Star Trek (2009)</a></li> 
+            <li><a href="#">Tremors</a></li> 
+        </ul> 
+    </div> 
+
       <div class="row">
         <div class="input-field col s6">
           <i class="material-icons prefix">search</i>
           <input id="input_search" type="search">
         </div>
       </div>
-<table class="striped" id="list"s>
+<table class="striped" id="invoice_list"s>
     <thead>
       <tr>
           <th>Customer</th>
@@ -81,39 +130,6 @@
 <script src="{% static 'jobs.js' %}"></script>
 <script src="{% static 'invoices.js' %}"></script>
 
-<script>
-    $(document).ready(function () {
-        //adapted from http://blog.grapii.com/2010/08/how-to-build-a-simple-search-filter-with-jquery/
-            (function ($) {
-              jQuery.expr[':'].Contains = function(a,i,m){
-                  return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
-              };
-             
-              function listFilter(list) {
-                $('#input_search')
-                  .change( function () {
-                    var filter = $(this).val();
-                    if(filter) {
-                      $(list).find(".address:not(:Contains(" + filter + "))").parent().slideUp();
-                      $(list).find(".adress:Contains(" + filter + ")").parent().slideDown();
-                    } else {
-                      $(list).find("tr").slideDown();
-                    }
-                    return false;
-                  })
-                  .keyup( function () {
-                    $(this).change();                  
-                })
-                .keydown( function () {
-                    $(this).change();                  
-                });
-              }            
-              $(function () {
-                listFilter($("#list"));
-              });
-            }(jQuery));
-    })
 
-</script>
 {% endblock %}
 
