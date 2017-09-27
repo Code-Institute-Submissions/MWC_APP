@@ -1,23 +1,22 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% load job_filters %} 
 {% block content %} 
 {% load staticfiles %} 
 {% regroup jobs by scheduled_date as jobs_by_date %}
 
-
 <div class="container">
     <ul class="collapsible" data-collapsible="accordion">
         {% for date in jobs_by_date %}
         <li>
-            <div class="collapsible-header active teal 
-            {% if forloop.counter == 1 %}darken-4{% else %}darken-2{% endif %} white-text">
+            <div id='header_{{ date.grouper|date:"c" }}' class="collapsible-header active teal darken-2 white-text">
                 {{ date.grouper }}
-                <!-- <a href="#!" class="btn-floating btn-small waves-effect waves-light orange darken-2 right"><i class="material-icons">location_on</i></a>                 -->
-                <!-- TODO: center icon and capture click?? -->
-                <span class="new badge blue" data-badge-caption="" id='{{ date.grouper }}'>
-                    {{date.list|length }}{% if date.list|length == 1 %} job{% else %} jobs{% endif %} / £{{ date.list|running_total }}</span>
+                <span class="new badge green" data-badge-caption="" id="badge_{{ date.grouper|date:"c" }}">
+                <span id="num_jobs_{{ date.grouper|date:"c" }}">{{date.list|length }}</span>
+                <span id='num_jobs_suffix_{{ date.grouper|date:"c" }}'>{% if date.list|length == 1 %} job{% else %} jobs{% endif %}</span>                / £
+                <span id="total_{{ date.grouper|date:"c" }}">{{ date.list|running_total }}</span>
+                </span>
             </div>
-            <div class="collapsible-body">
+            <div class="collapsible-body" id="collapsible_body_{{ date.grouper|date:"c" }}">
                 <div class="row">
                     {% for job in date.list|dictsortreversed:"customer" %}
                     <div>
@@ -25,20 +24,18 @@
                             <div class="card-content white-text">
                                 <span class="card-title">{{ job.customer }}</span>
                                 <div class="row">
-                                    <div style="border-style: solid;  padding:5px">Price: £{{ job.price }}</div>
+                                    <div style="border-style: solid;  padding:5px">Price: £<span id="price_{{ job.id }}">{{ job.price }}</span></div>
                                     <div style="padding:5px"><span>{{ job.job_notes }}</span></div>
                                     <div style="padding:5px"><span></span></div>
                                 </div>
                             </div>
                             <div class="card-action">
                                 <button data_job="{{ job.id }}" class="compl_btn btn waves-effect waves-light" type="button" value="Click" data_url='{% url "job_check_in" job.id %}'
-                                    data_address='{{ job.customer }}' data_payment='paid' data_price='{{ job.price }}' 
-                                    data_parentID='{{ date.grouper }}' data_parent_count='{{ date.list|length }}'
-                                    data_parent_total='{{ date.list|length }}'>Completed/Paid</button>
+                                    data_address='{{ job.customer }}' data_payment='paid' data_price='{{ job.price }}' data_date='{{ date.grouper|date:"c" }}'>Completed/Paid
+                                </button>
                                 <button data_job="{{ job.id }}" class="compl_btn btn waves-effect waves-light" type="button" value="Click" data_url='{% url "job_check_in" job.id %}'
-                                    data_address='{{ job.customer }}' data_payment='owed' data_price='{{ job.price }}'
-                                    data_parentID='{{ date.grouper }}' data_parent_count='{{ date.list|length }}'
-                                    >Completed/Owed</button>
+                                    data_address='{{ job.customer }}' data_payment='owed' data_price='{{ job.price }}' data_date='{{ date.grouper|date:"c" }}'>Completed/Owed
+                                </button>
                                 <a class="job_details_btn btn-floating  waves-effect waves-light teal accent-4 right" data_url='{% url "job_details" job.id %}'>
                                     <i class="material-icons">more_horiz</i></a>
                             </div>
@@ -73,6 +70,5 @@
 
 
 {% endblock %} {% block extra_js %}
-<!-- SCRIPTS -->
 <script src="{% static 'jobs.js' %}"></script>
 {% endblock %}

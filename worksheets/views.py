@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.conf import settings
-from django.db import connection
+from django.db import connection, DatabaseError
 from django.urls import reverse
 from braces.views import GroupRequiredMixin, JSONResponseMixin
 from worksheets.models import Jobs, Payment_status
@@ -26,7 +26,8 @@ class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.filter(window_cleaner=user, job_status='1')
+        queryset = Jobs.objects.all().filter(window_cleaner=user, job_status='1', allocated_date__isnull=False)
+        #jobs must be allocatedand due before being checked in
         return queryset
     group_required = u"window_cleaner"
 
@@ -98,9 +99,11 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
             try:
                 cursor.execute('{CALL dbo.sp_complete_job (%d,%d)}' % params)
                 return HttpResponse(status=201)
-            except Exception as e:
+            except DatabaseError as e:
                 print e
                 return HttpResponse(status=500)
+            finally:
+                cursor.close()
 
     group_required = u"window_cleaner"
 
@@ -176,20 +179,20 @@ class OwingPaid(JSONResponseMixin, GroupRequiredMixin,
                 LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
-        try:
-            job = Jobs.objects.get(pk=self.kwargs['pk'])
-            paid_status = Payment_status.objects.get(
+        job = Jobs.objects.get(pk=self.kwargs['pk'])
+        paid_status = Payment_status.objects.get(
                 payment_status_description='paid')
-            job.payment_status = paid_status
+        job.payment_status = paid_status
+        try:            
             job.save()
             json_dict = {
                 'message': "Job has been checked in as paid",
                 'result': "success"
 
             }
-        except Exception as e:
+        except DatabaseError as e:
             json_dict = {
-                'message': "There was an error (" + e.message + ")",
+                'message': "There was an error saving the record (" + e.message + ")",
                 'result': "failure"
             }
         return self.render_json_response(json_dict)
