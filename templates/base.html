@@ -23,8 +23,8 @@
 
 <body>
 
-    <nav>
-        <div class="nav-wrapper  teal darken-2">
+    <nav class="teal darken-2" role="navigation">
+        <div class="nav-wrapper container">
             <a href="#!" class="brand-logo hide-on-med-and-down">My Window Cleaner</a>
             <a href="#!" class="brand-logo hide-on-large-only">MWC</a>
             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
@@ -46,7 +46,8 @@
             </ul>
             <ul class="side-nav" id="mobile-demo"> 
                 {% if user.is_authenticated %}
-                    <li>Logged in as {{ user.get_full_name|default:user.username }}</li>
+                    <li class="teal darken-1 close_nav"><span class="white-text"><a href+"#!" >{{ user.get_full_name|default:user.username }}</a></span></li>
+                    <li class="teal darken-1"><span class="white-text"><a href="/logout">Logout</a></span></li>
                 {% endif %}    
                 {% if request.user|has_group:"window_cleaner"%}                     
                     <li><a href="/worksheets">Worksheets</a></li>
@@ -57,7 +58,7 @@
                 {% if not request.user|has_group:"window_cleaner"%}
                     <li><a href="/customers">Customers</a></li>
                 {% endif %}                   
-                <li><a href="/logout">Logout</a></li>                              
+                                              
             </ul>            
         </div>
     </nav>
@@ -73,8 +74,12 @@
     $( document ).ready(function(){
         $(".button-collapse").sideNav();
         $('select').material_select();  //for Materialize drop down on forms 
+        $( ".close_nav" ).click(function() {
+            $('.button-collapse').sideNav('hide'); //closes the navbar when user name is clicked
+          });
     })
 </script>
 {% block extra_js %}
+
 {% endblock %}
 </html>

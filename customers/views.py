@@ -25,15 +25,15 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def post(self, request, *args, **kwargs):
         franchise = self.request.user.franchise
-        if request.POST['action'] == 'filter':
-            txt = request.POST['input_search']
-            if txt:
-                self.queryset = Customer.objects.filter(
-                    Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
-                    | Q(last_name__icontains=txt) | Q(title__icontains=txt), franchise=franchise
-                    )
-        else:
-            self.queryset = Customer.objects.filter(franchise=franchise)            
+        # if request.POST['action'] == 'filter':
+        #     txt = request.POST['input_search']
+        #     if txt:
+        #         self.queryset = Customer.objects.filter(
+        #             Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
+        #             | Q(last_name__icontains=txt) | Q(title__icontains=txt), franchise=franchise
+        #             )
+        # else:
+        self.queryset = Customer.objects.filter(franchise=franchise)            
         return super(CustomersList, self).get(request, *args, **kwargs)       
     
     group_required = [

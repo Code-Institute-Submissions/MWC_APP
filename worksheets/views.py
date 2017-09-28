@@ -168,7 +168,6 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         stripe.api_key = settings.STRIPE_SECRET_KEY
         token = request.POST['stripeToken']
-        # amount = int(request.POST['amount'])
         date = request.POST['date']
         user = self.request.user
         #get completed jobs from the date for current user
