@@ -7,9 +7,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from customers.models import Customer
 from braces.views import GroupRequiredMixin
+from django.db.models import Q
 
 
 class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+    """ lists customers, with a filter """
+
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
@@ -19,11 +22,19 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     template_name = 'customer_list.html'
     paginate_by = 10
 
-    def get_queryset(self):
+    def post(self, request, *args, **kwargs):
+        print 'start'
         franchise = self.request.user.franchise
-        queryset = Customer.objects.filter(franchise=franchise)
-        return queryset
+        print request.POST['action']
+        if request.POST['action']=='filter':
+            txt = request.POST['input_search']
+            if txt:
+                self.queryset = Customer.objects.filter(Q(address_line_1__icontains = txt) | Q(first_name__icontains = txt) | Q(first_name__icontains = txt), franchise=franchise)
+        else:
+            self.queryset = Customer.objects.filter(franchise=franchise)            
+        return super(CustomersList, self).get(request, *args, **kwargs)       
 
+    
     group_required = [
         u"office_staff",
         u"office_admin",
@@ -32,6 +43,8 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
 
 class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+    """ view to create a new customer """
+
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
@@ -63,6 +76,8 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
 
 
 class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+    """ view to update existing customers """
+
     model = Customer
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
@@ -86,6 +101,8 @@ class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 
 
 class CustomerDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+    """ view to delete existing customers """
+
     model = Customer
     success_url = "/customers/"
 
@@ -97,6 +114,8 @@ class CustomerDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
 
 
 class CustomerJobList(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+    """ view to list jobs for each customer """
+
     model = Customer
     template_name = 'customer_job_list.html'
     paginate_by = 10
@@ -114,6 +133,10 @@ class CustomerJobList(GroupRequiredMixin, LoginRequiredMixin, DetailView):
 
 
 class CustomerMap(GroupRequiredMixin, LoginRequiredMixin, DetailView):
+    """ view to display a map of a customer address 
+        Relies on lat long from the Google autocomplete widget.
+    """
+
     model = Customer
     template_name = 'customer_map.html'
     group_required = [

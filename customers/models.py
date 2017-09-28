@@ -74,3 +74,5 @@ class Customer(models.Model):
     # don't forget to add new fields to views
     def __str__(self):
         return self.address_line_1
+
+    
