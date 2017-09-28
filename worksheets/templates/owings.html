@@ -2,46 +2,14 @@
 {% load staticfiles %}
 
 {% block extra_head %}
-<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
-<script> 
-        
-        (function ($) {
-            jQuery.expr[':'].Contains = function(a,i,m){
-                return (a.textContent || a.innerText || "").toUpperCase().indexOf(m[3].toUpperCase())>=0;
-            };
-           
-            function listFilter(header, list) {
-              var input = $("#input_search")
-              $(input)
-                .change( function () {
-                  var filter = $(this).val();
-                  if(filter) {
-                    $(list).find(".address:not(:Contains(" + filter + "))").parent().hide();
-                    $(list).find(".address:Contains(" + filter + ")").parent().show();
-                  } else {
-                    $(list).find("tr").show();
-                  }
-                  return false;
-                })
-              .keyup( function () {
-                  $(this).change();
-              });
-            }
-          
-            $(function () {
-              listFilter($("#header"), $("#invoice_list"));
-            });
-          }(jQuery));
-        
-         </script> 
+<script src="http://code.jquery.com/jquery-1.4.2.min.js"></script> 
+<script src="{% static 'owings.js' %}"></script>        
 {% endblock %}
+
 {% block content %} 
-
-        <div id="header"></div> 
-    
-
-      <div class="row">
-        <div class="input-field col s6 m3">
+<div class="container">
+     <div class="row">
+        <div class="search-wrapper card input-field col s12 m6">
           <i class="material-icons prefix">search</i>
           <input id="input_search" type="search">
         </div>
@@ -113,13 +81,11 @@
           <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">OK</a>
         </div>
       </div>
+    </div>
 {% endblock %}
 
  {% block extra_js %}
-<!-- SCRIPTS -->
 <script src="{% static 'jobs.js' %}"></script>
 <script src="{% static 'invoices.js' %}"></script>
-
-
 {% endblock %}
 

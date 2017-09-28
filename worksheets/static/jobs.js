@@ -1,4 +1,11 @@
- //ajax to complete jobs:     
+//This file contains 3 main functions used to check in and view jobs:
+// $(".compl_btn").click(function()
+//Sends an AJAX call to the job_check_in URL/JobCheckIn view
+// with the job id as kwarg and payment status as POST variable
+//Then $("#modal_btn").click() opens a confirmation modal
+//$(".job_details_btn").click() makes an AJAX call to JobDetails view
+// and results are displayed in a modal
+
  $(document).ready(function () {
 
     $(".compl_btn").click(function() {
@@ -63,7 +70,6 @@
         }
         ,
         error: function (jqXHR, status, err) {
-            alert("problem")
             $('#modal_address').html('<h4>'+ compl_address +'</h4>');
             $('#confirmation_modal').addClass('red');
             $('#modal_message').html('<p>There was an error when trying to check in this job. Status: ' + status + '</p>');

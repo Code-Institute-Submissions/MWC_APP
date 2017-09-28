@@ -12,6 +12,7 @@ from braces.views import GroupRequiredMixin
 
 class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     model = Expenses
+    context_object_name = 'expenses'
     template_name = 'expenses_list.html'
 
     def get_queryset(self):

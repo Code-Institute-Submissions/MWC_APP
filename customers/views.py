@@ -14,6 +14,7 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     """ lists customers, with a filter """
 
     model = Customer
+    context_object_name='"customers'
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
         'address_line_3', 'city', 'county', 'postcode', 'customer_notes',
@@ -23,17 +24,17 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def post(self, request, *args, **kwargs):
-        print 'start'
         franchise = self.request.user.franchise
-        print request.POST['action']
-        if request.POST['action']=='filter':
+        if request.POST['action'] == 'filter':
             txt = request.POST['input_search']
             if txt:
-                self.queryset = Customer.objects.filter(Q(address_line_1__icontains = txt) | Q(first_name__icontains = txt) | Q(first_name__icontains = txt), franchise=franchise)
+                self.queryset = Customer.objects.filter(
+                    Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
+                    | Q(last_name__icontains=txt) | Q(title__icontains=txt), franchise=franchise
+                    )
         else:
             self.queryset = Customer.objects.filter(franchise=franchise)            
         return super(CustomersList, self).get(request, *args, **kwargs)       
-
     
     group_required = [
         u"office_staff",
