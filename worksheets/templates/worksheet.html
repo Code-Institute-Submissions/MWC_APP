@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load job_filters %} 
+{% load humanize %}
 {% block content %} 
 {% load staticfiles %} 
 {% regroup jobs by scheduled_date as jobs_by_date %}
@@ -9,7 +10,7 @@
         {% for date in jobs_by_date %}
         <li>
             <div id='header_{{ date.grouper|date:"c" }}' class="collapsible-header teal darken-2 white-text">
-                {{ date.grouper|naturalday }}
+                {{ date.grouper|naturalday|title }}
                 <span class="new badge green" data-badge-caption="" id="badge_{{ date.grouper|date:"c" }}">
                 <span id="num_jobs_{{ date.grouper|date:"c" }}">{{date.list|length }}</span>
                 <span id='num_jobs_suffix_{{ date.grouper|date:"c" }}'>{% if date.list|length == 1 %} job{% else %} jobs{% endif %}</span>                / £

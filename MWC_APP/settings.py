@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'franchises',
     'debug_toolbar',
     'stripe',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [

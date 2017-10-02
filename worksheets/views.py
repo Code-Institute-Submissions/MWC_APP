@@ -35,7 +35,7 @@ class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
     group_required = u"window_cleaner"
 
 
-class JobCreate(GroupRequiredMixin, LoginRequiredMixin, View):
+class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     """ view to create jobs for customers """
 
     model = Jobs
