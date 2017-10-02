@@ -6,7 +6,8 @@ from django.shortcuts import redirect
 from django.views import View
 
 
-class LoginSuccess(View):
+class LoginSuccess(View): 
+    """ redirects to different urls depending on user group """
     def get(self, request):
         groups = request.user.groups.all().values_list('name', flat=True)
         if 'window_cleaner' in groups:

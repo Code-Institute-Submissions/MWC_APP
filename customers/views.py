@@ -64,6 +64,7 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
 
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
+        #todo: used for debuggin
 
     def form_valid(self, form):
         return super(CustomerCreate, self).form_valid(form)
@@ -71,8 +72,8 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     def get_initial(self):
         # https://djangosnippets.org/snippets/2987/
         initials = super(CustomerCreate, self).get_initial()
-        initials['franchise'] = self.request.user.franchise
-        initials['frequency'] = '4'
+        initials['franchise'] = self.request.user.franchise # hidden input
+        initials['frequency'] = '4'     # default frequency in weeks
         return initials
 
     group_required = [
@@ -125,7 +126,7 @@ class CustomerJobList(GroupRequiredMixin, LoginRequiredMixin, DetailView):
 
     model = Customer
     template_name = 'customer_job_list.html'
-    paginate_by = 10
+    #paginate_by = 10    #pagination doesn't work on DetailView
 
     def get_queryset(self):
         franchise = self.request.user.franchise

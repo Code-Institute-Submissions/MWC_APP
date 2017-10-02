@@ -18,5 +18,4 @@ urlpatterns = [
     url(r'payment/$', Payment.as_view(), name='payment'),
     url(r'owings/$', Owings.as_view(), name='owings'),
     url(r'(?P<pk>[0-9]+)/job_paid/$', OwingPaid.as_view(), name='job_paid'),
-    url(r'(?P<pk>[0-9]+)/ajax_test/$', OwingPaid.as_view(), name='ajax_test'),
 ]
