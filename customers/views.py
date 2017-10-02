@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from customers.models import Customer
 from braces.views import GroupRequiredMixin
 from django.db.models import Q
@@ -14,7 +15,7 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     """ lists customers, with a filter """
 
     model = Customer
-    context_object_name='"customers'
+    context_object_name = 'customers'
     fields = [
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
         'address_line_3', 'city', 'county', 'postcode', 'customer_notes',
@@ -25,17 +26,23 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def post(self, request, *args, **kwargs):
         franchise = self.request.user.franchise
-        # if request.POST['action'] == 'filter':
-        #     txt = request.POST['input_search']
-        #     if txt:
-        #         self.queryset = Customer.objects.filter(
-        #             Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
-        #             | Q(last_name__icontains=txt) | Q(title__icontains=txt), franchise=franchise
-        #             )
-        # else:
-        self.queryset = Customer.objects.filter(franchise=franchise)            
+        if request.POST['action'] == 'filter':
+            txt = request.POST['input_search']
+            if txt:  #do a search
+                self.queryset = Customer.objects.filter(
+                    Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
+                    | Q(last_name__icontains=txt) | Q(title__icontains=txt), franchise=franchise
+                    )
+        else:       #return all records
+            self.queryset = Customer.objects.filter(franchise=franchise)            
+        # return redirect('/customers/') doesn't work
         return super(CustomersList, self).get(request, *args, **kwargs)       
     
+    def get_context_data(self, **kwargs):
+        context = super(CustomersList, self).get_context_data(**kwargs)
+        context['search_value'] = self.request.POST.get('search_name', None)
+        return context
+
     group_required = [
         u"office_staff",
         u"office_admin",
@@ -51,7 +58,6 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         'title', 'first_name', 'last_name', 'email', 'mobile', 'address_line_1', 'address_line_2',
         'address_line_3', 'city', 'county', 'postcode', 'customer_notes', 'property_type', 'franchise',
         'frequency', 'url', 'latitude', 'longitude'
-
     ]
     template_name = 'customer_add.html'
     success_url = "/customers/"

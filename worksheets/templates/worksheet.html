@@ -9,7 +9,7 @@
         {% for date in jobs_by_date %}
         <li>
             <div id='header_{{ date.grouper|date:"c" }}' class="collapsible-header teal darken-2 white-text">
-                {{ date.grouper }}
+                {{ date.grouper|naturalday }}
                 <span class="new badge green" data-badge-caption="" id="badge_{{ date.grouper|date:"c" }}">
                 <span id="num_jobs_{{ date.grouper|date:"c" }}">{{date.list|length }}</span>
                 <span id='num_jobs_suffix_{{ date.grouper|date:"c" }}'>{% if date.list|length == 1 %} job{% else %} jobs{% endif %}</span>                / £

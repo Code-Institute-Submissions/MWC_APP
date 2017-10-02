@@ -75,4 +75,7 @@ class Customer(models.Model):
     def __str__(self):
         return self.address_line_1
 
+    class Meta:
+        ordering = ["last_name"]
+
     

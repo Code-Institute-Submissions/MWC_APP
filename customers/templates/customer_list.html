@@ -31,10 +31,10 @@
                     <a href="/customers/new/" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
             </div>            
         </div>
-{% comment %} {% if customers %} {% endcomment %}
+{% if customers %}
 <table class="bordered striped">
     <tbody>
-        {% for customer in customers %}
+        {% for customer in object_list %}
         <tr>            
             <td><b>{{ customer.address_line_1 }} </b></td>
             <td>{{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</td>
@@ -70,7 +70,7 @@
         </span>
 </div>
 {% endif %}
-{% comment %} {% else %} {% endcomment %}
+{% else %}
 <div class="row">
   <div class="col s12">
     <div class="card-panel teal z-depth-4">
@@ -78,6 +78,6 @@
     </div>
   </div>
 </div>
-{% comment %} {% endif %} {% endcomment %}
+{% endif %}
 </div>
 {% endblock %}
