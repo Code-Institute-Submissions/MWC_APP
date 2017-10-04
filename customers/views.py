@@ -98,9 +98,10 @@ class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
-
-    def form_valid(self, form):
-        return super(CustomerUpdate, self).form_valid(form)
+    
+    #for debuggin:
+    # def form_valid(self, form):
+    #     return super(CustomerUpdate, self).form_valid(form)
 
     group_required = [
         u"office_staff",

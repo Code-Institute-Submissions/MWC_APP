@@ -196,7 +196,7 @@ class CustomerViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer_add.html')
         #valid/required data:
-        data = {
+        data_valid = {
             'title': 'Mr',
             'first_name': 'Arthur C.',
             'last_name': 'Clarke',
@@ -208,12 +208,33 @@ class CustomerViewsTest(TestCase):
             'frequency': '4',
             'franchise': "2"
         }
-        response = self.client.post(reverse('customer_add'), data)     
+        response = self.client.post(reverse('customer_add'), data_valid)     
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/customers/5/jobs/') #we've already added 4 customers
         cust = Customer.objects.get(pk=5)
         self.assertEqual(cust.email, 'acc@clarke.com')
-        
+        #with 'title' missing:
+        data_invalid = {
+            'first_name': 'Arthur C.',
+            'last_name': 'Clarke',
+            'email': 'acc@clarke.com',
+            'address_line_1': '23 Clarke Avenue',
+            'city': 'London',
+            'postcode': 'NW3',
+            'property_type': "2",
+            'frequency': '4',
+            'franchise': "2"
+        }
+        response = self.client.post(reverse('customer_add'), data_invalid)     
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer_add.html')
+        # self.assertRaises(TypeError, Customer.objects.get(pk=6))
+
+        #check initial values:
+        response = self.client.get(reverse('customer_add'), data_valid) 
+        self.assertEquals(response.context['form']['franchise'].value(), 2)
+        self.assertEquals(response.context['form']['frequency'].value(), '4')
+
 
 
 
