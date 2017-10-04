@@ -8,6 +8,9 @@ from accounts.models import User
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.test import Client
+from customers.views import CustomerCreate
+from django.contrib.auth import authenticate
+
  
 #views test
 
@@ -79,6 +82,18 @@ class CustomerViewsTest(TestCase):
             frequency=4,
             property_type=pt
             )
+        Customer.objects.create(
+            title="Ms.",
+            first_name='David',
+            last_name='White',
+            email='dw@dw.com',
+            address_line_1='22 White Road',
+            city='London',
+            postcode='N2',
+            franchise=f1,
+            frequency=4,
+            property_type=pt
+            )
 
     #https://stackoverflow.com/questions/11885211/how-to-write-a-unit-test-for-a-django-view
 
@@ -114,8 +129,9 @@ class CustomerViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer_list.html')
         #should return 1 customer only:
-        self.assertTrue( len(response.context['customers']) == 1)
+        self.assertTrue( len(response.context['customers']) == 2)
         self.assertContains(response, '1 Brown Avenue')
+        self.assertContains(response, '22 White Road')
         #for franchise 2 user:
         self.client.login(username='testuser3', password='1a2b3c4d5e')
         response = self.client.get(reverse('customers'))
@@ -131,4 +147,73 @@ class CustomerViewsTest(TestCase):
         self.assertTemplateUsed(response, 'customer_list.html')
         #should return 0 customers:
         self.assertTrue( len(response.context['customers']) == 0)
+        
+    def test_customerslist_call_POST_requests(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e') #franchise f1
+        #POST request with empty arguments:
+        response = self.client.post(reverse('customers'), {}) 
+        # should return all records:
+        self.assertTrue( len(response.context['customers']) == 2)
+        #POST request with empty search field, no 'action':
+        response = self.client.post(reverse('customers'), {'input_search': ''}) 
+        # should return all records:
+        self.assertTrue( len(response.context['customers']) == 2)
+        #POST request with empty 'action', valid filter:
+        response = self.client.post(reverse('customers'), {'action': '', 'input_search': '2 Brown Avenue'}) 
+        # should return all records (filter would otherwise return 1 record):
+        self.assertTrue( len(response.context['customers']) == 2)
+        #POST request with invalid 'action', valid search value:
+        response = self.client.post(reverse('customers'), {'action': 'random_value', 'input_search': '2 Brown Avenue'}) 
+        # should return all records:
+        self.assertTrue( len(response.context['customers']) == 2)
+        #POST request with valid 'action', empty search field
+        response = self.client.post(reverse('customers'), {'action': 'filter', 'input_search': ''}) 
+        # should return all records:
+        self.assertTrue( len(response.context['customers']) == 2) 
+        #POST request with valid 'action', valid search field
+        response = self.client.post(reverse('customers'), {'action': 'filter', 'input_search': 'Brown Avenue'}) 
+        # should return 1 record (1 is filtered by franchise):
+        self.assertTrue( len(response.context['customers']) == 1) 
+    
+    def test_customer_create_get_tests(self):
+        #no logged in user:
+        response = self.client.get(reverse('customer_add')) 
+        self.assertRedirects(response, '/login/?next=/customers/new/')
+        #user logged in, window_cleaner:
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
+        response = self.client.get(reverse('customer_add')) 
+        self.assertRedirects(response, '/login/?next=/customers/new/')
+        #user logged in, office_admin:
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        response = self.client.get(reverse('customer_add')) 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer_add.html')
+    
+    def test_customer_create_post_tests(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        #empty form: reloads page
+        response = self.client.post(reverse('customer_add'), {}) 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer_add.html')
+        #valid/required data:
+        data = {
+            'title': 'Mr',
+            'first_name': 'Arthur C.',
+            'last_name': 'Clarke',
+            'email': 'acc@clarke.com',
+            'address_line_1': '23 Clarke Avenue',
+            'city': 'London',
+            'postcode': 'NW3',
+            'property_type': "2",
+            'frequency': '4',
+            'franchise': "2"
+        }
+        response = self.client.post(reverse('customer_add'), data)     
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/customers/5/jobs/') #we've already added 4 customers
+        cust = Customer.objects.get(pk=5)
+        self.assertEqual(cust.email, 'acc@clarke.com')
+        
+
+
 

@@ -31,23 +31,19 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
         
     def post(self, request, *args, **kwargs):
         franchise = self.request.user.franchise
-        if request.POST['action'] == 'filter':
-            txt = request.POST['input_search']
-            if txt:  #do a search
+        try:
+            if request.POST['action'] == 'filter': #and request.POST['input_search'] != None:     
+                txt = request.POST['input_search']
                 self.queryset = Customer.objects.filter(
-                    Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
-                    | Q(last_name__icontains=txt) | Q(title__icontains=txt), franchise=franchise
-                    )
-        else:       #return all records
+                Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
+                | Q(last_name__icontains=txt) | Q(title__icontains=txt), franchise=franchise
+                )
+            else:
+                self.queryset = Customer.objects.filter(franchise=franchise)
+        except KeyError:       #empty or incomplete POST key dict: return all records
             self.queryset = Customer.objects.filter(franchise=franchise)            
-        # return redirect('/customers/') doesn't work
         return super(CustomersList, self).get(request, *args, **kwargs)       
     
-    def get_context_data(self, **kwargs):
-        context = super(CustomersList, self).get_context_data(**kwargs)
-        context['search_value'] = self.request.POST.get('search_name', None)
-        return context
-
     group_required = [
         u"office_staff",
         u"office_admin",
@@ -65,10 +61,12 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         'frequency', 'url', 'latitude', 'longitude'
     ]
     template_name = 'customer_add.html'
+    
 
-    def form_invalid(self, form):
-        return JsonResponse(form.errors, status=400)
-        #todo: used for debuggin
+    #used for debugging:
+    # def form_invalid(self, form):
+    #     return JsonResponse(form.errors, status=400)
+    #     
 
     def form_valid(self, form):
         return super(CustomerCreate, self).form_valid(form)
