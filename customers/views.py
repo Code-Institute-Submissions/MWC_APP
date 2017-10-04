@@ -24,6 +24,11 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     template_name = 'customer_list.html'
     paginate_by = 10
 
+    def get(self, request, *args, **kwargs):
+        franchise = self.request.user.franchise
+        self.queryset = Customer.objects.filter(franchise=franchise)            
+        return super(CustomersList, self).get(request, *args, **kwargs) 
+        
     def post(self, request, *args, **kwargs):
         franchise = self.request.user.franchise
         if request.POST['action'] == 'filter':
@@ -60,7 +65,6 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         'frequency', 'url', 'latitude', 'longitude'
     ]
     template_name = 'customer_add.html'
-    success_url = "/customers/"
 
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
@@ -93,8 +97,7 @@ class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         'property_type', 'franchise', 'frequency', 'url', 'latitude', 'longitude'
     ]
     template_name = 'customer_add.html'
-    success_url = "/customers/"
-
+    
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
 

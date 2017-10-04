@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from franchises.models import Franchise
+from django.urls import reverse
 
 
 class Property_type(models.Model):
@@ -71,9 +72,12 @@ class Customer(models.Model):
         blank=True,
         null=True)
 
-    # don't forget to add new fields to views
     def __str__(self):
         return self.address_line_1
+    #returns the address line 1
+
+    def get_absolute_url(self):
+        return reverse('customer_job_list', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ["last_name"]
