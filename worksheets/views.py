@@ -64,7 +64,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     def __init__(self, *args, **kwargs):
         super(JobCreate, self).__init__(*args, **kwargs)
 
-    group_required = u"window_cleaner"
+    group_required = u"office_admin"
 
 
 class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
@@ -79,13 +79,14 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     def get_success_url(self, *args, **kwargs):        
         return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
     
-    def form_invalid(self, form):
-        return JsonResponse(form.errors, status=400)
+    # for debugging:
+    # def form_invalid(self, form):
+    #     return JsonResponse(form.errors, status=400)
 
     def form_valid(self, form):
         return super(JobUpdate, self).form_valid(form)
 
-    group_required = u"window_cleaner"
+    group_required = u"office_admin"
     
 
 
@@ -94,7 +95,7 @@ class JobDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
 
     model = Jobs
     success_url = "/customers/"
-    group_required = u"window_cleaner"
+    group_required = "office_admin"
 
 
 class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):

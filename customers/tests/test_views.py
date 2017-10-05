@@ -10,6 +10,8 @@ from django.core.urlresolvers import reverse
 from django.test import Client
 from customers.views import CustomerCreate
 from django.contrib.auth import authenticate
+from worksheets.models import Jobs, Job_status
+import datetime
 
  
 #views test
@@ -17,7 +19,7 @@ from django.contrib.auth import authenticate
 class CustomerViewsTest(TestCase):
     
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         # create 2 franchises
         f1 = Franchise.objects.create(franchise='franchise_1')
         f2 = Franchise.objects.create(franchise='franchise_2')
@@ -58,7 +60,7 @@ class CustomerViewsTest(TestCase):
         #create property_types:
         pt = Property_type.objects.create(property_type='House')
         #create some customers
-        Customer.objects.create(
+        cust1 = Customer.objects.create(
             title="Mr.",
             first_name='John',
             last_name='Brown',
@@ -70,7 +72,7 @@ class CustomerViewsTest(TestCase):
             frequency=4,
             property_type=pt
             )
-        Customer.objects.create(
+        cust2 = Customer.objects.create(
             title="Mrs.",
             first_name='Gemma',
             last_name='Brown',
@@ -94,7 +96,6 @@ class CustomerViewsTest(TestCase):
             frequency=4,
             property_type=pt
             )
-
     #https://stackoverflow.com/questions/11885211/how-to-write-a-unit-test-for-a-django-view
 
     def test_customerviews_call_view_denies_anonymous(self):
@@ -189,6 +190,8 @@ class CustomerViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer_add.html')
     
+    #todo: customer update tests
+    
     def test_customer_create_post_tests(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         #empty form: reloads page
@@ -227,14 +230,141 @@ class CustomerViewsTest(TestCase):
         }
         response = self.client.post(reverse('customer_add'), data_invalid)     
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'customer_add.html')
-        # self.assertRaises(TypeError, Customer.objects.get(pk=6))
+        #check no customer was created:
+        count = Customer.objects.filter(pk=6).count()
+        self.assertEqual(count, 0)
 
         #check initial values:
         response = self.client.get(reverse('customer_add'), data_valid) 
         self.assertEquals(response.context['form']['franchise'].value(), 2)
         self.assertEquals(response.context['form']['frequency'].value(), '4')
 
+    def test_customer_delete_tests(self):
+        f1 = Franchise.objects.get(franchise='franchise_1')
+        pt = Property_type.objects.create(property_type='House')
+        cust = Customer.objects.create(
+            title="Mr.",
+            first_name='John',
+            last_name='Brown',
+            email='jb@jb.com',
+            address_line_1='1 Brown Avenue',
+            city='Brown City',
+            postcode='BN1 6JB',
+            franchise = f1,
+            frequency=4,
+            property_type=pt
+            )
+        custid = cust.id
+        #no logged in user:
+        response = self.client.post(reverse('customer_delete', kwargs={'pk': custid})) 
+        url = '/login/?next=/customers/%s/delete/' % custid
+        self.assertRedirects(response, url)
+        # #user logged in, window_cleaner:
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
+        response = self.client.post(reverse('customer_delete', kwargs={'pk': custid})) 
+        self.assertRedirects(response, url)
+        #user logged in, office_admin:
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        response = self.client.post(reverse('customer_delete', kwargs={'pk': custid})) 
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/customers/') 
+        count = Customer.objects.filter(pk=custid).count()
+        self.assertEqual(count, 0)
 
+    def test_customer_job_list_view(self):
+        f1 = Franchise.objects.get(franchise='franchise_1')
+        f2 = Franchise.objects.get(franchise='franchise_2')
+        pt = Property_type.objects.create(property_type='House')
+        cust1 = Customer.objects.create(
+            title="Mr.",
+            first_name='John',
+            last_name='Pink',
+            email='jb@jb.com',
+            address_line_1='1 Pink Avenue',
+            city='Pink City',
+            postcode='N1 6PP',
+            franchise = f1,
+            frequency=4,
+            property_type=pt
+            )
+        cust2 = Customer.objects.create(
+            title="Mr.",
+            first_name='John',
+            last_name='Red',
+            email='jb@jb.com',
+            address_line_1='1 Red Avenue',
+            city='Red City',
+            postcode='N1 6PP',
+            franchise = f1,
+            frequency=4,
+            property_type=pt
+            )
+        cust3 = Customer.objects.create(
+            title="Mr.",
+            first_name='John',
+            last_name='Black',
+            email='jb@jb.com',
+            address_line_1='1 Black Avenue',
+            city='Black City',
+            postcode='BK 6PP',
+            franchise = f2,
+            frequency=4,
+            property_type=pt
+            )
+        cust1id = cust1.id
+        cust2id = cust2.id
+        cust3id = cust3.id
+        #create some jobs:
+        due = Job_status.objects.create(job_status_description='Due')
+        Jobs.objects.create(
+            customer=cust1,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=99,
+            job_status=due
+        )
+        Jobs.objects.create(
+            customer=cust1,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=999,
+            job_status=due
+        )
+        Jobs.objects.create(
+            customer=cust2,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=999,
+            job_status=due
+        )
+        url = '/login/?next=/customers/%s/jobs/' % cust1id
+        #no logged in user:
+        response = self.client.get(reverse('customer_job_list', kwargs={'pk': cust1id})) 
+        self.assertRedirects(response, url)
+        #user logged in, window_cleaner:
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
+        response = self.client.get(reverse('customer_job_list', kwargs={'pk': cust1id})) 
+        self.assertRedirects(response, url)
+        #user logged in, office_admin, different franchise:
+        self.client.login(username='testuser3', password='1a2b3c4d5e')
+        response = self.client.get(reverse('customer_job_list', kwargs={'pk': cust1id})) 
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get(reverse('customer_job_list', kwargs={'pk': cust3id})) 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer_job_list.html')
+        # #user logged in, office_admin, same franchise:
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        response = self.client.get(reverse('customer_job_list', kwargs={'pk': cust1id})) 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer_job_list.html')
+        # should return 2 customers:
+        print response.context['object']
+        for key in response.context.keys():
+            print key, 'corresponds to', response.context[key]
+        # print response.context['request']
+        # self.assertTrue( len(response.context['customer'][1]) == 2)
+        
+        
+        
 
 
