@@ -74,12 +74,10 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.address_line_1
-    #returns the address line 1
+    # returns the address line 1
 
     def get_absolute_url(self):
         return reverse('customer_job_list', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ["last_name"]
-
-    

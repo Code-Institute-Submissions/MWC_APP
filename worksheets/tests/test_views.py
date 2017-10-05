@@ -13,42 +13,42 @@ from django.contrib.auth import authenticate
 from worksheets.models import Jobs, Job_status, Payment_status
 import datetime
 
- 
-#views test
+
+# views test
 
 class WorksheetMViewsTest(TestCase):
-    
+
     @classmethod
     def setUpTestData(cls):
         # create 2 franchises
         f1 = Franchise.objects.create(franchise='franchise_1')
         f2 = Franchise.objects.create(franchise='franchise_2')
         f3 = Franchise.objects.create(franchise='franchise_3')
-        #create groups:
+        # create groups:
         Group.objects.create(name='office_admin')
         Group.objects.create(name='window_cleaner')
-        #create a user:
+        # create a user:
         user1 = User.objects.create_user(
             username='testuser1',
             password='1a2b3c4d5e',
             franchise=f1
-            )
+        )
         user2 = User.objects.create_user(
             username='testuser2',
             password='1a2b3c4d5e',
             franchise=f1
-            )
+        )
         user3 = User.objects.create_user(
             username='testuser3',
             password='1a2b3c4d5e',
             franchise=f2
-            )
+        )
         user4 = User.objects.create_user(
             username='testuser4',
             password='1a2b3c4d5e',
             franchise=f3
-            )
-        #add users to groups
+        )
+        # add users to groups
         group = Group.objects.get(name='office_admin')
         group.user_set.add(user1)
         group = Group.objects.get(name='window_cleaner')
@@ -57,9 +57,9 @@ class WorksheetMViewsTest(TestCase):
         group.user_set.add(user3)
         group = Group.objects.get(name='office_admin')
         group.user_set.add(user4)
-        #create property_types:
+        # create property_types:
         pt = Property_type.objects.create(property_type='House')
-        #create some customers
+        # create some customers
         cust1 = Customer.objects.create(
             title="Mr.",
             first_name='John',
@@ -71,7 +71,7 @@ class WorksheetMViewsTest(TestCase):
             franchise=f1,
             frequency=4,
             property_type=pt
-            )
+        )
         cust2 = Customer.objects.create(
             title="Mrs.",
             first_name='Gemma',
@@ -83,7 +83,7 @@ class WorksheetMViewsTest(TestCase):
             franchise=f2,
             frequency=4,
             property_type=pt
-            )
+        )
         Customer.objects.create(
             title="Ms.",
             first_name='David',
@@ -95,7 +95,7 @@ class WorksheetMViewsTest(TestCase):
             franchise=f1,
             frequency=4,
             property_type=pt
-            )
+        )
         due = Job_status.objects.create(job_status_description='Due')
         Jobs.objects.create(
             customer=cust1,
@@ -137,7 +137,7 @@ class WorksheetMViewsTest(TestCase):
     def test_worksheets_call_view_denies_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('worksheets'))
-        self.assertRedirects(response, '/login/?next=/worksheets/')        
+        self.assertRedirects(response, '/login/?next=/worksheets/')
         response = self.client.get(reverse('job_check_in', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/check_in/')
         response = self.client.get(reverse('invoices'))
@@ -159,10 +159,11 @@ class WorksheetMViewsTest(TestCase):
         self.assertRedirects(response, '/login/?next=/worksheets/new/1/')
         response = self.client.get(reverse('job_update', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/edit/')
-    
+
     def test_job_delete_view_loads_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
-        response = self.client.post(reverse('job_delete', kwargs={'pk': 2}), follow=True)
+        response = self.client.post(
+            reverse('job_delete', kwargs={'pk': 2}), follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, '/customers/')
         count = Jobs.objects.filter(pk=2).count()
@@ -173,22 +174,23 @@ class WorksheetMViewsTest(TestCase):
         response = self.client.get(reverse('job_update', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_add.html')
-        
-        #update a job:
+
+        # update a job:
         job = Jobs.objects.get(pk=1)
-        customer =  Customer.objects.get(address_line_1 = getattr(job, 'customer'))
-        scheduled_date =  getattr(job, 'scheduled_date')
+        customer = Customer.objects.get(
+            address_line_1=getattr(job, 'customer'))
+        scheduled_date = getattr(job, 'scheduled_date')
         allocated_date = getattr(job, 'allocated_date')
-        completed_date =  getattr(job, 'completed_date')
-        price =  getattr(job, 'price')
-        job_notes =  getattr(job, 'job_notes')
+        completed_date = getattr(job, 'completed_date')
+        price = getattr(job, 'price')
+        job_notes = getattr(job, 'job_notes')
         job_status = getattr(job, 'job_status')
         payment_status = getattr(job, 'payment_status')
         window_cleaner = getattr(job, 'window_cleaner')
         if allocated_date == None:
-            new_date=datetime.datetime.now() + datetime.timedelta(days=30)
+            new_date = datetime.datetime.now() + datetime.timedelta(days=30)
         else:
-            new_date=allocated_date + datetime.timedelta(days=30)
+            new_date = allocated_date + datetime.timedelta(days=30)
         data_valid = {
             customer: customer,
             scheduled_date: scheduled_date,
@@ -200,24 +202,25 @@ class WorksheetMViewsTest(TestCase):
             payment_status: payment_status,
             window_cleaner: window_cleaner
         }
-        response = self.client.post(reverse('job_update', kwargs={'pk': 1}), data_valid)
-        allocated_date = getattr(job,'allocated_date')
+        response = self.client.post(
+            reverse('job_update', kwargs={'pk': 1}), data_valid)
+        allocated_date = getattr(job, 'allocated_date')
         # self.assertEqual(allocated_date, new_date)
-        #todo: figure out how to post from here    
+        # todo: figure out how to post from here
 
     def test_job_add_view_loads_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_add', kwargs={'customer': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_add.html')
-        #create a job:
+        # create a job:
         job = Jobs.objects.get(pk=1)
-        customer =  getattr(job, 'customer')
-        scheduled_date =  datetime.datetime.now()
+        customer = getattr(job, 'customer')
+        scheduled_date = datetime.datetime.now()
         allocated_date = getattr(job, 'allocated_date')
-        completed_date =  getattr(job, 'completed_date')
-        price =  getattr(job, 'price')
-        job_notes =  getattr(job, 'job_notes')
+        completed_date = getattr(job, 'completed_date')
+        price = getattr(job, 'price')
+        job_notes = getattr(job, 'job_notes')
         job_status = getattr(job, 'job_status')
         payment_status = getattr(job, 'payment_status')
         window_cleaner = getattr(job, 'window_cleaner')
@@ -233,11 +236,12 @@ class WorksheetMViewsTest(TestCase):
             window_cleaner: window_cleaner
         }
         print customer
-        response = self.client.post(reverse('job_add',  kwargs={'customer': 1}), data_valid)     
+        response = self.client.post(
+            reverse('job_add',  kwargs={'customer': 1}), data_valid)
         # self.assertEqual(response.status_code, 302)
-        # self.assertRedirects(response, '/customers/1/jobs/') 
+        # self.assertRedirects(response, '/customers/1/jobs/')
         # self.assertEqual(cust.email, 'acc@clarke.com')
-        #with 'title' missing:
+        # with 'title' missing:
         # data_invalid = {
         #     customer: customer,
         #     scheduled_date: scheduled_date,
@@ -249,7 +253,7 @@ class WorksheetMViewsTest(TestCase):
         #     payment_status: payment_status,
         #     window_cleaner: window_cleaner
         # }
-        # response = self.client.post(reverse('customer_add'), data_invalid)     
+        # response = self.client.post(reverse('customer_add'), data_invalid)
         # self.assertEqual(response.status_code, 200)
         # #check no customer was created:
         # count = Customer.objects.filter(pk=6).count()
@@ -260,12 +264,12 @@ class WorksheetMViewsTest(TestCase):
         response = self.client.get(reverse('worksheets'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'worksheet.html')
-        
+
     def test_job_checkin_view_loads_for_window_cleaner(self):
-        self.client.login(username='testuser2', password='1a2b3c4d5e')        
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.post(reverse('job_check_in', kwargs={'pk': 1}), {
             'payment_status': 'paid',
-            'jobid': '1' 
+            'jobid': '1'
         })
         self.assertEqual(response.status_code, 500)
         # TODO fails because stored procedure is not created
