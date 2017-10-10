@@ -42,6 +42,9 @@ class Jobs(models.Model):
     class Meta:
         ordering = ["-scheduled_date"]
     
+    def __str__(self):
+        return str(self.scheduled_date)
+
     @property
     def total(self):
         qs = Jobs.objects.filter(id=self).aggregate(Sum('price'))

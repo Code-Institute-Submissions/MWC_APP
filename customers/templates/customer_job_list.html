@@ -1,14 +1,19 @@
 {% extends "base.html" %}
+{% load user_tags %} 
+{% load customer_tags %}
 
 {% block content %}
 <div class="container">
   <div class="row valign-wrapper">
-    <div class="card-panel  teal lighten-2 z-depth-4 col s12 valign-wrapper">
+    <div class="card-panel  {% css_colour user %}  lighten-2 z-depth-4 col s12 valign-wrapper">
       <div class="col s6 m10">
         <span><h4>{{ customer.address_line_1 }}, {{ customer.title }} {{ customer.first_name }} {{ customer.last_name }}</h4> </span>
       </div>
       <div class="col s2 m1">
-        <a href="{% url 'job_add' customer.pk %}" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
+          {% due_job_exists customer.id as due_exists %}
+        <a href="{% url 'job_add' customer.pk %}" 
+        class="btn-floating btn-small waves-effect waves-light red {% if due_exists %} disabled {% endif %}">
+        <i class="material-icons">add</i></a>
       </div>
       <div class="col s2 m1">
         <a href="{% url 'customer_map' customer.pk %}" class="btn-floating btn-small waves-effect waves-light 
@@ -17,6 +22,7 @@
       {% comment %} TODO: Hide if existing due job exists {% endcomment %}
     </div>
   </div>
+  
   {% if customer.jobs.all %}
   <table class="striped bordered">
     <thead> 
@@ -29,16 +35,18 @@
         <th></th>
       </tr>
     </thead>
-
+      {% comment %} simple_tag needs first to assign result to template variable before being used in if block {% endcomment %}
     <tbody>
       {% for job in customer.jobs.all %} {% comment %} no need for _set since related_name has been set {% endcomment %}
-      <tr>
+      {% comment %} highlight due job:   {% endcomment %}
+      <tr{% if not job.completed_date %} class="green lighten-2" {% endif %}
+      {% job_is_owed job.payment_status as job_owed %} {% if job_owed %} class="red lighten-2" {% endif %}>
         <td>{{ job.scheduled_date|date:"d/m/y" }}</td>
-        <td>{{ job.completed_date|date:"d/m/y" }}</td>
+        <td>{{ job.completed_date|date:"d/m/y"|default:"Not completed" }}</td>
         <td>£{{ job.price }}</td>
         <td>{{ job.job_status }}</td>
-        <td>{{ job.payment_status }}</td>
-        <td><a href="{% url 'job_update' job.id %}" class="btn-floating btn-small waves-effect waves-light teal lighten-2">
+        <td>{{ job.payment_status|default:"----" }}</td>
+        <td><a href="{% url 'job_update' job.id %}" class="btn-floating btn-small waves-effect waves-light {% css_colour user %}  lighten-2">
                             <i class="material-icons">create</i>
                         </a> {% comment %} TODO: link to worksheets app editing page for jobs {% endcomment %}
         </td>
@@ -46,7 +54,7 @@
       {% endfor %} {% else %}
       <div class="row">
         <div class="col s12">
-          <div class="card-panel teal z-depth-4">
+          <div class="card-panel {% css_colour user %}  z-depth-4">
             <span class="white-text">There are no jobs set for this customer</span>
           </div>
         </div>

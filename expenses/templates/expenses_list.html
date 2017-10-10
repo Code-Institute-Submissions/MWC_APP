@@ -1,9 +1,11 @@
 {% extends "base.html" %} 
+{% load user_tags %} 
+{% load customer_tags %}
 {% block content %}
 <div class="container">
     <div class="row valign-wrapper">
         <div class="col s10">
-            <h4 class="teal-text text-darken-3">My expenses</h4>
+            <h4 class="{% css_colour user %}-text text-darken-3">My expenses</h4>
         </div>
         <div class="col s2">
             <a href="/expenses/new/" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
@@ -26,7 +28,7 @@
                     <td>{{ expense.date|date:"d/m/y" }}</div></td>
                     <td>{{ expense.amount }}</div></td>
                     <td  style="max-width:100px"><div class="truncate">{{ expense.notes }}</div></td>
-                    <td><a href={{ expense.id }} class="btn-floating btn-small waves-effect waves-light teal lighten-2">
+                    <td><a href={{ expense.id }} class="btn-floating btn-small waves-effect waves-light {% load job_filters %} {% css_colour user %}">
                             <i class="material-icons">create</i>
                         </a>
                         </td>

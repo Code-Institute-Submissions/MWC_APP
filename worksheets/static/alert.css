@@ -1,0 +1,29 @@
+/* w3schools */
+/* The alert message box */
+.alert {
+    padding: 2px;
+    background-color: #DDFFDD;
+    color: black;
+    margin: 12px;
+    padding-left: 10px;    
+}
+
+/* The close button */
+.closebtn {
+    margin-left: 15px;
+    margin-right: 5px;
+    margin-top: 5px;
+    color: black;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 3px;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+    color: grey;
+}

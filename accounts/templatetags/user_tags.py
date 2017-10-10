@@ -11,3 +11,11 @@ register = template.Library()
 def has_group(user, group_name):
     groups = user.groups.all().values_list('name', flat=True)
     return True if group_name in groups else False
+
+@register.simple_tag
+def css_colour(user):
+    groups = user.groups.all().values_list('name', flat=True)
+    if 'window_cleaner' in groups:
+        return 'blue'
+    else:
+        return 'teal'

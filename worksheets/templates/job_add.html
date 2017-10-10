@@ -1,13 +1,23 @@
 {% extends "base.html" %} 
 {% load widget_tweaks %} {% comment %} for adding datepicker class to form.date for materialize {% endcomment %} 
+{% load staticfiles %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'alert.css' %}" type="text/css" />
+{% endblock %}
 {% block content %}
+
 <div class="container">
-       
-        
-    <form method="POST" class="post-form">{% csrf_token %}            
+    <form method="POST" class="post-form">{% csrf_token %}   
+            {% if form.non_field_errors %}
+            <div class="alert z-depth-2">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                    <p>{{ form.non_field_errors }}</p>
+                  </div>  
+           {% endif %}
         <div class="row">
                <div style="display:none"> <h3> {{ form.customer }} </h3></div>
-            
+              
             <div class="col s-2 fieldWrapper">
                 {{ form.scheduled_date.errors }}
                 <label for="{{ form.scheduled_date.id_for_label }}">Due Date:</label> {{ form.scheduled_date|add_class:"datepicker" }}

@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load user_tags %}
 
+
 <!DOCTYPE html>
 <html>
 
@@ -23,7 +24,7 @@
 
 <body>
 
-    <nav class="teal darken-2" role="navigation">
+    <nav class="{% css_colour user %}  darken-2" role="navigation">
         <div class="nav-wrapper container">
             <a href="#!" class="brand-logo hide-on-med-and-down">My Window Cleaner</a>
             <a href="#!" class="brand-logo hide-on-large-only">MWC</a>
@@ -46,8 +47,8 @@
             </ul>
             <ul class="side-nav" id="mobile-demo"> 
                 {% if user.is_authenticated %}
-                    <li class="teal darken-1 close_nav"><span class="white-text"><a href+"#!" >{{ user.get_full_name|default:user.username }}</a></span></li>
-                    <li class="teal darken-1"><span class="white-text"><a href="/logout">Logout</a></span></li>
+                    <li class="{% css_colour user%}  darken-1 close_nav"><span class="white-text"><a href+"#!" >{{ user.get_full_name|default:user.username }}</a></span></li>
+                    <li class="{% css_colour user%}  darken-1"><span class="white-text"><a href="/logout">Logout</a></span></li>
                 {% endif %}    
                 {% if request.user|has_group:"window_cleaner"%}                     
                     <li><a href="/worksheets">Worksheets</a></li>

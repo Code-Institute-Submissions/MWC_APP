@@ -19,9 +19,10 @@
     {% block extra_head %}{% endblock %}
 </head>
 
-<body>
-    <div class="container"></div>
-    <h4>Welcome to My Window Cleaner</h4>
+<body style="background-color: #333333">
+    <div class="container">
+        <div class="card-panel">
+    <h4>Welcome to My Window Cleaner</h4><hr>
     {% if form.errors %}
         <div class="row" id="alert_box">
             <div class="col s12">
@@ -61,10 +62,8 @@
         </form>
         </div>
     </div>
-
 </div>
-   
-           
+</div>         
 
 </body>
 

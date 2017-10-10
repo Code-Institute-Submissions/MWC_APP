@@ -111,55 +111,81 @@ class WorksheetMViewsTest(TestCase):
             price=199,
             job_status=due
         )
-
+# Tests to check anonymous access not permitted:
     def test_worksheets_call_view_denies_anonymous(self):
         response = self.client.get(reverse('worksheets'))
         self.assertRedirects(response, '/login/?next=/worksheets/')
+    def test_job_add_call_view_denies_anonymous(self):
         response = self.client.get(reverse('job_add', kwargs={'customer': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/new/1/')
+    def test_job_update_call_view_denies_anonymous(self):
         response = self.client.get(reverse('job_update', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/edit/')
+    def test_job_delete_call_view_denies_anonymous(self):
         response = self.client.get(reverse('job_delete', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/delete/')
+    def test_job_check_in_call_view_denies_anonymous(self):
         response = self.client.get(reverse('job_check_in', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/check_in/')
+    def test_invoices_call_view_denies_anonymous(self):
         response = self.client.get(reverse('invoices'))
         self.assertRedirects(response, '/login/?next=/worksheets/invoices/')
+    def test_job_details_call_view_denies_anonymous(self):
         response = self.client.get(reverse('job_details', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/details/')
+    def test_payment_call_view_denies_anonymous(self):
         response = self.client.get(reverse('payment'))
         self.assertRedirects(response, '/login/?next=/worksheets/payment/')
+    def test_owings_call_view_denies_anonymous(self):
         response = self.client.get(reverse('owings'))
         self.assertRedirects(response, '/login/?next=/worksheets/owings/')
+    def test_job_paid_call_view_denies_anonymous(self):
         response = self.client.get(reverse('job_paid', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/job_paid/')
-
+# Tests to check office_admin group access not permitted:
     def test_worksheets_call_view_denies_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('worksheets'))
         self.assertRedirects(response, '/login/?next=/worksheets/')
+    def test_job_check_in_call_view_denies_for_office_admin(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_check_in', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/check_in/')
+    def test_invoices_call_view_denies_for_office_admin(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('invoices'))
         self.assertRedirects(response, '/login/?next=/worksheets/invoices/')
+    def test_job_details_call_view_denies_for_office_admin(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_details', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/details/')
+    def test_payment_call_view_denies_for_office_admin(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('payment'))
         self.assertRedirects(response, '/login/?next=/worksheets/payment/')
+    def test_owings_call_view_denies_for_office_admin(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('owings'))
         self.assertRedirects(response, '/login/?next=/worksheets/owings/')
+    def test_job_paid_call_view_denies_for_office_admin(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_paid', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/job_paid/')
-
-    def test_worksheets_call_view_denies_for_window_cleaner(self):
-        #TODO: test fails but still allows in browser:#####################
+# Tests to check window_cleaner group access not permitted:
+    def test_job_delete_call_view_denies_for_window_cleaner(self):
+        #TODO: check it doesn't allows in browser:#####################
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_delete', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/delete/')
+    def test_job_add_call_view_denies_for_window_cleaner(self):
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_add', kwargs={'customer': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/new/1/')
+    def test_job_update_call_view_denies_for_window_cleaner(self):
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_update', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/edit/')
-
+# Tests to check window_cleaner group access permitted:
     def test_job_delete_view_loads_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.post(
@@ -175,18 +201,19 @@ class WorksheetMViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_add.html')
 
+    def test_job_update_view_can_update_job(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         # update a job:
         job = Jobs.objects.get(pk=1)
-        customer = Customer.objects.get(
-            address_line_1=getattr(job, 'customer'))
-        scheduled_date = getattr(job, 'scheduled_date')
-        allocated_date = getattr(job, 'allocated_date')
-        completed_date = getattr(job, 'completed_date')
-        price = getattr(job, 'price')
-        job_notes = getattr(job, 'job_notes')
-        job_status = getattr(job, 'job_status')
-        payment_status = getattr(job, 'payment_status')
-        window_cleaner = getattr(job, 'window_cleaner')
+        customer = job.customer
+        scheduled_date = job.scheduled_date
+        allocated_date = job.allocated_date
+        completed_date = job.completed_date
+        price = job.price
+        job_notes = job.job_notes
+        job_status = job.job_status
+        payment_status = job.payment_status
+        window_cleaner = job.window_cleaner
         if allocated_date == None:
             new_date = datetime.datetime.now() + datetime.timedelta(days=30)
         else:
@@ -204,8 +231,11 @@ class WorksheetMViewsTest(TestCase):
         }
         response = self.client.post(
             reverse('job_update', kwargs={'pk': 1}), data_valid)
-        allocated_date = getattr(job, 'allocated_date')
-        # self.assertEqual(allocated_date, new_date)
+        job_updated = Jobs.objects.get(pk=1)
+        allocated_date = job_updated.allocated_date #getattr(job, 'allocated_date')
+        print 'job 1:', job.allocated_date, 'job 2: ', job_updated.allocated_date
+        # print response
+        self.assertEqual(allocated_date, new_date)
         # todo: figure out how to post from here
 
     def test_job_add_view_loads_for_office_admin(self):
@@ -238,26 +268,26 @@ class WorksheetMViewsTest(TestCase):
         print customer
         response = self.client.post(
             reverse('job_add',  kwargs={'customer': 1}), data_valid)
-        # self.assertEqual(response.status_code, 302)
-        # self.assertRedirects(response, '/customers/1/jobs/')
-        # self.assertEqual(cust.email, 'acc@clarke.com')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/customers/1/jobs/')
+        self.assertEqual(cust.email, 'acc@clarke.com')
         # with 'title' missing:
-        # data_invalid = {
-        #     customer: customer,
-        #     scheduled_date: scheduled_date,
-        #     allocated_date: allocated_date,
-        #     completed_date: completed_date,
-        #     price: price,
-        #     job_notes: job_notes,
-        #     job_status: job_status,
-        #     payment_status: payment_status,
-        #     window_cleaner: window_cleaner
-        # }
-        # response = self.client.post(reverse('customer_add'), data_invalid)
-        # self.assertEqual(response.status_code, 200)
-        # #check no customer was created:
-        # count = Customer.objects.filter(pk=6).count()
-        # self.assertEqual(count, 0)
+        data_invalid = {
+            customer: customer,
+            scheduled_date: scheduled_date,
+            allocated_date: allocated_date,
+            completed_date: completed_date,
+            price: price,
+            job_notes: job_notes,
+            job_status: job_status,
+            payment_status: payment_status,
+            window_cleaner: window_cleaner
+        }
+        response = self.client.post(reverse('customer_add'), data_invalid)
+        self.assertEqual(response.status_code, 200)
+        #check no customer was created:
+        count = Customer.objects.filter(pk=6).count()
+        self.assertEqual(count, 0)
 
     def test_worksheet_view_loads_for_window_cleaner(self):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
@@ -273,21 +303,29 @@ class WorksheetMViewsTest(TestCase):
         })
         self.assertEqual(response.status_code, 500)
         # TODO fails because stored procedure is not created
-        response = self.client.get(reverse('invoices'))
-        self.assertEqual(response.status_code, 200)
+
+    def test_invoices_view_loads_for_window_cleaner(self):
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('invoices'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'invoice.html')
 
+    def test_job_details_view_loads_for_window_cleaner(self):
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_details.html')
         # TODO: needs to be done in-browser
         # response = self.client.post(reverse('payment'))
         # self.assertEqual(response.status_code, 200)
+    
+    def test_owings_view_loads_for_window_cleaner(self):
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('owings'))
         self.assertEqual(response.status_code, 200)
         Payment_status.objects.create(payment_status_description="paid")
         self.assertTemplateUsed(response, 'owings.html')
+    def test_job_paid_view_loads_for_window_cleaner(self):
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.post(reverse('job_paid', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, 200)

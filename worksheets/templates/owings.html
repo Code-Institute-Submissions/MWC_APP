@@ -1,5 +1,6 @@
 {% extends "base.html" %} 
 {% load staticfiles %}
+{% load user_tags %} 
 
 {% block extra_head %}
 <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script> 
@@ -8,10 +9,14 @@
 
 {% block content %} 
 <div class="container">
+        <div>
+                <h4 class="{% css_colour user %}-text text-darken-3">My Owings</h4>
+            </div>
+    
      <div class="row">
         <div class="search-wrapper card input-field col s12 m6">
           <i class="material-icons prefix">search</i>
-          <input id="input_search" type="search">
+          <input id="input_search" type="search" placeholder="Search customer address...">
         </div>
       </div>
 <table class="bordered" id="invoice_list"s>
@@ -29,15 +34,15 @@
         <td class="address">{{ job.customer }}</td>
         <td>£{{ job.price }}</td>
         <td>{{ job.completed_date }}</td> 
-        <td><a  class="paid_btn waves-effect waves-light btn" 
+        <td><a  class="paid_btn waves-effect waves-light btn {% css_colour user %}" 
                 data_rowID="{{ job.id}}" 
                 data_url='{% url "job_paid" job.id %}'
                 data_address="{{ job.customer }}" >Paid
             </a>
         </td>           
-        <td><a class="job_details_btn btn-floating  waves-effect waves-light teal accent-4 right" 
+        <td><a class="job_details_btn btn-floating  waves-effect waves-light {% css_colour user %} accent-4 right" 
             data_url='{% url "job_details" job.id %}'>
-                <i class="material-icons">more_horiz</i></a>
+                <i class="material-icons ">more_horiz</i></a>
         </td>     
         
       </tr>
@@ -63,7 +68,7 @@
                     <button id="modal_paid_btn" class="modal-close btn waves-effect waves-light left red" type="submit" name="action"
                     data_url="">
                     Yes</button>
-                <a href="#!" class="btn waves-effect waves-light right modal-action modal-close">
+                <a href="#!" class="btn waves-effect waves-light right modal-action modal-close {% css_colour user %}">
                         No</a>
             </div>
         </div>
@@ -78,7 +83,7 @@
             </div>
         </div>
         <div class="modal-footer">
-          <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+          <a href="#!" class="modal-action modal-close waves-effect waves-{% css_colour user %} {% css_colour user %} btn-flat">OK</a>
         </div>
       </div>
     </div>

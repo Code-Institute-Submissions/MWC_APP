@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <form method="POST" class="post-form">{% csrf_token %}
-            <div style="display:none"> <h3> {{ form.user }} </h3></div>
+            <div style="display:none">{{ form.user }}</div>
         <div class="fieldWrapper">
             {{ form.category.errors }}
             <label for="{{ form.category.id_for_label }}">Category:</label> {{ form.category }}
@@ -67,12 +67,8 @@
         closeOnSelect: true,// Close upon selecting a date,
         format: 'dd/mm/yyyy'
     });
-    //TODO: with several $(document).ready(function() they get called in order; 
-    // would be nice to append to the function defined in base.html instead
-    // of having several.
-
+    
     $(document).ready(function () {
-        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
         $('.modal').modal();
     });
 

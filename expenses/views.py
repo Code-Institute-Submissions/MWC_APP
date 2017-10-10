@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from expenses.models import Expenses
 from braces.views import GroupRequiredMixin
+from django.core.exceptions import ValidationError
 
 
 class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -27,6 +28,8 @@ class ExpenseCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
     success_url = "/expenses/"
+
+    # for debugging:
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
 

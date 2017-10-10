@@ -3,13 +3,17 @@
 {% load humanize %}
 {% block content %} 
 {% load staticfiles %} 
+{% load user_tags %} 
 {% regroup jobs by scheduled_date as jobs_by_date %}
 
 <div class="container">
+        <div>
+            <h4 class="{% css_colour user %}-text text-darken-3">My Worksheets</h4>
+        </div>
     <ul class="collapsible" data-collapsible="accordion">
         {% for date in jobs_by_date %}
         <li>
-            <div id='header_{{ date.grouper|date:"c" }}' class="collapsible-header teal darken-2 white-text">
+            <div id='header_{{ date.grouper|date:"c" }}' class="collapsible-header {% css_colour user %}  darken-2 white-text">
                 {{ date.grouper|naturalday|title }}
                 <span class="new badge green" data-badge-caption="" id="badge_{{ date.grouper|date:"c" }}">
                 <span id="num_jobs_{{ date.grouper|date:"c" }}">{{date.list|length }}</span>
@@ -31,13 +35,13 @@
                                 </div>
                             </div>
                             <div class="card-action">
-                                <button data_job="{{ job.id }}" class="compl_btn btn waves-effect waves-light" type="button" value="Click" data_url='{% url "job_check_in" job.id %}'
+                                <button data_job="{{ job.id }}" style="margin-top:10px" class="compl_btn btn waves-effect waves-light {% css_colour user %}" type="button" value="Click" data_url='{% url "job_check_in" job.id %}'
                                     data_address='{{ job.customer }}' data_payment='paid' data_price='{{ job.price }}' data_date='{{ date.grouper|date:"c" }}'>Completed/Paid
                                 </button>
-                                <button data_job="{{ job.id }}" class="compl_btn btn waves-effect waves-light" type="button" value="Click" data_url='{% url "job_check_in" job.id %}'
+                                <button data_job="{{ job.id }}" style="margin-top:10px" class="compl_btn btn waves-effect waves-light" type="button" value="Click" data_url='{% url "job_check_in" job.id %}'
                                     data_address='{{ job.customer }}' data_payment='owed' data_price='{{ job.price }}' data_date='{{ date.grouper|date:"c" }}'>Completed/Owed
                                 </button>
-                                <a class="job_details_btn btn-floating  waves-effect waves-light teal accent-4 right" data_url='{% url "job_details" job.id %}'>
+                                <a class="job_details_btn btn-floating  waves-effect waves-light {% css_colour user %}  accent-4 right" data_url='{% url "job_details" job.id %}'>
                                     <i class="material-icons">more_horiz</i></a>
                             </div>
                         </div>

@@ -1,35 +1,37 @@
 {% block content %}
+{% load user_tags %} 
+
 <div class="container">
   <div><h5>{{ jobs.customer }} - {{ jobs.customer.title  }} {{ jobs.customer.first_name }} {{ jobs.customer.last_name }}</h5></div>
   <form action="">
     <div class="row">    
-        <div class="input-field col s3">
+        <div class="input-field col s6 m4">
           <input value="£{{ jobs.price }}" type="text" readonly>
           <label class="active" for="price">Price</label>
         </div>
-        <div class="input-field col s3">
+        <div class="input-field col s6 m4">
                 <input value="{{ jobs.scheduled_date }}" type="text" readonly>
                 <label class="active" for="scheduled_date">Scheduled Date</label>
             </div>
-        <div class="input-field col s3">
+        <div class="input-field col s6 m4">
             <input value="{{ jobs.allocated_date }}" type="text" readonly>
             <label class="active" for="allocated_date">Allocated Date</label>
         </div>
-        <div class="input-field col s3">
+        <div class="input-field col s6 m4">
             <input value="{{ jobs.completed_date }}" type="text" readonly>
             <label class="active" for="completed_date">Completed Date</label>
         </div>
     </div>
     <div class="row">
-        <div class="input-field col s3">
+        <div class="input-field col s6 m4">
             <input value="{{ jobs.job_status }}" type="text" readonly>
             <label class="active" for="job_status">Job Status</label>
         </div>
-        <div class="input-field col s3">
+        <div class="input-field col s6 m4">
           <input value="{{ jobs.payment_status }}" type="text" readonly>
           <label class="active" for="payment_status">Payment Status</label>
         </div>
-        <div class="input-field col s3">
+        <div class="input-field col s6 m4">
                 <input value="{{ jobs.customer.frequency }}" type="text" readonly>
                 <label class="active" for="frequency">Frequency</label>
         </div>
@@ -47,7 +49,7 @@
 
   </div>
   <div class="modal-footer">
-        <a href="#!" class="modal-action modal-close waves-effect waves-green btn">OK</a>
+        <a href="#!" class="modal-action modal-close waves-effect waves-{% css_colour user %} {% css_colour user %}  btn">OK</a>
       </div>
 
 {% endblock %}

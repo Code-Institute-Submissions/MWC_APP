@@ -15,6 +15,8 @@ from braces.views import GroupRequiredMixin, JSONResponseMixin
 from worksheets.models import Jobs, Payment_status
 from datetime import datetime, timedelta
 import stripe
+from django import forms
+from .forms import JobUpdateForm
 
 
 class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -46,7 +48,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     initial = {'frequency': '4', 'job_status': '1'}  # 1 = 'due'
 
     def get_success_url(self):
-        print self.kwargs['customer']
+        # print self.kwargs['customer']
         return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
 
     def form_invalid(self, form):
@@ -71,21 +73,20 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     """ view to update jobs """
 
     model = Jobs
-    fields = [
-        'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
-    ]
+    form_class = JobUpdateForm
+    # fields = [
+    #     'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
+    # ]
     template_name = 'job_add.html'
 
-    def get_success_url(self, *args, **kwargs):        
+    def get_success_url(self, *args, **kwargs):   
+        print self.object     
         return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
     
     # for debugging:
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
-
-    def form_valid(self, form):
-        return super(JobUpdate, self).form_valid(form)
-
+             
     group_required = u"office_admin"
     
 
@@ -117,7 +118,7 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
                 cursor.execute('{CALL dbo.sp_complete_job (%d,%d)}' % params)
                 return HttpResponse(status=201)
             except DatabaseError as e:
-                print e
+                # print e
                 return HttpResponse(status=500)
             finally:
                 cursor.close()
