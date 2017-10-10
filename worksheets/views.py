@@ -84,8 +84,8 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
     
     # for debugging:
-    # def form_invalid(self, form):
-    #     return JsonResponse(form.errors, status=400)
+    def form_invalid(self, form):
+        return JsonResponse(form.errors, status=400)
              
     group_required = u"office_admin"
     

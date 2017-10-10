@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'franchises',
     'debug_toolbar',
-    'stripe',
-    
+    'stripe',    
 ]
 
 MIDDLEWARE = [
@@ -149,8 +148,6 @@ LOGIN_URL = '/login/'
 
 LOGIN_REDIRECT_URL = 'login_success'
 # view that redirects to diff. pages depending on user group
-
-USE_L10N = True
 
 INTERNAL_IPS = ('127.0.0.1', )
 

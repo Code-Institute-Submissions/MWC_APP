@@ -1,10 +1,11 @@
-{% load humanize %}
+
+{% extends "base.html" %} 
+{% load staticfiles %}
 {% load job_filters %}
 {% load user_tags %} 
-{% extends "base.html" %} 
 {% block content %} 
 {% regroup invoices by scheduled_date as jobs_by_date %}
-{% load staticfiles %}
+
 <div class="container">
         <div>
                 <h4 class="{% css_colour user %}-text text-darken-3">My Invoices</h4>
@@ -15,7 +16,7 @@
     <li>        
         <div class="collapsible-header active {% css_colour user %}  
             {% if forloop.counter == 1 %}darken-4{% else %}darken-2{% endif %} white-text">
-           <h6>{{ date.grouper|naturalday|title }}</h6>
+           <h6>{{ date.grouper|title }}</h6>
             <span class="new badge blue" data-badge-caption="">{{date.list|length }} 
                 {% if date.list|length == 1 %}job{% else %}jobs{% endif %} / £{{ date.list|running_total }}</span>            
         </div>
