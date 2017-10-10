@@ -29,23 +29,28 @@ class CustomerViewsTest(TestCase):
         Group.objects.create(name='office_admin')
         Group.objects.create(name='window_cleaner')
         # create a user:
-        cls.user1 = G(User,
+        cls.user1 = User.objects.create_user(
             username='testuser1',
             password='1a2b3c4d5e',
             franchise=cls.f1
         )
-        cls.user2 = G(User,
+        cls.user2 = User.objects.create_user(
             username='testuser2',
             password='1a2b3c4d5e',
             franchise=cls.f1
         )
-        cls.user3 =G(User,
+        cls.user3 = User.objects.create_user(
             username='testuser3',
             password='1a2b3c4d5e',
             franchise=cls.f2
         )
-        cls.user4 =G(User,
+        cls.user4 = User.objects.create_user(
             username='testuser4',
+            password='1a2b3c4d5e',
+            franchise=cls.f2
+        )
+        cls.user5 = User.objects.create_user(
+            username='testuser5',
             password='1a2b3c4d5e',
             franchise=cls.f3
         )
@@ -54,16 +59,74 @@ class CustomerViewsTest(TestCase):
         group.user_set.add(cls.user1)
         group = Group.objects.get(name='window_cleaner')
         group.user_set.add(cls.user2)
-        group = Group.objects.get(name='office_admin')
+        group = Group.objects.get(name='window_cleaner')
         group.user_set.add(cls.user3)
         group = Group.objects.get(name='office_admin')
         group.user_set.add(cls.user4)
+        group = Group.objects.get(name='office_admin')
+        group.user_set.add(cls.user5)
         # create property_types:
         pt = Property_type.objects.create(property_type='House')
         # create some customers
-        cls.cust1 = G(Customer, Franchise=cls.f1)
-        cls.cust2 = G(Customer, Franchise=cls.f2)
-        cls.cust3 =  G(Customer, Franchise=cls.f3)
+        # create some customers
+        cls.cust1 = Customer.objects.create(
+            title="Mr.",
+            first_name='John',
+            last_name='Brown',
+            email='jb@jb.com',
+            address_line_1='1 Brown Avenue',
+            city='Brown City',
+            postcode='BN1 6JB',
+            franchise=cls.f1,
+            frequency=4,
+            property_type=pt
+        )
+        cls.cust2 = Customer.objects.create(
+            title="Mrs.",
+            first_name='Gemma',
+            last_name='Brown',
+            email='gb@gb.com',
+            address_line_1='2 Brown Avenue',
+            city='Brown City',
+            postcode='BN2 6JB',
+            franchise=cls.f2,
+            frequency=4,
+            property_type=pt
+        )
+        cls.cust3 = Customer.objects.create(
+            title="Ms.",
+            first_name='David',
+            last_name='White',
+            email='dw@dw.com',
+            address_line_1='22 White Road',
+            city='London',
+            postcode='N2',
+            franchise=cls.f1,
+            frequency=4,
+            property_type=pt
+        )
+        due = Job_status.objects.create(job_status_description='Due')
+        Jobs.objects.create(
+            customer=cls.cust1,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=99,
+            job_status=due
+        )
+        Jobs.objects.create(
+            customer=cls.cust1,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=999,
+            job_status=due
+        )
+        Jobs.objects.create(
+            customer=cls.cust2,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=999,
+            job_status=due
+        )
     # https://stackoverflow.com/questions/11885211/how-to-write-a-unit-test-for-a-django-view
 
     def test_customers_call_view_denies_anonymous(self):
@@ -96,23 +159,22 @@ class CustomerViewsTest(TestCase):
     def test_customerslist_call_view_denies_for_window_cleaner_franchise_2(self):
         # for franchise 2 user:
         self.client.login(username='testuser3', password='1a2b3c4d5e')
-        response = self.client.get(reverse('customers'))
+        response = self.client.get(reverse('customers'), follow=True)
         self.assertRedirects(response, '/login/?next=/customers/')
 
     def test_customerslist_call_view_loads_for_office_admin_franchise_1(self):
         # for franchise 1 user:
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('customers'), follow=True)
-        print response.content
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer_list.html')
-        # should return 1 customer only:
+        # should return 2 customers:
         self.assertTrue(len(response.context['customers']) == 2)
         self.assertContains(response, '1 Brown Avenue')
         self.assertContains(response, '22 White Road')
     def test_customerslist_call_view_loads_for_office_admin_franchise_2(self):
         # for franchise 2 user:
-        self.client.login(username='testuser3', password='1a2b3c4d5e')
+        self.client.login(username='testuser4', password='1a2b3c4d5e')
         response = self.client.get(reverse('customers'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer_list.html')
@@ -125,8 +187,8 @@ class CustomerViewsTest(TestCase):
         response = self.client.get(reverse('customers'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'customer_list.html')
-        # should return 0 customers:
-        self.assertTrue(len(response.context['customers']) == 0)
+        # should return 1 customer:
+        self.assertTrue(len(response.context['customers']) == 1)
 
     def test_customerslist_call_POST_request_empty_arguments(self):
         self.client.login(username='testuser1',
@@ -214,9 +276,10 @@ class CustomerViewsTest(TestCase):
         }
         response = self.client.post(reverse('customer_add'), data_valid)
         self.assertEqual(response.status_code, 302)
-        # we've already added 4 customers
-        self.assertRedirects(response, '/customers/5/jobs/')
-        cust = Customer.objects.get(pk=5)
+        # we've already added 5 customers
+        self.assertRedirects(response, '/customers/6/jobs/')
+        #todo: how to retrieve pk of created cust?
+        cust = Customer.objects.get(pk=6)
         self.assertEqual(cust.email, 'acc@clarke.com')
 
     def test_customer_create_post_tests_invalid_data(self):
@@ -256,7 +319,7 @@ class CustomerViewsTest(TestCase):
         }
         
         response = self.client.get(reverse('customer_add'), data_valid)
-        print 'response:' , response.content 
+        # print 'response:' , response.content 
         # self.assertEqual(response.status_code, 200)
         
         # print 'franchise: ', response.context #['form']['franchise'] #.value()
@@ -264,7 +327,7 @@ class CustomerViewsTest(TestCase):
         # self.assertEquals(response.context['form']['frequency'].value(), '4')
 
     def test_customer_delete_tests(self):
-        f1 = Franchise.objects.get(franchise='franchise_1')
+        # f1 = Franchise.objects.get(franchise='franchise_1')
         pt = Property_type.objects.create(property_type='House')
         cust = Customer.objects.create(
             title="Mr.",
@@ -274,7 +337,7 @@ class CustomerViewsTest(TestCase):
             address_line_1='1 Brown Avenue',
             city='Brown City',
             postcode='BN1 6JB',
-            franchise=f1,
+            franchise=self.f1,
             frequency=4,
             property_type=pt
         )
@@ -285,7 +348,7 @@ class CustomerViewsTest(TestCase):
         url = '/login/?next=/customers/%s/delete/' % custid
         self.assertRedirects(response, url)
     def test_customer_create_post_tests_window_cleaner(self):
-        f1 = Franchise.objects.get(franchise='franchise_1')
+        # f1 = Franchise.objects.get(franchise='franchise_1')
         pt = Property_type.objects.create(property_type='House')
         cust = Customer.objects.create(
             title="Mr.",
@@ -295,7 +358,7 @@ class CustomerViewsTest(TestCase):
             address_line_1='1 Brown Avenue',
             city='Brown City',
             postcode='BN1 6JB',
-            franchise=f1,
+            franchise=self.f1,
             frequency=4,
             property_type=pt
         )
@@ -304,10 +367,11 @@ class CustomerViewsTest(TestCase):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.post(
             reverse('customer_delete', kwargs={'pk': custid}))
+        url = '/login/?next=/customers/%s/delete/' % custid
         self.assertRedirects(response, url)
 
     def test_customer_create_post_tests_office_admin(self):
-        f1 = Franchise.objects.get(franchise='franchise_1')
+        # f1 = Franchise.objects.get(franchise='franchise_1')
         pt = Property_type.objects.create(property_type='House')
         cust = Customer.objects.create(
             title="Mr.",
@@ -317,7 +381,7 @@ class CustomerViewsTest(TestCase):
             address_line_1='1 Brown Avenue',
             city='Brown City',
             postcode='BN1 6JB',
-            franchise=f1,
+            franchise=self.f1,
             frequency=4,
             property_type=pt
         )
@@ -332,99 +396,40 @@ class CustomerViewsTest(TestCase):
         self.assertEqual(count, 0)
 
     def test_customer_job_list_view(self):
-        # f1 = Franchise.objects.get(franchise='franchise_1')
-        # f2 = Franchise.objects.get(franchise='franchise_2')
-        pt = Property_type.objects.create(property_type='House')
-        cust1 = Customer.objects.create(
-            title="Mr.",
-            first_name='John',
-            last_name='Pink',
-            email='jb@jb.com',
-            address_line_1='1 Pink Avenue',
-            city='Pink City',
-            postcode='N1 6PP',
-            franchise=f1,
-            frequency=4,
-            property_type=pt
-        )
-        cust2 = Customer.objects.create(
-            title="Mr.",
-            first_name='John',
-            last_name='Red',
-            email='jb@jb.com',
-            address_line_1='1 Red Avenue',
-            city='Red City',
-            postcode='N1 6PP',
-            franchise=f1,
-            frequency=4,
-            property_type=pt
-        )
-        cust3 = Customer.objects.create(
-            title="Mr.",
-            first_name='John',
-            last_name='Black',
-            email='jb@jb.com',
-            address_line_1='1 Black Avenue',
-            city='Black City',
-            postcode='BK 6PP',
-            franchise=f2,
-            frequency=4,
-            property_type=pt
-        )
-        cust1id = cust1.id
-        cust2id = cust2.id
-        cust3id = cust3.id
-        # create some jobs:
-        due = Job_status.objects.create(job_status_description='Due')
-        Jobs.objects.create(
-            customer=cust1,
-            scheduled_date=datetime.datetime.now(),
-            allocated_date=datetime.datetime.now(),
-            price=99,
-            job_status=due
-        )
-        # Jobs.objects.create(
-        #     customer=cust1,
-        #     scheduled_date=datetime.datetime.now(),
-        #     allocated_date=datetime.datetime.now(),
-        #     price=999,
-        #     job_status=due
-        # )
-        # Jobs.objects.create(
-        #     customer=cust2,
-        #     scheduled_date=datetime.datetime.now(),
-        #     allocated_date=datetime.datetime.now(),
-        #     price=999,
-        #     job_status=due
-        # )
-        # url = '/login/?next=/customers/%s/jobs/' % cust1id
+        url = '/login/?next=/customers/%s/jobs/' % cust1id
         # # no logged in user:
-        # response = self.client.get(
-        #     reverse('customer_job_list', kwargs={'pk': cust1id}))
-        # self.assertRedirects(response, url)
-        # # user logged in, window_cleaner:
-        # self.client.login(username='testuser2', password='1a2b3c4d5e')
-        # response = self.client.get(
-        #     reverse('customer_job_list', kwargs={'pk': cust1id}))
-        # self.assertRedirects(response, url)
-        # # user logged in, office_admin, different franchise:
-        # self.client.login(username='testuser3', password='1a2b3c4d5e')
-        # response = self.client.get(
-        #     reverse('customer_job_list', kwargs={'pk': cust1id}))
-        # self.assertEqual(response.status_code, 404)
-        # response = self.client.get(
-        #     reverse('customer_job_list', kwargs={'pk': cust3id}))
-        # self.assertEqual(response.status_code, 200)
-        # self.assertTemplateUsed(response, 'customer_job_list.html')
-        # # #user logged in, office_admin, same franchise:
-        # self.client.login(username='testuser1', password='1a2b3c4d5e')
-        # response = self.client.get(
-        #     reverse('customer_job_list', kwargs={'pk': cust1id}))
-        # self.assertEqual(response.status_code, 200)
-        # self.assertTemplateUsed(response, 'customer_job_list.html')
-        # # should return 2 customers:
-        # print response.context['object']
-        # for key in response.context.keys():
-        #     print key, 'corresponds to', response.context[key]
-        # # print response.context['request']
-        # # self.assertTrue( len(response.context['customer'][1]) == 2)
+        response = self.client.get(
+             reverse('customer_job_list', kwargs={'pk': cust1id}))
+        self.assertRedirects(response, url)
+    def test_customer_job_list_view(self):
+        url = '/login/?next=/customers/%s/jobs/' % cust1id
+        # user logged in, window_cleaner:
+        self.client.login(username='testuser2', password='1a2b3c4d5e')
+        response = self.client.get(
+            reverse('customer_job_list', kwargs={'pk': cust1id}))
+        self.assertRedirects(response, url)
+    def test_customer_job_list_view(self):
+        url = '/login/?next=/customers/%s/jobs/' % cust1id
+        # user logged in, office_admin, different franchise:
+        self.client.login(username='testuser3', password='1a2b3c4d5e')
+        response = self.client.get(
+            reverse('customer_job_list', kwargs={'pk': cust1id}))
+        self.assertRedirects(response, url)
+    def test_customer_job_list_view(self):
+        response = self.client.get(
+            reverse('customer_job_list', kwargs={'pk': cust3id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer_job_list.html')
+        # #user logged in, office_admin, same franchise:
+    def test_customer_job_list_view(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        response = self.client.get(
+            reverse('customer_job_list', kwargs={'pk': self.cust1.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'customer_job_list.html')
+        # should return 2 customers:
+        print response.context['object']
+        for key in response.context.keys():
+            print key, 'corresponds to', response.context[key]
+        # print response.context['request']
+        # self.assertTrue( len(response.context['customer'][1]) == 2)

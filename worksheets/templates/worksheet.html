@@ -1,10 +1,15 @@
+ 
 {% extends "base.html" %}
-{% load job_filters %} 
-{% load humanize %}
-{% block content %} 
 {% load staticfiles %} 
+
+{% load humanize %}
 {% load user_tags %} 
+{% load job_filters %}
+
+{% block content %} 
+
 {% regroup jobs by scheduled_date as jobs_by_date %}
+
 
 <div class="container">
         <div>

@@ -243,17 +243,19 @@ class WorksheetMViewsTest(TestCase):
         response = self.client.get(reverse('job_add', kwargs={'customer': 1}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_add.html')
+    def test_job_add_view_creates_a_job_with_valid_data(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
         # create a job:
         job = Jobs.objects.get(pk=1)
-        customer = getattr(job, 'customer')
-        scheduled_date = datetime.datetime.now()
-        allocated_date = getattr(job, 'allocated_date')
-        completed_date = getattr(job, 'completed_date')
-        price = getattr(job, 'price')
-        job_notes = getattr(job, 'job_notes')
-        job_status = getattr(job, 'job_status')
-        payment_status = getattr(job, 'payment_status')
-        window_cleaner = getattr(job, 'window_cleaner')
+        customer = job.customer
+        scheduled_date = job.scheduled_date
+        allocated_date = job.allocated_date
+        completed_date = job.completed_date
+        price = job.price
+        job_notes = job.job_notes
+        job_status = job.job_status
+        payment_status = job.payment_status
+        window_cleaner = job.window_cleaner
         data_valid = {
             customer: customer,
             scheduled_date: scheduled_date,
@@ -271,6 +273,18 @@ class WorksheetMViewsTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/customers/1/jobs/')
         self.assertEqual(cust.email, 'acc@clarke.com')
+    def test_job_add_view_redirects_for_invalid_data(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        job = Jobs.objects.get(pk=1)
+        customer = job.customer
+        scheduled_date = job.scheduled_date
+        allocated_date = job.allocated_date
+        completed_date = job.completed_date
+        price = job.price
+        job_notes = job.job_notes
+        job_status = job.job_status
+        payment_status = job.payment_status
+        window_cleaner = job.window_cleaner
         # with 'title' missing:
         data_invalid = {
             customer: customer,
