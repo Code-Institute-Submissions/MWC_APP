@@ -16,51 +16,51 @@ import datetime
 
 # views test
 
-class WorksheetMViewsTest(TestCase):
+class WorksheetViewsTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
         # create 2 franchises
-        f1 = Franchise.objects.create(franchise='franchise_1')
-        f2 = Franchise.objects.create(franchise='franchise_2')
-        f3 = Franchise.objects.create(franchise='franchise_3')
+        cls.f1 = Franchise.objects.create(franchise='franchise_1')
+        cls.f2 = Franchise.objects.create(franchise='franchise_2')
+        cls.f3 = Franchise.objects.create(franchise='franchise_3')
         # create groups:
         Group.objects.create(name='office_admin')
         Group.objects.create(name='window_cleaner')
         # create a user:
-        user1 = User.objects.create_user(
+        cls.user1 = User.objects.create_user(
             username='testuser1',
             password='1a2b3c4d5e',
-            franchise=f1
+            franchise=cls.f1
         )
-        user2 = User.objects.create_user(
+        cls.user2 = User.objects.create_user(
             username='testuser2',
             password='1a2b3c4d5e',
-            franchise=f1
+            franchise=cls.f1
         )
-        user3 = User.objects.create_user(
+        cls.user3 = User.objects.create_user(
             username='testuser3',
             password='1a2b3c4d5e',
-            franchise=f2
+            franchise=cls.f2
         )
-        user4 = User.objects.create_user(
+        cls.user4 = User.objects.create_user(
             username='testuser4',
             password='1a2b3c4d5e',
-            franchise=f3
+            franchise=cls.f3
         )
         # add users to groups
         group = Group.objects.get(name='office_admin')
-        group.user_set.add(user1)
+        group.user_set.add(cls.user1)
         group = Group.objects.get(name='window_cleaner')
-        group.user_set.add(user2)
+        group.user_set.add(cls.user2)
         group = Group.objects.get(name='office_admin')
-        group.user_set.add(user3)
+        group.user_set.add(cls.user3)
         group = Group.objects.get(name='office_admin')
-        group.user_set.add(user4)
+        group.user_set.add(cls.user4)
         # create property_types:
-        pt = Property_type.objects.create(property_type='House')
+        cls.pt = Property_type.objects.create(property_type='House')
         # create some customers
-        cust1 = Customer.objects.create(
+        cls.cust1 = Customer.objects.create(
             title="Mr.",
             first_name='John',
             last_name='Brown',
@@ -68,11 +68,11 @@ class WorksheetMViewsTest(TestCase):
             address_line_1='1 Brown Avenue',
             city='Brown City',
             postcode='BN1 6JB',
-            franchise=f1,
+            franchise=cls.f1,
             frequency=4,
-            property_type=pt
+            property_type=cls.pt
         )
-        cust2 = Customer.objects.create(
+        cls.cust2 = Customer.objects.create(
             title="Mrs.",
             first_name='Gemma',
             last_name='Brown',
@@ -80,11 +80,11 @@ class WorksheetMViewsTest(TestCase):
             address_line_1='2 Brown Avenue',
             city='Brown City',
             postcode='BN2 6JB',
-            franchise=f2,
+            franchise=cls.f2,
             frequency=4,
-            property_type=pt
+            property_type=cls.pt
         )
-        Customer.objects.create(
+        cls.cust3 = Customer.objects.create(
             title="Ms.",
             first_name='David',
             last_name='White',
@@ -92,20 +92,20 @@ class WorksheetMViewsTest(TestCase):
             address_line_1='22 White Road',
             city='London',
             postcode='N2',
-            franchise=f1,
+            franchise=cls.f1,
             frequency=4,
-            property_type=pt
+            property_type=cls.pt
         )
         due = Job_status.objects.create(job_status_description='Due')
         Jobs.objects.create(
-            customer=cust1,
+            customer=cls.cust1,
             scheduled_date=datetime.datetime.now(),
             allocated_date=datetime.datetime.now(),
             price=99,
             job_status=due
         )
         Jobs.objects.create(
-            customer=cust1,
+            customer=cls.cust1,
             scheduled_date=datetime.datetime.now(),
             allocated_date=datetime.datetime.now(),
             price=199,
@@ -230,7 +230,6 @@ class WorksheetMViewsTest(TestCase):
                data_valid, follow=True)
         job_updated = Jobs.objects.get(pk=1)
         allocated_date = job_updated.allocated_date 
-        print response
         self.assertEqual(allocated_date, new_date)
 
     def test_job_add_view_loads_for_office_admin(self):

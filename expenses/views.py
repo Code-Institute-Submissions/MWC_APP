@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 
 
 class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
+    """ returns a list of expenses for current user (window cleaners only) """
     model = Expenses
     context_object_name = 'expenses'
     template_name = 'expenses_list.html'
@@ -24,6 +25,7 @@ class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
 
 class ExpenseCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
+    """ creates new expense """
     model = Expenses
     fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
@@ -47,6 +49,7 @@ class ExpenseCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
 
 
 class ExpenseUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
+    """ modify existing expense record """
     model = Expenses
     fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
@@ -58,6 +61,7 @@ class ExpenseUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 
 
 class ExpenseDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
+    """ delete existing expense record """
     model = Expenses
     success_url = "/expenses/"
     group_required = u"window_cleaner"

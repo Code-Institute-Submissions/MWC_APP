@@ -3,6 +3,8 @@ from django import forms
 from .models import Jobs
 
 class JobUpdateForm(forms.ModelForm):
+    """ needs special validatiomn so cannot use generic CBV form """
+
     class Meta:
         model = Jobs
         fields = [
@@ -16,7 +18,6 @@ class JobUpdateForm(forms.ModelForm):
         payment_status = cleaned_data["payment_status"] #!!brackets because dictionary!!
         window_cleaner = cleaned_data["window_cleaner"]
         allocated_date = cleaned_data["allocated_date"]
-        # print '%s - %s' % (completed_date, payment_status)
         if completed_date is None and str(job_status) == 'Completed':
             raise forms.ValidationError(
                         "You are trying to check in a job as completed with no completed date - please enter a completed date"

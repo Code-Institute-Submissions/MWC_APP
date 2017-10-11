@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'franchises',
     'debug_toolbar',
-    'stripe',    
+    'stripe',
     'common',
 ]
 

@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'franchises',
     'debug_toolbar',
-    'stripe',  
-    'common',  
+    'stripe',
+    'common',
 ]
 
 MIDDLEWARE = [
@@ -129,10 +129,12 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
+#overrides date_format if = True
 
 USE_TZ = True
 
+DATE_FORMAT = "D j N Y"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/

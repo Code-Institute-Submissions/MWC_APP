@@ -60,7 +60,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     def get_initial(self):
         # https://djangosnippets.org/snippets/2987/
         initials = super(JobCreate, self).get_initial()
-        initials['customer'] = self.kwargs['customer']
+        initials['customer'] = self.kwargs['customer'] # hidden field
         return initials
 
     def __init__(self, *args, **kwargs):
@@ -74,6 +74,7 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 
     model = Jobs
     form_class = JobUpdateForm
+    # cannot use gemeric CBV form as need to overload clean()
     # fields = [
     #     'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
     # ]
@@ -84,8 +85,8 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
     
     # for debugging:
-    def form_invalid(self, form):
-        return JsonResponse(form.errors, status=400)
+    # def form_invalid(self, form):
+    #     return JsonResponse(form.errors, status=400)
              
     group_required = u"office_admin"
     
@@ -104,7 +105,8 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
         to complete jobs (paid or owed) and create a new one based on the
         completed date and the frequency.
         This could easily be done with the Django ORM but in a real-life situation 
-        the check in process could be very complex.
+        the check-in process could be very complex.
+        Disadvantage: can't be unit-tested
      """
 
     def post(self, request, *args, **kwargs):
@@ -162,8 +164,8 @@ class JobDetails(GroupRequiredMixin, LoginRequiredMixin, DetailView):
 class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
     """ view called to process Stripe payment from Invoices.
         Payment is calculated from completed date to avoid DOM
-        being manipulated. 'Amount' has to correspond to the script 
-        amount sent to Stripe via front-end  
+        being manipulated. 'Amount' has to correspond to the script
+        amount sent to Stripe via front-end
     """
     group_required = u"window_cleaner"
 
@@ -187,11 +189,11 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
             source=token,
         )
         return redirect('invoices')
-        # TODO: return charge etc.
+        # TODO: could return charge confirmation etc.
 
 
 class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
-    """ view to display jobs that are owed to Window Cleaners """
+    """ view to display jobs that are owed by customers to Window Cleaners """
 
     template_name = "owings.html"
     model = Jobs

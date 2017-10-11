@@ -7,7 +7,7 @@ from franchises.models import Franchise
 
 
 class User(AbstractUser):
-    name = models.CharField(max_length=100, blank=True, null=True)
+    name = models.CharField(max_length=100, blank=True, null=True) # not used
     franchise = models.ForeignKey(
         Franchise, null=False, blank=False, on_delete=models.PROTECT)
 

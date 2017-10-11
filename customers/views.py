@@ -25,14 +25,16 @@ class CustomersList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get(self, request, *args, **kwargs):
+        """ office_admin can only see customers from the same franchise """
         franchise = self.request.user.franchise
         self.queryset = Customer.objects.filter(franchise=franchise)            
         return super(CustomersList, self).get(request, *args, **kwargs) 
         
     def post(self, request, *args, **kwargs):
+        """ filtered results """
         franchise = self.request.user.franchise
         try:
-            if request.POST['action'] == 'filter': #and request.POST['input_search'] != None:     
+            if request.POST['action'] == 'filter':      
                 txt = request.POST['input_search']
                 self.queryset = Customer.objects.filter(
                 Q(address_line_1__icontains=txt) | Q(first_name__icontains=txt) 
@@ -63,10 +65,10 @@ class CustomerCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     template_name = 'customer_add.html'
     
 
-    #used for debugging:
+    # used for debugging:
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
-    #     
+         
 
     def form_valid(self, form):
         return super(CustomerCreate, self).form_valid(form)
@@ -99,7 +101,7 @@ class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     def form_invalid(self, form):
         return JsonResponse(form.errors, status=400)
     
-    #for debuggin:
+    #for debugging:
     # def form_valid(self, form):
     #     return super(CustomerUpdate, self).form_valid(form)
 
