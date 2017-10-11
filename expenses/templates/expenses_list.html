@@ -1,5 +1,6 @@
 {% extends "base.html" %} 
 {% load user_tags %} 
+{% load app_tags %}
 {% load customer_tags %}
 {% block content %}
 <div class="container">
@@ -25,8 +26,8 @@
                 {% for expense in expenses|dictsort:"date" %}
                 <tr>            
                     <td>{{ expense.category }}</div></td>
-                    <td>{{ expense.date|date:"d/m/y" }}</div></td>
-                    <td>{{ expense.amount }}</div></td>
+                    <td>{{ expense.date }}</div></td>
+                    <td>{{ expense.amount|currency }}</div></td>
                     <td  style="max-width:100px"><div class="truncate">{{ expense.notes }}</div></td>
                     <td><a href={{ expense.id }} class="btn-floating btn-small waves-effect waves-light {% load job_filters %} {% css_colour user %}">
                             <i class="material-icons">create</i>

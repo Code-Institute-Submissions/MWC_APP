@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %} 
-
-{% comment %} {% load humanize %} {% endcomment %}
+{% load humanize %}
+{% load app_tags %} 
 {% load user_tags %} 
 {% load job_filters %}
 
@@ -18,11 +18,11 @@
         {% for date in jobs_by_date %}
         <li>
             <div id='header_{{ date.grouper|date:"c" }}' class="collapsible-header {% css_colour user %}  darken-2 white-text">
-                {{ date.grouper|title }}
+                {{ date.grouper|naturalday|title }}
+                <!-- https://docs.djangoproject.com/en/1.11/ref/templates/builtins/#date -->
                 <span class="new badge green" data-badge-caption="" id="badge_{{ date.grouper|date:"c" }}">
                 <span id="num_jobs_{{ date.grouper|date:"c" }}">{{date.list|length }}</span>
-                <span id='num_jobs_suffix_{{ date.grouper|date:"c" }}'>{% if date.list|length == 1 %} job{% else %} jobs{% endif %}</span>                / £
-                <span id="total_{{ date.grouper|date:"c" }}">{{ date.list|running_total }}</span>
+                <span id='num_jobs_suffix_{{ date.grouper|date:"c" }}'>{% if date.list|length == 1 %} job{% else %} jobs{% endif %}</span> / <span id="total_{{ date.grouper|date:"c" }}">{{ date.list|running_total|currency }}</span>
                 </span>
             </div>
             <div class="collapsible-body" id="collapsible_body_{{ date.grouper|date:"c" }}">
@@ -33,7 +33,7 @@
                             <div class="card-content white-text">
                                 <span class="card-title">{{ job.customer }}</span>
                                 <div class="row">
-                                    <div style="border-style: solid;  padding:5px">Price: £<span id="price_{{ job.id }}">{{ job.price }}</span></div>
+                                    <div style="border-style: solid;  padding:5px">Price: <span id="price_{{ job.id }}">{{ job.price|currency }}</span></div>
                                     <div style="padding:5px"><span>{{ job.job_notes }}</span></div>
                                     <div style="padding:5px"><span></span></div>
                                 </div>

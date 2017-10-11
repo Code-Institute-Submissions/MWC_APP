@@ -1,6 +1,8 @@
 
 {% extends "base.html" %} 
 {% load staticfiles %}
+{% load humanize %}
+{% load app_tags %} 
 {% load job_filters %}
 {% load user_tags %} 
 {% block content %} 
@@ -14,11 +16,11 @@
 <ul class="collapsible" data-collapsible="accordion">
     {% for date in jobs_by_date %}
     <li>        
-        <div class="collapsible-header active {% css_colour user %}  
+        <div class="collapsible-header {% css_colour user %}  
             {% if forloop.counter == 1 %}darken-4{% else %}darken-2{% endif %} white-text">
-           <h6>{{ date.grouper|title }}</h6>
+           <h6>{{ date.grouper|naturalday|title }}</h6>
             <span class="new badge blue" data-badge-caption="">{{date.list|length }} 
-                {% if date.list|length == 1 %}job{% else %}jobs{% endif %} / £{{ date.list|running_total }}</span>            
+                {% if date.list|length == 1 %}job{% else %}jobs{% endif %} / {{ date.list|running_total|currency }}</span>            
         </div>
         <div class="collapsible-body">
                 <table class="striped">
@@ -35,7 +37,7 @@
                     {% for job in date.list|dictsortreversed:"customer" %} 
                     <tr>
                         <td>{{ job.customer }}</td>
-                        <td>£{{ job.price }}</td>
+                        <td>{{ job.price|currency }}</td>
                         <td style="max-width: 200px" class="truncate">{{ job.job_notes }}</td>
                         <td><button id="{{ job.id }}" 
                             class="job_details_btn btn-floating waves-effect waves-light"
@@ -48,7 +50,7 @@
                     {% endfor %} 
                     <tr>
                         <td></td>
-                        <td>Total: £{{ date.list|running_total }}</td>
+                        <td>Total: {{ date.list|running_total|currency }}</td>
                         <td><form action="{% url 'payment' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="amount" value="{{ date.list|running_total|mul:100|floatformat }}"></input>
