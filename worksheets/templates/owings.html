@@ -9,10 +9,11 @@
 
 {% block content %} 
 <div class="container">
-        <div>
-                <h4 class="{% css_colour user %}-text text-darken-3">My Owings</h4>
-            </div>
-    
+    <div class="row">
+        <div class="card {% css_colour user %} darken-4" style="padding: 10px">
+            <h4 class="white-text">My Owings</h4>
+        </div>
+    </div>
      <div class="row">
         <div class="search-wrapper card input-field col s12 m6">
           <i class="material-icons prefix">search</i>
@@ -49,7 +50,7 @@
     {% endfor %}
     
     </tbody>
-  </table>
+</table>
 
   <!-- Job Details Modal -->
 <div id="job_details_modal" class="modal">

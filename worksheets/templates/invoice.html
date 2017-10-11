@@ -9,8 +9,8 @@
 {% regroup invoices by scheduled_date as jobs_by_date %}
 
 <div class="container">
-        <div>
-                <h4 class="{% css_colour user %}-text text-darken-3">My Invoices</h4>
+    <div class="card {% css_colour user %} darken-4" style="padding: 10px">
+        <h4 class="white-text">My Invoices</h4>
         </div>
     
 <ul class="collapsible" data-collapsible="accordion">

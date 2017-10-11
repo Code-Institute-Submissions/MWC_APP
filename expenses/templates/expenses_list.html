@@ -4,13 +4,13 @@
 {% load customer_tags %}
 {% block content %}
 <div class="container">
-    <div class="row valign-wrapper">
-        <div class="col s10">
-            <h4 class="{% css_colour user %}-text text-darken-3">My expenses</h4>
+    <div class="row">
+        <div class="card {% css_colour user %} darken-4" style="padding: 10px">
+            <h4 class="white-text">My expenses</h4>
+            <a href="/expenses/new/" class="btn-floating btn-small halfway-fab waves-effect waves-light red right tooltipped"
+            data-position="top" data-delay="400" data-tooltip="Add a new expense item"><i class="material-icons">add</i></a>
         </div>
-        <div class="col s2">
-            <a href="/expenses/new/" class="btn-floating btn-small waves-effect waves-light red"><i class="material-icons">add</i></a>
-        </div>
+        
     </div>
 
     <table class="striped bordered">
@@ -29,7 +29,9 @@
                     <td>{{ expense.date }}</div></td>
                     <td>{{ expense.amount|currency }}</div></td>
                     <td  style="max-width:100px"><div class="truncate">{{ expense.notes }}</div></td>
-                    <td><a href={{ expense.id }} class="btn-floating btn-small waves-effect waves-light {% load job_filters %} {% css_colour user %}">
+                    <td><a href={{ expense.id }} 
+                            class="btn-floating btn-small waves-effect waves-light {% load job_filters %} {% css_colour user %} tooltipped"
+                            data-position="top" data-delay="400" data-tooltip="Edit this item">
                             <i class="material-icons">create</i>
                         </a>
                         </td>
