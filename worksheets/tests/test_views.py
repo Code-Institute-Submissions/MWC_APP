@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 from franchises.models import Franchise
+from django.db.models import Max
 from customers.models import Customer, Property_type
 from accounts.models import User
 from django.contrib.auth.models import Group
@@ -97,17 +98,17 @@ class WorksheetViewsTest(TestCase):
             property_type=cls.pt
         )
         due = Job_status.objects.create(job_status_description='Due')
-        Jobs.objects.create(
+        cls.job1 = Jobs.objects.create(
             customer=cls.cust1,
-            scheduled_date=datetime.datetime.now(),
-            allocated_date=datetime.datetime.now(),
+            scheduled_date=datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d'),
+            allocated_date=datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d'),
             price=99,
             job_status=due
         )
-        Jobs.objects.create(
+        cls.job2 = Jobs.objects.create(
             customer=cls.cust1,
-            scheduled_date=datetime.datetime.now(),
-            allocated_date=datetime.datetime.now(),
+            scheduled_date=datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d'),
+            allocated_date=datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d'),
             price=199,
             job_status=due
         )
@@ -189,31 +190,30 @@ class WorksheetViewsTest(TestCase):
     def test_job_delete_view_loads_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.post(
-            reverse('job_delete', kwargs={'pk': 2}), follow=True)
+            reverse('job_delete', kwargs={'pk': self.job2.id}), follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, '/customers/')
-        count = Jobs.objects.filter(pk=2).count()
+        count = Jobs.objects.filter(pk=self.job2.id).count()
         self.assertEqual(count, 0)
 
     def test_job_update_view_loads_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
-        response = self.client.get(reverse('job_update', kwargs={'pk': 1}))
+        response = self.client.get(reverse('job_update', kwargs={'pk': self.job1.id}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_add.html')
 
     def test_job_update_view_can_update_job(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         # update a job:
-        job = Jobs.objects.get(pk=1)
-        customer = job.customer.id
-        scheduled_date = job.scheduled_date
-        allocated_date = job.allocated_date
-        completed_date = job.completed_date
-        price = job.price
-        job_notes = job.job_notes
-        job_status = job.job_status.id
-        payment_status = job.payment_status
-        window_cleaner = job.window_cleaner
+        customer = self.job1.customer.id
+        scheduled_date = datetime.datetime.strptime(self.job1.scheduled_date,"%Y-%m-%d").date()
+        allocated_date = datetime.datetime.strptime(self.job1.allocated_date,"%Y-%m-%d").date()
+        completed_date = self.job1.completed_date
+        price = self.job1.price
+        job_notes = self.job1.job_notes
+        job_status = self.job1.job_status.id
+        payment_status = self.job1.payment_status
+        window_cleaner = self.job1.window_cleaner
         if allocated_date == None:
             new_date = datetime.datetime.now() + datetime.timedelta(days=30)
         else:
@@ -223,12 +223,12 @@ class WorksheetViewsTest(TestCase):
                     'customer': customer,
                     'job_status': job_status,
                     'scheduled_date': scheduled_date,
-                    'allocated_date': new_date
+                    'allocated_date': new_date 
                 }
         response = self.client.post(
-            reverse('job_update', kwargs={'pk': 1}), 
+            reverse('job_update', kwargs={'pk': self.job1.id}), 
                data_valid, follow=True)
-        job_updated = Jobs.objects.get(pk=1)
+        job_updated = Jobs.objects.get(pk=self.job1.id)
         allocated_date = job_updated.allocated_date 
         self.assertEqual(allocated_date, new_date)
 
@@ -269,35 +269,37 @@ class WorksheetViewsTest(TestCase):
     #     self.assertRedirects(response, '/customers/1/jobs/')
     #     self.assertEqual(cust.email, 'acc@clarke.com')
 
-    def test_job_add_view_redirects_for_invalid_data(self):
-        self.client.login(username='testuser1', password='1a2b3c4d5e')
-        job = Jobs.objects.get(pk=1)
-        customer = job.customer
-        scheduled_date = job.scheduled_date
-        allocated_date = job.allocated_date
-        completed_date = job.completed_date
-        price = job.price
-        job_notes = job.job_notes
-        job_status = job.job_status
-        payment_status = job.payment_status
-        window_cleaner = job.window_cleaner
-        # with 'title' missing:
-        data_invalid = {
-            customer: customer,
-            scheduled_date: scheduled_date,
-            allocated_date: allocated_date,
-            completed_date: completed_date,
-            price: price,
-            job_notes: job_notes,
-            job_status: job_status,
-            payment_status: payment_status,
-            window_cleaner: window_cleaner
-        }
-        response = self.client.post(reverse('customer_add'), data_invalid)
-        self.assertEqual(response.status_code, 200)
-        #check no customer was created:
-        count = Customer.objects.filter(pk=6).count()
-        self.assertEqual(count, 0)
+    # def test_job_add_view_redirects_for_invalid_data(self):
+    #     self.client.login(username='testuser1', password='1a2b3c4d5e')
+    #     job = Jobs.objects.get(pk=max_id)
+    #     customer = job.customer
+    #     scheduled_date = job.scheduled_date
+    #     allocated_date = job.allocated_date
+    #     completed_date = job.completed_date
+    #     price = job.price
+    #     job_notes = job.job_notes
+    #     job_status = job.job_status
+    #     payment_status = job.payment_status
+    #     window_cleaner = job.window_cleaner
+    #     # with 'title' missing:
+    #     data_invalid = {
+    #         'customer': customer,
+    #         'scheduled_date': scheduled_date,
+    #         'allocated_date': allocated_date,
+    #         'completed_date': completed_date,
+    #         'price': price,
+    #         'job_notes': job_notes,
+    #         'job_status': job_status,
+    #         'payment_status': payment_status,
+    #         'window_cleaner': window_cleaner
+    #     }
+    #     max_id_dic = Jobs.objects.all().aggregate(Max('id')) 
+    #     max_id = max_id_dic['id__max'] 
+    #     response = self.client.post(reverse('job_add', kwargs={'customer': 1}), data_invalid)
+    #     self.assertEqual(response.status_code, 200)
+    #     #check no customer was created:
+    #     count = Customer.objects.filter(pk=6).count()
+    #     self.assertEqual(count, 0)
 
     def test_worksheet_view_loads_for_window_cleaner(self):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
@@ -322,7 +324,7 @@ class WorksheetViewsTest(TestCase):
 
     def test_job_details_view_loads_for_window_cleaner(self):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
-        response = self.client.get(reverse('job_details', kwargs={'pk': 1}))
+        response = self.client.get(reverse('job_details', kwargs={'pk': self.job1.id}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_details.html')
         # TODO: needs to be done in-browser
@@ -338,5 +340,5 @@ class WorksheetViewsTest(TestCase):
     def test_job_paid_view_loads_for_window_cleaner(self):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
         Payment_status.objects.create(payment_status_description="paid")
-        response = self.client.post(reverse('job_paid', kwargs={'pk': 1}))
+        response = self.client.post(reverse('job_paid', kwargs={'pk': self.job1.id}))
         self.assertEqual(response.status_code, 200)

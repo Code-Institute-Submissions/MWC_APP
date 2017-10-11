@@ -17,7 +17,7 @@ class JobUpdateForm(forms.ModelForm):
         job_status = cleaned_data.get("job_status")
         payment_status = cleaned_data["payment_status"] #!!brackets because dictionary!!
         window_cleaner = cleaned_data["window_cleaner"]
-        allocated_date = cleaned_data["allocated_date"]
+        allocated_date = cleaned_data.get("allocated_date")
         if completed_date is None and str(job_status) == 'Completed':
             raise forms.ValidationError(
                         "You are trying to check in a job as completed with no completed date - please enter a completed date"

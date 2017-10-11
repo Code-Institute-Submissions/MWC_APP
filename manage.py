@@ -6,7 +6,7 @@ import dotenv
 
 if __name__ == "__main__":
     dotenv.read_dotenv('.env_dev')
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "MWC_APP.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "MWC_APP.settings_dev")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:

@@ -19,121 +19,119 @@ from django_dynamic_fixture import G
 # views test
 
 class CustomerViewsTest(TestCase):
-    fixtures = ['user-data.json']
+   # fixtures = ['fixture.json']
 
-    # @classmethod
-    # def setUpTestData(cls):
-    #     # create 2 franchises
-    #     cls.f1 = G(Franchise)
-    #     cls.f2 = G(Franchise)
-    #     cls.f3 = G(Franchise)
-    #     # create groups:
-    #     Group.objects.create(name='office_admin')
-    #     Group.objects.create(name='window_cleaner')
-    #     # create a user:
-    #     cls.user1 = User.objects.create_user(
-    #         username='testuser1',
-    #         password='1a2b3c4d5e',
-    #         franchise=cls.f1
-    #     )
-    #     cls.user2 = User.objects.create_user(
-    #         username='testuser2',
-    #         password='1a2b3c4d5e',
-    #         franchise=cls.f1
-    #     )
-    #     cls.user3 = User.objects.create_user(
-    #         username='testuser3',
-    #         password='1a2b3c4d5e',
-    #         franchise=cls.f2
-    #     )
-    #     cls.user4 = User.objects.create_user(
-    #         username='testuser4',
-    #         password='1a2b3c4d5e',
-    #         franchise=cls.f2
-    #     )
-    #     cls.user5 = User.objects.create_user(
-    #         username='testuser5',
-    #         password='1a2b3c4d5e',
-    #         franchise=cls.f3
-    #     )
-    #     # add users to groups
-    #     group = Group.objects.get(name='office_admin')
-    #     group.user_set.add(cls.user1)
-    #     group = Group.objects.get(name='window_cleaner')
-    #     group.user_set.add(cls.user2)
-    #     group = Group.objects.get(name='window_cleaner')
-    #     group.user_set.add(cls.user3)
-    #     group = Group.objects.get(name='office_admin')
-    #     group.user_set.add(cls.user4)
-    #     group = Group.objects.get(name='office_admin')
-    #     group.user_set.add(cls.user5)
-    #     # create property_types:
-    #     cls.pt = Property_type.objects.create(property_type='House')
-    #     # create some customers
-    #     # create some customers
-    #     cls.cust1 = Customer.objects.create(
-    #         title="Mr.",
-    #         first_name='John',
-    #         last_name='Brown',
-    #         email='jb@jb.com',
-    #         address_line_1='1 Brown Avenue',
-    #         city='Brown City',
-    #         postcode='BN1 6JB',
-    #         franchise=cls.f1,
-    #         frequency=4,
-    #         property_type=cls.pt
-    #     )
-    #     cls.cust2 = Customer.objects.create(
-    #         title="Mrs.",
-    #         first_name='Gemma',
-    #         last_name='Brown',
-    #         email='gb@gb.com',
-    #         address_line_1='2 Brown Avenue',
-    #         city='Brown City',
-    #         postcode='BN2 6JB',
-    #         franchise=cls.f2,
-    #         frequency=4,
-    #         property_type=cls.pt
-    #     )
-    #     cls.cust3 = Customer.objects.create(
-    #         title="Ms.",
-    #         first_name='David',
-    #         last_name='White',
-    #         email='dw@dw.com',
-    #         address_line_1='22 White Road',
-    #         city='London',
-    #         postcode='N2',
-    #         franchise=cls.f1,
-    #         frequency=4,
-    #         property_type=cls.pt
-    #     )
-    #     due = Job_status.objects.create(job_status_description='Due')
-    #     Jobs.objects.create(
-    #         customer=cls.cust1,
-    #         scheduled_date=datetime.datetime.now(),
-    #         allocated_date=datetime.datetime.now(),
-    #         price=99,
-    #         job_status=due
-    #     )
-    #     Jobs.objects.create(
-    #         customer=cls.cust1,
-    #         scheduled_date=datetime.datetime.now(),
-    #         allocated_date=datetime.datetime.now(),
-    #         price=999,
-    #         job_status=due
-    #     )
-    #     Jobs.objects.create(
-    #         customer=cls.cust2,
-    #         scheduled_date=datetime.datetime.now(),
-    #         allocated_date=datetime.datetime.now(),
-    #         price=999,
-    #         job_status=due
-    #     )
-    # # https://stackoverflow.com/questions/11885211/how-to-write-a-unit-test-for-a-django-view
+    @classmethod
+    def setUpTestData(cls):
+        # create franchises
+        cls.f1 = G(Franchise)
+        cls.f2 = G(Franchise)
+        cls.f3 = G(Franchise)
+        # create groups:
+        Group.objects.create(name='office_admin')
+        Group.objects.create(name='window_cleaner')
+        # create a user:
+        cls.user1 = User.objects.create_user(
+            username='testuser1',
+            password='1a2b3c4d5e',
+            franchise=cls.f1
+        )
+        cls.user2 = User.objects.create_user(
+            username='testuser2',
+            password='1a2b3c4d5e',
+            franchise=cls.f1
+        )
+        cls.user3 = User.objects.create_user(
+            username='testuser3',
+            password='1a2b3c4d5e',
+            franchise=cls.f2
+        )
+        cls.user4 = User.objects.create_user(
+            username='testuser4',
+            password='1a2b3c4d5e',
+            franchise=cls.f2
+        )
+        cls.user5 = User.objects.create_user(
+            username='testuser5',
+            password='1a2b3c4d5e',
+            franchise=cls.f3
+        )
+        # add users to groups
+        group = Group.objects.get(name='office_admin')
+        group.user_set.add(cls.user1)
+        group = Group.objects.get(name='window_cleaner')
+        group.user_set.add(cls.user2)
+        group = Group.objects.get(name='window_cleaner')
+        group.user_set.add(cls.user3)
+        group = Group.objects.get(name='office_admin')
+        group.user_set.add(cls.user4)
+        group = Group.objects.get(name='office_admin')
+        group.user_set.add(cls.user5)
+        # create property_types:
+        cls.pt = Property_type.objects.create(property_type='House')
+        # create some customers
+        # create some customers
+        cls.cust1 = Customer.objects.create(
+            title="Mr.",
+            first_name='John',
+            last_name='Brown',
+            email='jb@jb.com',
+            address_line_1='1 Brown Avenue',
+            city='Brown City',
+            postcode='BN1 6JB',
+            franchise=cls.f1,
+            frequency=4,
+            property_type=cls.pt
+        )
+        cls.cust2 = Customer.objects.create(
+            title="Mrs.",
+            first_name='Gemma',
+            last_name='Brown',
+            email='gb@gb.com',
+            address_line_1='2 Brown Avenue',
+            city='Brown City',
+            postcode='BN2 6JB',
+            franchise=cls.f2,
+            frequency=4,
+            property_type=cls.pt
+        )
+        cls.cust3 = Customer.objects.create(
+            title="Ms.",
+            first_name='David',
+            last_name='White',
+            email='dw@dw.com',
+            address_line_1='22 White Road',
+            city='London',
+            postcode='N2',
+            franchise=cls.f1,
+            frequency=4,
+            property_type=cls.pt
+        )
+        due = Job_status.objects.create(job_status_description='Due')
+        Jobs.objects.create(
+            customer=cls.cust1,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=99,
+            job_status=due
+        )
+        Jobs.objects.create(
+            customer=cls.cust1,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=999,
+            job_status=due
+        )
+        Jobs.objects.create(
+            customer=cls.cust2,
+            scheduled_date=datetime.datetime.now(),
+            allocated_date=datetime.datetime.now(),
+            price=999,
+            job_status=due
+        )
+    # https://stackoverflow.com/questions/11885211/how-to-write-a-unit-test-for-a-django-view
 
-    def setUp(self):
-        self.model.refresh_from_db()
-        
+          
     # these test if views are denied for anonymous calls: -----------------------------------
     def test_customers_call_view_denies_anonymous(self):
         response = self.client.get(reverse('customers'))
