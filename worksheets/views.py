@@ -51,8 +51,8 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
         # print self.kwargs['customer']
         return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
 
-    def form_invalid(self, form):
-        return JsonResponse(form.errors, status=400)
+    # def form_invalid(self, form):
+    #     return JsonResponse(form.errors, status=400)
 
     def form_valid(self, form):
         return super(JobCreate, self).form_valid(form)

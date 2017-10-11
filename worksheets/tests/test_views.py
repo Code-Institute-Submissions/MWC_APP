@@ -238,68 +238,57 @@ class WorksheetViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'job_add.html')
 
-    # def test_job_add_view_creates_a_job_with_valid_data(self):
-    #     self.client.login(username='testuser1', password='1a2b3c4d5e')
-    #     # create a job:
-    #     job = Jobs.objects.get(pk=1)
-    #     customer = job.customer
-    #     scheduled_date = job.scheduled_date
-    #     allocated_date = job.allocated_date
-    #     completed_date = job.completed_date
-    #     price = job.price
-    #     job_notes = job.job_notes
-    #     job_status = job.job_status
-    #     payment_status = job.payment_status
-    #     window_cleaner = job.window_cleaner
-    #     data_valid = {
-    #         customer: customer,
-    #         scheduled_date: scheduled_date,
-    #         allocated_date: allocated_date,
-    #         completed_date: completed_date,
-    #         price: price,
-    #         job_notes: job_notes,
-    #         job_status: job_status,
-    #         payment_status: payment_status,
-    #         window_cleaner: window_cleaner
-    #     }
-    #     print customer
-    #     response = self.client.post(
-    #         reverse('job_add',  kwargs={'customer': 1}), data_valid)
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertRedirects(response, '/customers/1/jobs/')
-    #     self.assertEqual(cust.email, 'acc@clarke.com')
+    def test_job_add_view_creates_a_job_with_valid_data(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        max_id_before = Jobs.objects.count() 
+        # create a job:
+        customer = self.job1.customer.id
+        scheduled_date = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d')
+        allocated_date = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d')
+        price = self.job1.price
+        job_notes = self.job1.job_notes
+        job_status = self.job1.job_status.id
+        data_valid = {
+            'customer': customer,
+            'scheduled_date': scheduled_date,
+            'allocated_date': allocated_date,
+            'price': price,
+            'job_notes': job_notes,
+            'job_status': job_status,
+        }
+        response = self.client.post(
+            reverse('job_add',  kwargs={'customer': self.job1.customer.id}), data_valid)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/customers/%s/jobs/' % self.job1.customer.id)
+        # check an extra id has been created:
+        max_id_after = Jobs.objects.count() 
+        self.assertEqual(max_id_before + 1, max_id_after)
 
-    # def test_job_add_view_redirects_for_invalid_data(self):
-    #     self.client.login(username='testuser1', password='1a2b3c4d5e')
-    #     job = Jobs.objects.get(pk=max_id)
-    #     customer = job.customer
-    #     scheduled_date = job.scheduled_date
-    #     allocated_date = job.allocated_date
-    #     completed_date = job.completed_date
-    #     price = job.price
-    #     job_notes = job.job_notes
-    #     job_status = job.job_status
-    #     payment_status = job.payment_status
-    #     window_cleaner = job.window_cleaner
-    #     # with 'title' missing:
-    #     data_invalid = {
-    #         'customer': customer,
-    #         'scheduled_date': scheduled_date,
-    #         'allocated_date': allocated_date,
-    #         'completed_date': completed_date,
-    #         'price': price,
-    #         'job_notes': job_notes,
-    #         'job_status': job_status,
-    #         'payment_status': payment_status,
-    #         'window_cleaner': window_cleaner
-    #     }
-    #     max_id_dic = Jobs.objects.all().aggregate(Max('id')) 
-    #     max_id = max_id_dic['id__max'] 
-    #     response = self.client.post(reverse('job_add', kwargs={'customer': 1}), data_invalid)
-    #     self.assertEqual(response.status_code, 200)
-    #     #check no customer was created:
-    #     count = Customer.objects.filter(pk=6).count()
-    #     self.assertEqual(count, 0)
+    def test_job_add_view_redirects_for_invalid_data(self):
+        self.client.login(username='testuser1', password='1a2b3c4d5e')
+        max_id_before = Jobs.objects.count() 
+        print max_id_before, '---------------------------------'
+        # create a job:
+        customer = self.job1.customer.id
+        scheduled_date = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d')
+        allocated_date = datetime.datetime.strftime(datetime.datetime.now(),'%Y-%m-%d')
+        price = self.job1.price
+        job_notes = self.job1.job_notes
+        job_status = self.job1.job_status.id
+        data_valid = {
+            # 'customer': customer,
+            'scheduled_date': scheduled_date,
+            'allocated_date': allocated_date,
+            'price': price,
+            'job_notes': job_notes,
+            'job_status': job_status,
+        }
+        response = self.client.post(
+            reverse('job_add',  kwargs={'customer': self.job1.customer.id}), data_valid)
+        self.assertEqual(response.status_code, 200)
+        # check no extra job has been created:
+        max_id_after = Jobs.objects.count() 
+        self.assertEqual(max_id_before, max_id_after)
 
     def test_worksheet_view_loads_for_window_cleaner(self):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
