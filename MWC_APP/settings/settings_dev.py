@@ -24,7 +24,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv('DEBUG', False)))
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',') if os.getenv('ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(
+    ',') if os.getenv('ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -130,7 +131,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = False
-#overrides date_format if = True
+# overrides date_format if = True
 
 USE_TZ = True
 

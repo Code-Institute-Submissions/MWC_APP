@@ -1,9 +1,7 @@
-from django.conf.urls import url
-from customers.views import CustomersList, CustomerCreate, CustomerUpdate, CustomerDelete, CustomerJobList, CustomerMap
-#from django.conf import settings
-
-
 from . import views
+from django.conf.urls import url
+from customers.views import CustomersList, CustomerCreate, CustomerUpdate, \
+    CustomerDelete, CustomerJobList, CustomerMap
 
 urlpatterns = [
     url(r'^$', CustomersList.as_view(), name='customers'),

@@ -24,7 +24,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv('DEBUG', False)))
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',') if os.getenv('ALLOWED_HOSTS') else []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(
+    ',') if os.getenv('ALLOWED_HOSTS') else []
 
 
 # Application definition
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'stripe',
     'common',
+    'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -130,7 +132,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = False
-#overrides date_format if = True
+# overrides date_format if = True
 
 USE_TZ = True
 
@@ -160,3 +162,13 @@ DEBUG_TOOLBAR_CONFIG = {
 
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLISHABLE')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET')
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=worksheets,customers',
+    '--cover-html',
+]

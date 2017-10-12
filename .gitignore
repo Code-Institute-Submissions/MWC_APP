@@ -1,3 +1,4 @@
 .env_*
 *.pyc
 *.pyo
+.vscode/

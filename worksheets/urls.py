@@ -1,9 +1,10 @@
+from . import views
 from django.conf.urls import url
 from worksheets.views import WorkSheet
 from django.conf import settings
-from worksheets.views import JobCreate, JobUpdate, JobDelete, JobCheckIn, Invoice, JobDetails, Payment, Owings, OwingPaid
+from worksheets.views import JobCreate, JobUpdate, JobDelete, \
+    JobCheckIn, Invoice, JobDetails, Payment, Owings, OwingPaid
 
-from . import views
 
 urlpatterns = [
     url(r'^$', WorkSheet.as_view(), name='worksheets'),

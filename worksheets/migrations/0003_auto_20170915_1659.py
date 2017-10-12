@@ -17,23 +17,34 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='jobs',
             name='allocated_date',
-            field=models.DateField(blank=True, null=True),
+            field=models.DateField(
+                blank=True,
+                null=True),
         ),
         migrations.AlterField(
             model_name='jobs',
             name='completed_date',
-            field=models.DateField(blank=True, null=True),
+            field=models.DateField(
+                blank=True,
+                null=True),
         ),
         migrations.AlterField(
             model_name='jobs',
             name='payment_status',
             field=models.ForeignKey(
-                blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='worksheets.Payment_status'),
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='worksheets.Payment_status'),
         ),
         migrations.AlterField(
             model_name='jobs',
             name='window_cleaner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                                    related_name='jobs', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='jobs',
+                to=settings.AUTH_USER_MODEL),
         ),
     ]

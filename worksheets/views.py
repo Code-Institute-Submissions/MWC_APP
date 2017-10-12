@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from django.views.generic import UpdateView, DeleteView, CreateView, ListView, DetailView
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -17,6 +15,8 @@ from datetime import datetime, timedelta
 import stripe
 from django import forms
 from .forms import JobUpdateForm
+from django.views.generic import UpdateView, DeleteView, \
+    CreateView, ListView, DetailView
 
 
 class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -31,8 +31,11 @@ class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.all().filter(window_cleaner=user, job_status__job_status_description='due', allocated_date__isnull=False)
-        #jobs must be allocated and due before being checked in
+        queryset = Jobs.objects.all().filter(
+            window_cleaner=user,
+            job_status__job_status_description='due',
+            allocated_date__isnull=False)
+        # jobs must be allocated and due before being checked in
         return queryset
     group_required = u"window_cleaner"
 
@@ -42,14 +45,23 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
 
     model = Jobs
     fields = [
-        'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
-    ]
+        'customer',
+        'scheduled_date',
+        'allocated_date',
+        'completed_date',
+        'price',
+        'job_notes',
+        'job_status',
+        'payment_status',
+        'window_cleaner']
     template_name = 'job_add.html'
     initial = {'frequency': '4', 'job_status': '1'}  # 1 = 'due'
 
     def get_success_url(self):
         # print self.kwargs['customer']
-        return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
+        return reverse(
+            'customer_job_list', kwargs={
+                'pk': self.object.customer.id})
 
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
@@ -60,7 +72,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     def get_initial(self):
         # https://djangosnippets.org/snippets/2987/
         initials = super(JobCreate, self).get_initial()
-        initials['customer'] = self.kwargs['customer'] # hidden field
+        initials['customer'] = self.kwargs['customer']  # hidden field
         return initials
 
     def __init__(self, *args, **kwargs):
@@ -76,20 +88,22 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = JobUpdateForm
     # cannot use gemeric CBV form as need to overload clean()
     # fields = [
-    #     'customer', 'scheduled_date', 'allocated_date', 'completed_date', 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
+    #     'customer', 'scheduled_date', 'allocated_date', 'completed_date',
+    # 'price', 'job_notes', 'job_status', 'payment_status', 'window_cleaner'
     # ]
     template_name = 'job_add.html'
 
-    def get_success_url(self, *args, **kwargs):   
-        print self.object     
-        return reverse('customer_job_list',  kwargs={'pk': self.object.customer.id} )
-    
+    def get_success_url(self, *args, **kwargs):
+        print self.object
+        return reverse(
+            'customer_job_list', kwargs={
+                'pk': self.object.customer.id})
+
     # for debugging:
     # def form_invalid(self, form):
     #     return JsonResponse(form.errors, status=400)
-             
+
     group_required = u"office_admin"
-    
 
 
 class JobDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
@@ -104,7 +118,8 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
     """ view called by AJAX from worksheet. Uses a stored procedure on db
         to complete jobs (paid or owed) and create a new one based on the
         completed date and the frequency.
-        This could easily be done with the Django ORM but in a real-life situation 
+        This could easily be done with the Django ORM
+        but in a real-life situation
         the check-in process could be very complex.
         Disadvantage: can't be unit-tested
      """
@@ -129,7 +144,9 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
 
 
 class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
-    """ View to display the completed jobs to be paid by cleaners via Stripe """
+    """ View to display the completed jobs to
+        be paid by cleaners via Stripe
+    """
 
     template_name = "invoice.html"
     model = Jobs
@@ -174,14 +191,14 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         token = request.POST['stripeToken']
         date = request.POST['date']
         user = self.request.user
-        #get completed jobs from the date for current user
+        # get completed jobs from the date for current user
         sum_price = Jobs.objects.filter(
             completed_date=date,
             window_cleaner=user,
             job_status__job_status_description='completed'
-            ).aggregate(Sum('price'))
+        ).aggregate(Sum('price'))
         amount = int(sum_price['price__sum'] * 100)
-        #Stripe expects int in cents
+        # Stripe expects int in cents
         charge = stripe.Charge.create(
             amount=amount,
             currency='gbp',
@@ -222,9 +239,9 @@ class OwingPaid(JSONResponseMixin, GroupRequiredMixin,
     def post(self, request, *args, **kwargs):
         job = Jobs.objects.get(pk=self.kwargs['pk'])
         paid_status = Payment_status.objects.get(
-                payment_status_description='paid')
+            payment_status_description='paid')
         job.payment_status = paid_status
-        try:            
+        try:
             job.save()
             json_dict = {
                 'message': "Job has been checked in as paid",
@@ -234,8 +251,7 @@ class OwingPaid(JSONResponseMixin, GroupRequiredMixin,
         except DatabaseError as e:
             json_dict = {
                 'message': "There was an error saving the record (" + e.message + ")",
-                'result': "failure"
-            }
+                'result': "failure"}
         return self.render_json_response(json_dict)
 
     group_required = u"window_cleaner"

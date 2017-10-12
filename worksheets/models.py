@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models import Sum
 
 
-
 class Job_status(models.Model):
     job_status_description = models.CharField(
         max_length=50, blank=False, null=False)
@@ -36,12 +35,18 @@ class Jobs(models.Model):
     payment_status = models.ForeignKey(Payment_status, blank=True, null=True)
     job_notes = models.TextField(blank=True, null=True)
     window_cleaner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=None, blank=True, null=True, related_name='jobs', limit_choices_to={'groups__name': 'window_cleaner'})
+        settings.AUTH_USER_MODEL,
+        on_delete=None,
+        blank=True,
+        null=True,
+        related_name='jobs',
+        limit_choices_to={
+            'groups__name': 'window_cleaner'})
     invoiced = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-scheduled_date"]
-    
+
     def __str__(self):
         return str(self.scheduled_date)
 
