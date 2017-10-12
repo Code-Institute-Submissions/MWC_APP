@@ -129,7 +129,10 @@
                         </div>
                 </div>
         </div>
-        {% endif %} {% endblock %} {% block extra_js %}
+        {% endif %} 
+        {% endblock %} 
+        {% block extra_js %}
+        <script src="{% static 'jquery.are_you_sure.js' %}"></script>
         <script>
                 $('.datepicker').pickadate({
                         selectMonths: true, // Creates a dropdown to control month
@@ -143,6 +146,8 @@
 
                 $(document).ready(function () {
                         $('.modal').modal();
+                        $('form').areYouSure( {'message':'This customer will not be saved!'} );
+                        
                 });
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4LQTdn114Lqs-kaY5JBFGab7slbEMFgc&libraries=places&callback=initAutocomplete"

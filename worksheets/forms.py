@@ -3,7 +3,7 @@ from django import forms
 from .models import Jobs
 
 class JobUpdateForm(forms.ModelForm):
-    """ needs special validatiomn so cannot use generic CBV form """
+    """ needs special validation so cannot use generic CBV form """
 
     class Meta:
         model = Jobs
@@ -13,6 +13,7 @@ class JobUpdateForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(JobUpdateForm, self).clean()
+        scheduled_date = cleaned_data.get("scheduled_date")
         completed_date = cleaned_data.get("completed_date")
         job_status = cleaned_data.get("job_status")
         payment_status = cleaned_data["payment_status"] #!!brackets because dictionary!!
@@ -38,6 +39,33 @@ class JobUpdateForm(forms.ModelForm):
             raise forms.ValidationError(
                         "Job has a completed date but not a 'completed' job status - please correct"
                     )
+        elif str(job_status) == 'Due' and str(payment_status) == 'Paid':
+            raise forms.ValidationError(
+                        "Job has 'Due' status but is set as paid - please correct"
+                    )
+        elif str(job_status) == 'Booked' and str(payment_status) == 'Paid':
+            raise forms.ValidationError(
+                        "Job has 'Booked' status but is set as paid - please correct"
+                    )
+        elif scheduled_date is None:
+            raise forms.ValidationError(
+                        "Please enter a due date"
+                        )
+        # keep this order:
+        elif str(job_status) == 'Booked' and window_cleaner is None and allocated_date is None:
+            raise forms.ValidationError(
+                        "Job is booked - please enter a window cleaner and an allocated date"
+                    )
+        elif str(job_status) == 'Booked' and allocated_date is None:
+            raise forms.ValidationError(
+                        "Job is booked - please enter an allocated date"
+                    )        
+        elif str(job_status) == 'Booked' and window_cleaner is None:
+            raise forms.ValidationError(
+                        "Job is booked - please enter a window cleaner"
+                    )
+        
+
 
         else:
             return cleaned_data

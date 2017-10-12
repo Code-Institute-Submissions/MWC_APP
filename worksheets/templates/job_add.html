@@ -5,21 +5,22 @@
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'alert.css' %}" type="text/css" />
 {% endblock %}
+
 {% block content %}
 
-<div class="container">
-    <form method="POST" class="post-form">{% csrf_token %}   
-            {% if form.non_field_errors %}
+    <form method="POST" class="post-form" id="job_edit">{% csrf_token %}   
+        {% if form.non_field_errors %}
+        <div class="row">
             <div class="alert z-depth-2">
-                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-                    <p>{{ form.non_field_errors }}</p>
-                  </div>  
-           {% endif %}
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                <p>{{ form.non_field_errors }}</p>
+            </div>  
+        </div>
+        {% endif %}
         <div class="row">
                <div style="display:none"> <h3> {{ form.customer }} </h3></div>
               
-            <div class="col s-2 fieldWrapper">
-                {{ form.scheduled_date.errors }}
+            <div class="col s-2 fieldWrapper">                
                 <label for="{{ form.scheduled_date.id_for_label }}">Due Date:</label> {{ form.scheduled_date|add_class:"datepicker" }}
             </div>
             <div class="col s-2 fieldWrapper">
@@ -51,40 +52,41 @@
                     <label for="{{ form.job_notes.id_for_label }}">Job Notes:</label> {{ form.job_notes }}
             </div>
         </div>
-    <div class="col s-8">
-            <button class="btn waves-effect waves-light left" type="submit" name="action">Save
-    <i class="material-icons right">check_circle</i>
-    </button>
+        <button class="btn waves-effect waves-light left" type="submit" name="action">Save
+        <i class="material-icons right">check_circle</i>
+        </button>
 </form>
-    {% if not form.instance.id %}
-    <a href="{% url 'customer_job_list' pk=view.kwargs.customer %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
-    {% endif %}
-</div>
+{% if not form.instance.id %} 
+<!-- will show only for new records -->
+<a href="{% url 'customer_job_list' pk=view.kwargs.customer %}" class="waves-effect waves-light btn red right"><i class="material-icons right">cancel</i>Cancel</a>
+{% endif %}
+
 {% if form.instance.id %}
-<!-- Modal Trigger -->
-<div class="col s-2">
-    <a class="waves-effect waves-light btn modal-trigger red right" href="#modal_confirm"><i class="material-icons right">delete</i>Delete</a>
-</div>
+    <!-- Modal Trigger for delete confirm -->
+    <div class="col s-2">
+        <a class="waves-effect waves-light btn modal-trigger red right" href="#modal_confirm"><i class="material-icons right">delete</i>Delete</a>
+    </div>
 
 
-<!-- Modal Structure -->
-<div id="modal_confirm" class="modal bottom-sheet">
-    <div class="modal-content">
-        <h5>Are you sure you want to delete this job?</h5><br>
-        <div class="row">
-            <form method="POST" class="post-form" action="{% url 'job_delete' jobs.id %}">{% csrf_token %}
-                <button class="btn waves-effect waves-light left red" type="submit" name="action">
-                Yes, delete</button>
-            </form>
-            <a href="#!" class="btn waves-effect waves-light right modal-action modal-close">
-                    Cancel</a>
+    <!-- Modal Structure for delete confirm -->
+    <div id="modal_confirm" class="modal bottom-sheet">
+        <div class="modal-content">
+            <h5>Are you sure you want to delete this job?</h5><br>
+            <div class="row">
+                <form method="POST" class="post-form" action="{% url 'job_delete' jobs.id %}">{% csrf_token %}
+                    <button class="btn waves-effect waves-light left red" type="submit" name="action">
+                    Yes, delete</button>
+                </form>
+                <a href="#!" class="btn waves-effect waves-light right modal-action modal-close">
+                        Cancel</a>
+            </div>
         </div>
     </div>
-</div>
 {% endif %}
 {% endblock %} 
 
 {% block extra_js %}
+<script src="{% static 'jquery.are_you_sure.js' %}"></script>
 <script>
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
@@ -97,9 +99,11 @@
     });
 
     $(document).ready(function () {
-        // the "href" attribute of the modal trigger must specify the modal ID that wants to be triggered
         $('.modal').modal();
+        $('form').areYouSure( {'message':'This job will not be saved!'} );
+        //displays an alert when navigating off page & form dirty        
     });
 
 </script>
+
 {% endblock %}

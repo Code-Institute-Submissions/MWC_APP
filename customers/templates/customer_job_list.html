@@ -41,12 +41,17 @@
     <tbody>
       {% for job in customer.jobs.all %} {% comment %} no need for _set since related_name has been set {% endcomment %}
       {% comment %} highlight due job:   {% endcomment %}
-      <tr{% if not job.completed_date %} class="green lighten-2" {% endif %}
-      {% job_is_owed job.payment_status as job_owed %} {% if job_owed %} class="red lighten-2" {% endif %}>
+      <tr
+      {% job_is_owed job.payment_status as job_owed %}
+      {% job_is_booked job.job_status as job_booked %}
+       {% if job_owed %} class="red lighten-2" 
+       {% elif job_booked %} class="blue lighten-1 white-text"
+       {% elif not job.completed_date %} class="green lighten-2"
+       {% endif %}>
         <td>{{ job.scheduled_date|date:"D j N Y"|naturalday }}</td>
-        <td>{{ job.completed_date|naturalday|date:"d/m/y"|default:"Not completed" }}</td>
-        <td>£{{ job.price|currency }}</td>
-        <td>{{ job.job_status }}</td>
+        <td>{{ job.completed_date|default:"Not completed"|naturalday|title }}</td>
+        <td>{{ job.price|currency }}</td>
+        <td {% if not job.completed_date %} class = "black-text" style="font-weight: bold"{% endif %}>{{ job.job_status }}</td>
         <td>{{ job.payment_status|default:"----" }}</td>
         <td><a href="{% url 'job_update' job.id %}" class="btn-floating btn-small waves-effect waves-light {% css_colour user %}  lighten-2">
                             <i class="material-icons">create</i>

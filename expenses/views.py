@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-#from django.http import JsonResponse
-
 from expenses.models import Expenses
 from braces.views import GroupRequiredMixin
 from django.core.exceptions import ValidationError
