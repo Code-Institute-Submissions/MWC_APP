@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from __future__ import unicode_literals
 from django import template
-from worksheets.models import Jobs
+from worksheets.models import Job
 
 register = template.Library()
 

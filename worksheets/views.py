@@ -10,7 +10,7 @@ from django.db import connection, DatabaseError
 from django.db.models import Sum
 from django.urls import reverse
 from braces.views import GroupRequiredMixin, JSONResponseMixin
-from worksheets.models import Jobs, Payment_status
+from worksheets.models import Job, PaymentStatus
 from datetime import datetime, timedelta
 import stripe
 from django import forms
@@ -23,7 +23,7 @@ class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
     """  The main worksheet view showing jobs to be done by Window Cleaners """
 
     template_name = "worksheet.html"
-    model = Jobs
+    model = Job
     fields = [
         'customer', 'allocated_date', 'price', 'job_notes'
     ]
@@ -31,7 +31,7 @@ class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.all().filter(
+        queryset = Job.objects.all().filter(
             window_cleaner=user,
             job_status__job_status_description='due',
             allocated_date__isnull=False)
@@ -43,7 +43,7 @@ class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
 class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     """ view to create jobs for customers """
 
-    model = Jobs
+    model = Job
     fields = [
         'customer',
         'scheduled_date',
@@ -83,7 +83,7 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
 class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     """ view to update jobs """
 
-    model = Jobs
+    model = Job
     form_class = JobUpdateForm
     # cannot use gemeric CBV form as need to overload clean()
     # fields = [
@@ -107,7 +107,7 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 class JobDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     """ view to delete jobs for customers """
 
-    model = Jobs
+    model = Job
     success_url = "/customers/"
     group_required = "office_admin"
 
@@ -146,7 +146,7 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
     """
 
     template_name = "invoice.html"
-    model = Jobs
+    model = Job
     fields = [
         'customer', 'allocated_date', 'price', 'job_notes'
     ]
@@ -154,7 +154,7 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.filter(
+        queryset = Job.objects.filter(
             window_cleaner=user,
             job_status__job_status_description='completed',
             invoiced=False,
@@ -171,7 +171,7 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
 class JobDetails(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     """ view called by Ajax calls to display job details """
-    model = Jobs
+    model = Job
     template_name = "job_details.html"
     group_required = u"window_cleaner"
 
@@ -190,7 +190,7 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         date = request.POST['date']
         user = self.request.user
         # get completed jobs from the date for current user
-        sum_price = Jobs.objects.filter(
+        sum_price = Job.objects.filter(
             completed_date=date,
             window_cleaner=user,
             job_status__job_status_description='completed',
@@ -205,7 +205,7 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
             source=token,
         )
         # update paid jobs:
-        Jobs.objects.filter(
+        Job.objects.filter(
             completed_date=date,
             window_cleaner=user,
             job_status__job_status_description='completed',
@@ -218,7 +218,7 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
     """ view to display jobs that are owed by customers to Window Cleaners """
 
     template_name = "owings.html"
-    model = Jobs
+    model = Job
     fields = [
         'customer', 'allocated_date', 'price', 'job_notes'
     ]
@@ -226,7 +226,7 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Jobs.objects.filter(
+        queryset = Job.objects.filter(
             window_cleaner=user,
             payment_status__payment_status_description='Owed',
             job_status__job_status_description='Completed')
@@ -242,7 +242,7 @@ class OwingPaid(JSONResponseMixin, GroupRequiredMixin,
     """
 
     def post(self, request, *args, **kwargs):
-        job = Jobs.objects.get(pk=self.kwargs['pk'])
+        job = Job.objects.get(pk=self.kwargs['pk'])
         paid_status = Payment_status.objects.get(
             payment_status_description='paid')
         job.payment_status = paid_status

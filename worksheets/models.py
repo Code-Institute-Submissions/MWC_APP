@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Sum
 
 
-class Job_status(models.Model):
+class JobStatus(models.Model):
     job_status_description = models.CharField(
         max_length=50, blank=False, null=False)
 
@@ -13,7 +13,7 @@ class Job_status(models.Model):
         return self.job_status_description
 
 
-class Payment_status(models.Model):
+class PaymentStatus(models.Model):
     payment_status_description = models.CharField(
         max_length=50, blank=False, null=False)
 
@@ -21,7 +21,7 @@ class Payment_status(models.Model):
         return self.payment_status_description
 
 
-class Jobs(models.Model):
+class Job(models.Model):
     customer = models.ForeignKey(
         'customers.Customer',
         null=False,
@@ -31,8 +31,8 @@ class Jobs(models.Model):
     completed_date = models.DateField(blank=True, null=True)
     price = models.DecimalField(max_digits=5, decimal_places=2, null=False)
     job_notes = models.TextField(blank=True, null=True)
-    job_status = models.ForeignKey(Job_status, null=False)
-    payment_status = models.ForeignKey(Payment_status, blank=True, null=True)
+    job_status = models.ForeignKey(JobStatus, null=False)
+    payment_status = models.ForeignKey(PaymentStatus, blank=True, null=True)
     job_notes = models.TextField(blank=True, null=True)
     window_cleaner = models.ForeignKey(
         settings.AUTH_USER_MODEL,

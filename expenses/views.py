@@ -4,14 +4,14 @@ from __future__ import unicode_literals
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from expenses.models import Expenses
+from expenses.models import Expense
 from braces.views import GroupRequiredMixin
 from django.core.exceptions import ValidationError
 
 
 class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
     """ returns a list of expenses for current user (window cleaners only) """
-    model = Expenses
+    model = Expense
     context_object_name = 'expenses'
     template_name = 'expenses_list.html'
 
@@ -24,7 +24,7 @@ class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
 class ExpenseCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     """ creates new expense """
-    model = Expenses
+    model = Expense
     fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
     success_url = "/expenses/"
@@ -48,7 +48,7 @@ class ExpenseCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
 
 class ExpenseUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     """ modify existing expense record """
-    model = Expenses
+    model = Expense
     fields = ['category', 'date', 'amount', 'notes']
     template_name = 'expenses_add.html'
     success_url = "/expenses/"
@@ -60,6 +60,6 @@ class ExpenseUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 
 class ExpenseDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     """ delete existing expense record """
-    model = Expenses
+    model = Expense
     success_url = "/expenses/"
     group_required = u"window_cleaner"

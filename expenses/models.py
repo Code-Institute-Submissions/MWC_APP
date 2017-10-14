@@ -4,15 +4,15 @@ from django.conf import settings
 from django.db import models
 
 
-class expense_categories(models.Model):
+class ExpenseCategory(models.Model):
     category = models.CharField(max_length=256, null=False, blank=False)
 
     def __str__(self):
         return self.category
 
 
-class Expenses(models.Model):
-    category = models.ForeignKey(expense_categories, null=False, blank=False)
+class Expense(models.Model):
+    category = models.ForeignKey(ExpenseCategory, null=False, blank=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

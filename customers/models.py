@@ -6,7 +6,7 @@ from franchises.models import Franchise
 from django.urls import reverse
 
 
-class Property_type(models.Model):
+class PropertyType(models.Model):
     property_type = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
@@ -50,7 +50,7 @@ class Customer(models.Model):
     postcode = models.CharField(max_length=100, blank=False)
     customer_notes = models.TextField(blank=True, null=True)
     property_type = models.ForeignKey(
-        Property_type, blank=False, null=False, on_delete=models.PROTECT
+        PropertyType, blank=False, null=False, on_delete=models.PROTECT
     )
     franchise = models.ForeignKey(
         Franchise, null=False, blank=False, on_delete=models.PROTECT

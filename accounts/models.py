@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
-from franchises.models import Franchise
+from worksheets.models import Franchise
 
 
 class User(AbstractUser):

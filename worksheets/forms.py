@@ -1,13 +1,13 @@
 from django import forms
 
-from .models import Jobs
+from .models import Job
 
 
 class JobUpdateForm(forms.ModelForm):
     """ needs special validation so cannot use generic CBV form """
 
     class Meta:
-        model = Jobs
+        model = Job
         fields = [
             'customer',
             'scheduled_date',
