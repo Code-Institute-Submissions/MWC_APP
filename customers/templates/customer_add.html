@@ -1,6 +1,6 @@
 {% extends "base.html" %} 
-{% load widget_tweaks %} 
 {% comment %} for adding datepicker class to form.date for materialize {% endcomment %} 
+{% load widget_tweaks %} 
 {% load staticfiles %} 
 {% block extra_head %}
 <script src="{% static 'customer.js' %}"></script>
@@ -13,8 +13,8 @@
                 <input class="field" id="postal_town" disabled="true" style="display: none"></input>
                 <input class="field" id="postal_code" disabled="true" style="display: none"></input>
                 <!-- <input class="field" id="url" disabled="true" style="display: none"></input>
-        <input class="field" id="longitude" disabled="false" style="display: none"></input>
-        <input class="field" id="latitude" disabled="false" style="display: none"></input> -->
+                <input class="field" id="longitude" disabled="false" style="display: none"></input>
+                <input class="field" id="latitude" disabled="false" style="display: none"></input> -->
                 <!-- ______________________________________________________  -->
                 <div class="row">
                         <div style="display:none">{{ form.franchise }}</div>

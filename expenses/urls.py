@@ -1,5 +1,6 @@
 from django.conf.urls import url
-from expenses.views import ExpensesList, ExpenseCreate, ExpenseDelete, ExpenseUpdate
+from expenses.views import ExpensesList, ExpenseCreate, ExpenseDelete, \
+    ExpenseUpdate
 from django.conf import settings
 
 from . import views

@@ -55,7 +55,8 @@
                             {% csrf_token %}
                             <input type="hidden" name="amount" value="{{ date.list|running_total|multiply:100|floatformat }}"></input>
                             <!-- floatformat necessary to return an int -->
-                            <!-- The amount has to be calculated in the view, otherwise the DOM can be manipulated to send the wrong amount -->
+                            <!-- The amount has to be also calculated in the view, otherwise the DOM can be manipulated to send the wrong amount -->
+                            <!-- Only he date is sent back to the view -->
                             <input  name="date" type="hidden" value="{{ date.grouper|date:"c" }}"></input>
                             <script
                                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"

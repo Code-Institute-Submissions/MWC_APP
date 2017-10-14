@@ -164,7 +164,7 @@ STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLISHABLE')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET')
 
 # Use nose to run all tests
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Tell nose to measure coverage on the 'foo' and 'bar' apps
 NOSE_ARGS = [

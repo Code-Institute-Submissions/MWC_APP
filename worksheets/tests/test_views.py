@@ -15,8 +15,6 @@ from worksheets.models import Jobs, Job_status, Payment_status
 import datetime
 
 
-# views test
-
 class WorksheetViewsTest(TestCase):
 
     @classmethod
@@ -195,6 +193,7 @@ class WorksheetViewsTest(TestCase):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_paid', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/job_paid/')
+
 # Tests to check window_cleaner group access not permitted:
 
     def test_job_delete_call_view_denies_for_window_cleaner(self):
@@ -212,7 +211,8 @@ class WorksheetViewsTest(TestCase):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('job_update', kwargs={'pk': 1}))
         self.assertRedirects(response, '/login/?next=/worksheets/1/edit/')
-# Tests to check window_cleaner group access permitted:
+
+# Tests to check office_admin group access permitted:
 
     def test_job_delete_view_loads_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')

@@ -1,10 +1,10 @@
 //This file contains 3 main functions used to check in and view jobs:
 // $(".compl_btn").click(function()
-//Sends an AJAX call to the job_check_in URL/JobCheckIn view
-// with the job id as kwarg and payment status as POST variable
-//Then $("#modal_btn").click() opens a confirmation modal
-//$(".job_details_btn").click() makes an AJAX call to JobDetails view
-// and results are displayed in a modal
+//     Sends an AJAX call to the job_check_in URL/JobCheckIn view
+//     with the job id as kwarg and payment status as POST variable
+// $("#modal_btn").click() opens a confirmation modal
+// $(".job_details_btn").click() makes an AJAX call to JobDetails view
+//    and results are displayed in a modal
 
  $(document).ready(function () {
 
@@ -12,7 +12,7 @@
         //grab IDs from card & parent:--------------------------------------------
         var jobid = $(this).attr('data_job');// id of the job to be checked in
         var date = $(this).attr('data_date');//grouping date
-        var card_id = "card_"+ jobid  //id of the card displaying the job, used to dismiss later
+        var card_id = "card_"+ jobid  //id of the card displaying the job, used to hide card later
         var compl_address = $(this).attr('data_address'); //customer address
         var payment_status = $(this).attr('data_payment'); //'paid' or 'owed'
         var headerid = "header_" + date //accordion section header id
@@ -87,8 +87,12 @@
         var date = $(this).attr('data_date');        
         var num_jobs = parseInt($('#num_jobs_'+date).text());
         var x = $('#total_'+date).text();
-        var total = parseFloat($('#total_'+date).text());
-        var amount = parseFloat($('#price_'+jobid).text()); 
+        var  total_str = $('#total_'+date).text()
+        //get rid of currency prefix (£)
+        var total = parseFloat(total_str.substring(1,total_str.length-1));
+        var price = $('#price_'+jobid).text();
+        //get rid of currency prefix (£)
+        var amount = parseFloat(price.substring(1,price.length-1)); 
         total -= amount;
         num_jobs -= 1
         if (num_jobs==1){
@@ -98,7 +102,7 @@
             $('#num_jobs_suffix_'+date).text(' jobs');
         }
         $('#num_jobs_'+date).text(num_jobs); 
-        $('#total_'+date).text(total);
+        $('#total_'+date).text('£' + total.toString());
         if (num_jobs==0){
             $('#collapsible_body_'+date).html('<h5 style="font-style:italic">All jobs have been checked in</h5>');
             $('#badge_'+date).removeClass("green").addClass("blue");

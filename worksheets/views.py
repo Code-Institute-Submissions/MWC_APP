@@ -58,7 +58,6 @@ class JobCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     initial = {'frequency': '4', 'job_status': '1'}  # 1 = 'due'
 
     def get_success_url(self):
-        # print self.kwargs['customer']
         return reverse(
             'customer_job_list', kwargs={
                 'pk': self.object.customer.id})
@@ -94,7 +93,6 @@ class JobUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
     template_name = 'job_add.html'
 
     def get_success_url(self, *args, **kwargs):
-        print self.object
         return reverse(
             'customer_job_list', kwargs={
                 'pk': self.object.customer.id})
@@ -135,7 +133,6 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
                 cursor.execute('{CALL dbo.sp_complete_job (%d,%d)}' % params)
                 return HttpResponse(status=201)
             except DatabaseError as e:
-                # print e
                 return HttpResponse(status=500)
             finally:
                 cursor.close()
@@ -162,7 +159,8 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
             job_status__job_status_description='completed',
             invoiced=False,
             scheduled_date__gt=(datetime.today() - timedelta(weeks=12))
-            # TODO: temporary 12 week filter as jobs have not been invoiced
+            # TODO: temporary 12 week filter as
+            # dummy jobs have not been invoiced
         )
         return queryset
     group_required = u"window_cleaner"
@@ -195,18 +193,25 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         sum_price = Jobs.objects.filter(
             completed_date=date,
             window_cleaner=user,
-            job_status__job_status_description='completed'
+            job_status__job_status_description='completed',
+            invoiced=False
         ).aggregate(Sum('price'))
+        # Stripe expects int in pence:
         amount = int(sum_price['price__sum'] * 100)
-        # Stripe expects int in cents
         charge = stripe.Charge.create(
             amount=amount,
             currency='gbp',
             description="Window Cleaner Commission Payment",
             source=token,
         )
+        # update paid jobs:
+        Jobs.objects.filter(
+            completed_date=date,
+            window_cleaner=user,
+            job_status__job_status_description='completed',
+            invoiced=False
+        ).update(invoiced=True)
         return redirect('invoices')
-        # TODO: could return charge confirmation etc.
 
 
 class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -223,8 +228,8 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
         user = self.request.user
         queryset = Jobs.objects.filter(
             window_cleaner=user,
-            payment_status__payment_status_description='owed',
-            job_status__job_status_description='completed')
+            payment_status__payment_status_description='Owed',
+            job_status__job_status_description='Completed')
         return queryset
 
     group_required = u"window_cleaner"
