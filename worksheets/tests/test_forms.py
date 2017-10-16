@@ -2,10 +2,9 @@ import unittest
 from django.test import TestCase
 from django.contrib.auth.models import Group
 from accounts.models import User
-from customers.models import Customer, Property_type
-from worksheets.models import Jobs, Job_status, Payment_status
+from customers.models import Customer, PropertyType
+from worksheets.models import Job, JobStatus, PaymentStatus
 from worksheets.forms import JobUpdateForm
-from worksheets.models import Jobs
 from django_dynamic_fixture import G
 from franchises.models import Franchise
 import datetime
@@ -53,7 +52,7 @@ class TestJobUpdateForm(TestCase):
         group = Group.objects.get(name='office_admin')
         group.user_set.add(cls.user4)
         # create property_types:
-        cls.pt = Property_type.objects.create(property_type='House')
+        cls.pt = PropertyType.objects.create(property_type='House')
         # create some customers
         cls.cust1 = Customer.objects.create(
             title="Mr.",
@@ -91,22 +90,22 @@ class TestJobUpdateForm(TestCase):
             frequency=4,
             property_type=cls.pt
         )
-        cls.due = Job_status.objects.create(
+        cls.due = JobStatus.objects.create(
             job_status_description='Due'
-            )        
-        cls.compl = Job_status.objects.create(
+        )
+        cls.compl = JobStatus.objects.create(
             job_status_description='Completed'
-            )
-        cls.booked = Job_status.objects.create(
+        )
+        cls.booked = JobStatus.objects.create(
             job_status_description='Booked'
-            )    
-        cls.owed = Payment_status.objects.create(
+        )
+        cls.owed = PaymentStatus.objects.create(
             payment_status_description='Owed'
-            )
-        cls.paid = Payment_status.objects.create(
+        )
+        cls.paid = PaymentStatus.objects.create(
             payment_status_description='Paid'
-            )
-        cls.job1 = Jobs.objects.create(
+        )
+        cls.job1 = Job.objects.create(
             customer=cls.cust1,
             scheduled_date=datetime.datetime.strftime(
                 datetime.datetime.now(),
@@ -116,7 +115,7 @@ class TestJobUpdateForm(TestCase):
                 '%Y-%m-%d'),
             price=99,
             job_status=cls.due)
-        cls.job2 = Jobs.objects.create(
+        cls.job2 = Job.objects.create(
             customer=cls.cust1,
             scheduled_date=datetime.datetime.strftime(
                 datetime.datetime.now(),
@@ -137,9 +136,9 @@ class TestJobUpdateForm(TestCase):
         }
         form = JobUpdateForm(data=form_data)
         self.assertTrue(form.is_valid())
-    
+
     def test_form_is_not_valid_with_missing_required_field(self):
-    
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -153,9 +152,9 @@ class TestJobUpdateForm(TestCase):
         }
         form = JobUpdateForm(data=form_data)
         self.assertFalse(form.is_valid())
-    
+
     def test_form_is_not_valid_with_completed_date_no_alloc(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -168,7 +167,7 @@ class TestJobUpdateForm(TestCase):
         }
         form = JobUpdateForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertTrue('Please enter an allocated date' \
+        self.assertTrue('Please enter an allocated date'
                         in str(form.errors['__all__']))
 
     def test_form_is_not_valid_with_due_paid(self):
@@ -185,11 +184,11 @@ class TestJobUpdateForm(TestCase):
         form = JobUpdateForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertTrue('Job has &#39;Due&#39; status but is set as paid'
-                        ' - please correct' 
+                        ' - please correct'
                         in str(form.errors['__all__']))
 
     def test_form_is_not_valid_with_completed_date_no_payment(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -202,11 +201,11 @@ class TestJobUpdateForm(TestCase):
         }
         form = JobUpdateForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertTrue('Please enter a payment status' \
+        self.assertTrue('Please enter a payment status'
                         in str(form.errors['__all__']))
-    
+
     def test_form_is_not_valid_with_completed_date_no_wc(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -221,9 +220,9 @@ class TestJobUpdateForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertTrue('Please enter a window cleaner'
                         in str(form.errors['__all__']))
-    
+
     def test_form_is_not_valid_with_completed_date_due_status(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -234,15 +233,15 @@ class TestJobUpdateForm(TestCase):
             'payment_status': self.owed.id,
             'window_cleaner': self.user2.id
         }
-        form = JobUpdateForm(data=form_data)        
+        form = JobUpdateForm(data=form_data)
         self.assertFalse(form.is_valid())
         # print form.errors['__all__']
         self.assertTrue('Job has a completed date but not a '
                         '&#39;completed&#39; job status - please correct'
                         in str(form.errors['__all__']))
-    
+
     def test_form_is_not_valid_with_due_status_and_paid(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -253,16 +252,16 @@ class TestJobUpdateForm(TestCase):
             'payment_status': self.owed.id,
             'window_cleaner': self.user2.id
         }
-        form = JobUpdateForm(data=form_data)        
-        self.assertFalse(form.is_valid())        
+        form = JobUpdateForm(data=form_data)
+        self.assertFalse(form.is_valid())
         # print form.errors['__all__']
 
         self.assertTrue('Job has a completed date but not a '
                         '&#39;completed&#39; job status - please correct'
                         in str(form.errors['__all__']))
-    
+
     def test_form_is_not_valid_with_booked_status_and_paid(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -273,14 +272,14 @@ class TestJobUpdateForm(TestCase):
             'payment_status': self.paid.id,
             'window_cleaner': self.user2.id
         }
-        form = JobUpdateForm(data=form_data)        
-        self.assertFalse(form.is_valid())        
+        form = JobUpdateForm(data=form_data)
+        self.assertFalse(form.is_valid())
         self.assertTrue('Job has &#39;Booked&#39; '
                         'status but is set as paid - please correct'
                         in str(form.errors['__all__']))
 
     def test_form_is_not_valid_without_scheduled_date(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             # 'scheduled_date': '2017-10-01',
@@ -291,13 +290,13 @@ class TestJobUpdateForm(TestCase):
             'payment_status': self.paid.id,
             'window_cleaner': self.user2.id
         }
-        form = JobUpdateForm(data=form_data)        
+        form = JobUpdateForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertTrue('Please enter a due date'
                         in str(form.errors['__all__']))
 
     def test_form_is_not_valid_with_booked_no_alloc_wc(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -308,14 +307,14 @@ class TestJobUpdateForm(TestCase):
             # 'payment_status': self.paid.id,
             # 'window_cleaner': self.user2.id
         }
-        form = JobUpdateForm(data=form_data)        
-        self.assertFalse(form.is_valid())        
+        form = JobUpdateForm(data=form_data)
+        self.assertFalse(form.is_valid())
         self.assertTrue('Job is booked - please enter a window cleaner'
                         ' and an allocated date'
                         in str(form.errors['__all__']))
-    
+
     def test_form_is_not_valid_with_booked_no_alloc(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -326,13 +325,13 @@ class TestJobUpdateForm(TestCase):
             # 'payment_status': self.paid.id,
             'window_cleaner': self.user2.id
         }
-        form = JobUpdateForm(data=form_data)        
-        self.assertFalse(form.is_valid())        
+        form = JobUpdateForm(data=form_data)
+        self.assertFalse(form.is_valid())
         self.assertTrue('Job is booked - please enter an allocated date'
                         in str(form.errors['__all__']))
 
     def test_form_is_not_valid_with_booked_no_wc(self):
-        
+
         form_data = {
             'customer': self.cust1.id,
             'scheduled_date': '2017-10-01',
@@ -343,10 +342,7 @@ class TestJobUpdateForm(TestCase):
             # 'payment_status': self.paid.id,
             # 'window_cleaner': self.user2.id
         }
-        form = JobUpdateForm(data=form_data)        
-        self.assertFalse(form.is_valid())        
+        form = JobUpdateForm(data=form_data)
+        self.assertFalse(form.is_valid())
         self.assertTrue('Job is booked - please enter a window cleaner'
                         in str(form.errors['__all__']))
-
-    
-    

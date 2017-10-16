@@ -11,7 +11,7 @@
 <div class="container">
     <div class="row">
         <div class="card {% css_colour user %} darken-4" style="padding: 10px">
-            <h4 class="white-text">My Owings</h4>
+            <h4 class="white-text valign-wrapper">My Owings</h4>
         </div>
     </div>
      <div class="row">
@@ -30,7 +30,7 @@
     </thead>
 
     <tbody>
-    {% for job in jobs %}
+    {% for job in job %}
       <tr id="row_{{ job.id }}">
         <td class="address">{{ job.customer }}</td>
         <td>£{{ job.price }}</td>

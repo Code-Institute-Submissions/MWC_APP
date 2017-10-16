@@ -4,14 +4,14 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from franchises.models import Franchise
 from django.db.models import Max
-from customers.models import Customer, Property_type
+from customers.models import Customer, PropertyType
 from accounts.models import User
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.test import Client
 from customers.views import CustomerCreate
 from django.contrib.auth import authenticate
-from worksheets.models import Jobs, Job_status
+from worksheets.models import Job, JobStatus
 import datetime
 from django_dynamic_fixture import G
 # http://django-dynamic-fixture.readthedocs.io/en/latest/overview.html
@@ -20,7 +20,7 @@ from django_dynamic_fixture import G
 
 
 class CustomerViewsTest(TestCase):
-   # fixtures = ['fixture.json']
+    # fixtures = ['fixture.json']
 
     @classmethod
     def setUpTestData(cls):
@@ -69,7 +69,7 @@ class CustomerViewsTest(TestCase):
         group = Group.objects.get(name='office_admin')
         group.user_set.add(cls.user5)
         # create property_types:
-        cls.pt = Property_type.objects.create(property_type='House')
+        cls.pt = PropertyType.objects.create(property_type='House')
         # create some customers
         # create some customers
         cls.cust1 = Customer.objects.create(
@@ -108,22 +108,22 @@ class CustomerViewsTest(TestCase):
             frequency=4,
             property_type=cls.pt
         )
-        due = Job_status.objects.create(job_status_description='Due')
-        Jobs.objects.create(
+        due = JobStatus.objects.create(job_status_description='Due')
+        Job.objects.create(
             customer=cls.cust1,
             scheduled_date=datetime.datetime.now(),
             allocated_date=datetime.datetime.now(),
             price=99,
             job_status=due
         )
-        Jobs.objects.create(
+        Job.objects.create(
             customer=cls.cust1,
             scheduled_date=datetime.datetime.now(),
             allocated_date=datetime.datetime.now(),
             price=999,
             job_status=due
         )
-        Jobs.objects.create(
+        Job.objects.create(
             customer=cls.cust2,
             scheduled_date=datetime.datetime.now(),
             allocated_date=datetime.datetime.now(),

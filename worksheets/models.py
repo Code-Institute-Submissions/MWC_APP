@@ -42,7 +42,7 @@ class Job(models.Model):
         related_name='jobs',
         limit_choices_to={
             'groups__name': 'window_cleaner'})
-    invoiced = models.BooleanField(default=False)
+    invoiced = models.NullBooleanField(default=False, blank=True, null=True)
 
     class Meta:
         ordering = ["-scheduled_date"]

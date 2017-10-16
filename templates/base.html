@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load user_tags %}
+{% load app_tags %}
 
 
 <!DOCTYPE html>
@@ -37,8 +38,8 @@
                 {% if request.user|has_group:"window_cleaner"%}             
                     <li><a href="/worksheets">Worksheets</a></li>
                     <li><a href="/expenses">Expenses</a></li>
-                    <li><a href="/worksheets/invoices">Invoices</a></li>
-                    <li><a href="/worksheets/owings">Owings</a></li>
+                    <li><a href="/worksheets/invoices">Invoices<span style="font-weight: 300; font-size: 0.8rem" class="badge green white-text">{% show_invoices user %}</span></a></li>
+                    <li><a href="/worksheets/owings">Owings<span style="font-weight: 300; font-size: 0.8rem" class="badge green white-text">{% show_owings user %}</span></a></li>
                 {% endif %}
                 {% if not request.user|has_group:"window_cleaner"%}
                     <li><a href="/customers">Customers</a></li>  
@@ -53,8 +54,8 @@
                 {% if request.user|has_group:"window_cleaner"%}                     
                     <li><a href="/worksheets">Worksheets</a></li>
                     <li><a href="/expenses">Expenses</a></li>
-                    <li><a href="/worksheets/invoices">Invoices</a></li>
-                    <li><a href="/worksheets/owings">Owings</a></li>
+                    <li><a href="/worksheets/invoices">Invoices<span style="font-weight: 300; font-size: 0.8rem" class="badge green white-text">{% show_invoices user %}</span></a></li>
+                    <li><a href="/worksheets/owings">Owings<span style="font-weight: 300; font-size: 0.8rem" class="badge green white-text">{% show_owings user %}</span></a></li>
                 {% endif %}
                 {% if not request.user|has_group:"window_cleaner"%}
                     <li><a href="/customers">Customers</a></li>

@@ -7,7 +7,7 @@
 
 {% block content %} 
 
-{% regroup jobs by scheduled_date as jobs_by_date %}
+{% regroup jobs|dictsort:"scheduled_date" by scheduled_date as jobs_by_date %}
 
 
 <div class="container">

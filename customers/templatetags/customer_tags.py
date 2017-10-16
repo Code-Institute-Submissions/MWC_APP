@@ -10,7 +10,7 @@ register = template.Library()
 def due_job_exists(customerid):
     """ to check if a ddue job exists for a customer """
 
-    return Jobs.objects.filter(
+    return Job.objects.filter(
         customer=customerid,
         completed_date__isnull=True).exists()
 

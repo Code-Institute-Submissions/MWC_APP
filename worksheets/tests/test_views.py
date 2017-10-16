@@ -4,14 +4,14 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from franchises.models import Franchise
 from django.db.models import Max
-from customers.models import Customer, Property_type
+from customers.models import Customer, PropertyType
 from accounts.models import User
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.test import Client
 from customers.views import CustomerCreate
 from django.contrib.auth import authenticate
-from worksheets.models import Jobs, Job_status, Payment_status
+from worksheets.models import Job, JobStatus, PaymentStatus
 import datetime
 
 
@@ -57,7 +57,7 @@ class WorksheetViewsTest(TestCase):
         group = Group.objects.get(name='office_admin')
         group.user_set.add(cls.user4)
         # create property_types:
-        cls.pt = Property_type.objects.create(property_type='House')
+        cls.pt = PropertyType.objects.create(property_type='House')
         # create some customers
         cls.cust1 = Customer.objects.create(
             title="Mr.",
@@ -95,8 +95,8 @@ class WorksheetViewsTest(TestCase):
             frequency=4,
             property_type=cls.pt
         )
-        due = Job_status.objects.create(job_status_description='Due')
-        cls.job1 = Jobs.objects.create(
+        due = JobStatus.objects.create(job_status_description='Due')
+        cls.job1 = Job.objects.create(
             customer=cls.cust1,
             scheduled_date=datetime.datetime.strftime(
                 datetime.datetime.now(),
@@ -106,7 +106,7 @@ class WorksheetViewsTest(TestCase):
                 '%Y-%m-%d'),
             price=99,
             job_status=due)
-        cls.job2 = Jobs.objects.create(
+        cls.job2 = Job.objects.create(
             customer=cls.cust1,
             scheduled_date=datetime.datetime.strftime(
                 datetime.datetime.now(),
@@ -216,11 +216,12 @@ class WorksheetViewsTest(TestCase):
 
     def test_job_delete_view_loads_for_office_admin(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
+        customer = self.job2.customer.id
         response = self.client.post(
             reverse('job_delete', kwargs={'pk': self.job2.id}), follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertRedirects(response, '/customers/')
-        count = Jobs.objects.filter(pk=self.job2.id).count()
+        self.assertRedirects(response, '/customers/%s/jobs/' % customer)
+        count = Job.objects.filter(pk=self.job2.id).count()
         self.assertEqual(count, 0)
 
     def test_job_update_view_loads_for_office_admin(self):
@@ -260,7 +261,7 @@ class WorksheetViewsTest(TestCase):
         response = self.client.post(
             reverse('job_update', kwargs={'pk': self.job1.id}),
             data_valid, follow=True)
-        job_updated = Jobs.objects.get(pk=self.job1.id)
+        job_updated = Job.objects.get(pk=self.job1.id)
         allocated_date = job_updated.allocated_date
         self.assertEqual(allocated_date, new_date)
 
@@ -272,7 +273,7 @@ class WorksheetViewsTest(TestCase):
 
     def test_job_add_view_creates_a_job_with_valid_data(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
-        max_id_before = Jobs.objects.count()
+        max_id_before = Job.objects.count()
         # create a job:
         customer = self.job1.customer.id
         scheduled_date = datetime.datetime.strftime(
@@ -302,13 +303,12 @@ class WorksheetViewsTest(TestCase):
             '/customers/%s/jobs/' %
             self.job1.customer.id)
         # check an extra id has been created:
-        max_id_after = Jobs.objects.count()
+        max_id_after = Job.objects.count()
         self.assertEqual(max_id_before + 1, max_id_after)
 
     def test_job_add_view_redirects_for_invalid_data(self):
         self.client.login(username='testuser1', password='1a2b3c4d5e')
-        max_id_before = Jobs.objects.count()
-        print max_id_before, '---------------------------------'
+        max_id_before = Job.objects.count()
         # create a job:
         customer = self.job1.customer.id
         scheduled_date = datetime.datetime.strftime(
@@ -334,7 +334,7 @@ class WorksheetViewsTest(TestCase):
             data_valid)
         self.assertEqual(response.status_code, 200)
         # check no extra job has been created:
-        max_id_after = Jobs.objects.count()
+        max_id_after = Job.objects.count()
         self.assertEqual(max_id_before, max_id_after)
 
     def test_worksheet_view_loads_for_window_cleaner(self):
@@ -349,7 +349,7 @@ class WorksheetViewsTest(TestCase):
             reverse(
                 'job_check_in', kwargs={
                     'pk': 1}), {
-                'payment_status': 'paid', 'jobid': '1'})
+                'payment_status': 'Paid', 'jobid': '1'})
         self.assertEqual(response.status_code, 500)
         # TODO fails because stored procedure is not created
 
@@ -375,12 +375,12 @@ class WorksheetViewsTest(TestCase):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
         response = self.client.get(reverse('owings'))
         self.assertEqual(response.status_code, 200)
-        Payment_status.objects.create(payment_status_description="paid")
+        PaymentStatus.objects.create(payment_status_description="Paid")
         self.assertTemplateUsed(response, 'owings.html')
 
     def test_job_paid_view_loads_for_window_cleaner(self):
         self.client.login(username='testuser2', password='1a2b3c4d5e')
-        Payment_status.objects.create(payment_status_description="paid")
+        PaymentStatus.objects.create(payment_status_description="Paid")
         response = self.client.post(
             reverse(
                 'job_paid', kwargs={

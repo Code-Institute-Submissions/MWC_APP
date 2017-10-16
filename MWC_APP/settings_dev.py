@@ -88,14 +88,14 @@ WSGI_APPLICATION = 'MWC_APP.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'ENGINE': os.getenv('DATABASE_ENGINE'),
         'NAME': os.getenv('DATABASE_NAME'),
         'USER': os.getenv('DATABASE_USER'),
         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
         'HOST': os.getenv('DATABASE_HOST'),
         'PORT': os.getenv('DATABASE_PORT'),
-        },
-    }
+    },
+}
 
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -161,7 +161,7 @@ STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLISHABLE')
 STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET')
 
 # Use nose to run all tests
-# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Tell nose to measure coverage on the 'foo' and 'bar' apps
 NOSE_ARGS = [

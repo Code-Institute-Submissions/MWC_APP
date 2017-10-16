@@ -139,9 +139,6 @@ class CustomerUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
         'longitude']
     template_name = 'customer_add.html'
 
-    # def form_invalid(self, form):
-    #     return JsonResponse(form.errors, status=400)
-
     # for debugging:
     # def form_valid(self, form):
     #     return super(CustomerUpdate, self).form_valid(form)

@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from expenses.models import Expense
 from braces.views import GroupRequiredMixin
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
 
 
 class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
@@ -17,7 +18,7 @@ class ExpensesList(GroupRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Expenses.objects.filter(user=user)
+        queryset = Expense.objects.filter(user=user)
         return queryset
     group_required = u"window_cleaner"
 
@@ -36,7 +37,6 @@ class ExpenseCreate(GroupRequiredMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(ExpenseCreate, self).form_valid(form)
-    group_required = u"window_cleaner"
 
     def get_initial(self):
         # https://djangosnippets.org/snippets/2987/
@@ -55,6 +55,11 @@ class ExpenseUpdate(GroupRequiredMixin, LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         return super(ExpenseUpdate, self).form_valid(form)
+
+    # for debugging:
+    def form_invalid(self, form):
+        return JsonResponse(form.errors, status=400)
+
     group_required = u"window_cleaner"
 
 

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 from franchises.models import Franchise
-from customers.models import Customer, Property_type
+from customers.models import Customer, PropertyType
 from accounts.models import User
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
@@ -19,7 +19,7 @@ class CustomerModelTest(TestCase):
         # create a franchise
         f1 = Franchise.objects.create(franchise='franchise_1')
         # create a property_type:
-        pt = Property_type.objects.create(property_type='House')
+        pt = PropertyType.objects.create(property_type='House')
         return Customer.objects.create(
             title="Mr.",
             first_name='John',

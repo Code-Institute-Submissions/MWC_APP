@@ -56,6 +56,7 @@ class Customer(models.Model):
         Franchise, null=False, blank=False, on_delete=models.PROTECT
     )
     frequency = models.IntegerField(choices=FREQUENCY_CHOICES, null=False)
+    # for Google maps:
     url = models.URLField(blank=True, null=True)
     latitude = models.DecimalField(
         max_digits=9,

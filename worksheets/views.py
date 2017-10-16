@@ -33,9 +33,10 @@ class WorkSheet(GroupRequiredMixin, LoginRequiredMixin, ListView):
         user = self.request.user
         queryset = Job.objects.all().filter(
             window_cleaner=user,
-            job_status__job_status_description='due',
+            job_status__job_status_description='Booked',
+            # case sensitive with Postgres
             allocated_date__isnull=False)
-        # jobs must be allocated and due before being checked in
+        # jobs must be allocated and booked before being checked in
         return queryset
     group_required = u"window_cleaner"
 
@@ -111,6 +112,11 @@ class JobDelete(GroupRequiredMixin, LoginRequiredMixin, DeleteView):
     success_url = "/customers/"
     group_required = "office_admin"
 
+    def get_success_url(self):
+        return reverse(
+            'customer_job_list', kwargs={
+                'pk': self.object.customer.id})
+
 
 class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
     """ view called by AJAX from worksheet. Uses a stored procedure on db
@@ -156,9 +162,9 @@ class Invoice(GroupRequiredMixin, LoginRequiredMixin, ListView):
         user = self.request.user
         queryset = Job.objects.filter(
             window_cleaner=user,
-            job_status__job_status_description='completed',
+            job_status__job_status_description='Completed',
             invoiced=False,
-            scheduled_date__gt=(datetime.today() - timedelta(weeks=12))
+            # scheduled_date__gt=(datetime.today() - timedelta(weeks=12))
             # TODO: temporary 12 week filter as
             # dummy jobs have not been invoiced
         )
@@ -173,7 +179,7 @@ class JobDetails(GroupRequiredMixin, LoginRequiredMixin, DetailView):
     """ view called by Ajax calls to display job details """
     model = Job
     template_name = "job_details.html"
-    group_required = u"window_cleaner"
+    group_required = "window_cleaner"
 
 
 class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
@@ -193,7 +199,7 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         sum_price = Job.objects.filter(
             completed_date=date,
             window_cleaner=user,
-            job_status__job_status_description='completed',
+            job_status__job_status_description='Completed',
             invoiced=False
         ).aggregate(Sum('price'))
         # Stripe expects int in pence:
@@ -208,7 +214,7 @@ class Payment(GroupRequiredMixin, LoginRequiredMixin, View):
         Job.objects.filter(
             completed_date=date,
             window_cleaner=user,
-            job_status__job_status_description='completed',
+            job_status__job_status_description='Completed',
             invoiced=False
         ).update(invoiced=True)
         return redirect('invoices')
@@ -222,7 +228,7 @@ class Owings(GroupRequiredMixin, LoginRequiredMixin, ListView):
     fields = [
         'customer', 'allocated_date', 'price', 'job_notes'
     ]
-    context_object_name = 'jobs'
+    context_object_name = 'job'
 
     def get_queryset(self):
         user = self.request.user
@@ -243,8 +249,8 @@ class OwingPaid(JSONResponseMixin, GroupRequiredMixin,
 
     def post(self, request, *args, **kwargs):
         job = Job.objects.get(pk=self.kwargs['pk'])
-        paid_status = Payment_status.objects.get(
-            payment_status_description='paid')
+        paid_status = PaymentStatus.objects.get(
+            payment_status_description='Paid')
         job.payment_status = paid_status
         try:
             job.save()

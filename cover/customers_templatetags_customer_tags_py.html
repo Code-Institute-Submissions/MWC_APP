@@ -110,7 +110,7 @@
 <p id="t1" class="pln"><span class="com"># -*- coding:utf-8 -*-</span><span class="strut">&nbsp;</span></p>
 <p id="t2" class="stm run hide_run"><span class="key">from</span> <span class="nam">__future__</span> <span class="key">import</span> <span class="nam">unicode_literals</span><span class="strut">&nbsp;</span></p>
 <p id="t3" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span> <span class="key">import</span> <span class="nam">template</span><span class="strut">&nbsp;</span></p>
-<p id="t4" class="stm run hide_run"><span class="key">from</span> <span class="nam">worksheets</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Jobs</span><span class="strut">&nbsp;</span></p>
+<p id="t4" class="stm run hide_run"><span class="key">from</span> <span class="nam">worksheets</span><span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Job</span><span class="strut">&nbsp;</span></p>
 <p id="t5" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t6" class="stm run hide_run"><span class="nam">register</span> <span class="op">=</span> <span class="nam">template</span><span class="op">.</span><span class="nam">Library</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t7" class="pln"><span class="strut">&nbsp;</span></p>
@@ -119,7 +119,7 @@
 <p id="t10" class="pln"><span class="key">def</span> <span class="nam">due_job_exists</span><span class="op">(</span><span class="nam">customerid</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t11" class="pln">    <span class="str">""" to check if a ddue job exists for a customer """</span><span class="strut">&nbsp;</span></p>
 <p id="t12" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t13" class="stm run hide_run">    <span class="key">return</span> <span class="nam">Jobs</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">filter</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
+<p id="t13" class="stm run hide_run">    <span class="key">return</span> <span class="nam">Job</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">filter</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
 <p id="t14" class="pln">        <span class="nam">customer</span><span class="op">=</span><span class="nam">customerid</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t15" class="pln">        <span class="nam">completed_date__isnull</span><span class="op">=</span><span class="nam">True</span><span class="op">)</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t16" class="pln"><span class="strut">&nbsp;</span></p>
@@ -154,7 +154,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.4.1</a>,
-            created at 2017-10-12 16:15
+            created at 2017-10-16 16:47
         </p>
     </div>
 </div>
