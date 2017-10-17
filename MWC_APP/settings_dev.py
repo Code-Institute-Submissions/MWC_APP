@@ -79,7 +79,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'MWC_APP.wsgi.application'
+# WSGI_APPLICATION = 'MWC_APP.wsgi.application'
 
 
 # Database
@@ -166,6 +166,6 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # Tell nose to measure coverage on the 'foo' and 'bar' apps
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=worksheets,customers',
+    '--cover-package=worksheets,customers,expenses',
     '--cover-html',
 ]
