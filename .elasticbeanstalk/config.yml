@@ -2,7 +2,12 @@ branch-defaults:
   master:
     environment: MWC-APP-dev
     group_suffix: null
+environment-defaults:
+  MWC-APP-dev:
+    branch: master
+    repository: origin
 global:
+  WSGIPath: MWC_APP/MWC_APP/wsgi.py
   application_name: MWC_APP
   branch: null
   default_ec2_keyname: null
@@ -16,4 +21,3 @@ global:
   repository: null
   sc: git
   workspace_type: Application
-  WSGIPath: MWC_APP/MWC_APP/wsgi.py
