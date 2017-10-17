@@ -1,0 +1,1 @@
+web: gunicorn MWC_APP.wsgi --log-file -

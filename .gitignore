@@ -1,4 +1,8 @@
 .env_*
 *.pyc
 *.pyo
-.vscode/
+.vscode/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
