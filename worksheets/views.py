@@ -136,7 +136,7 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
                 payment_status = 2
             params = (int(request.POST['jobid']), payment_status)
             try:
-                cursor.execute('{CALL dbo.sp_complete_job (%d,%d)}' % params)
+                cursor.execute('{CALL sp_complete_job (%d,%d)}' % params)
                 return HttpResponse(status=201)
             except DatabaseError as e:
                 return HttpResponse(status=500)
