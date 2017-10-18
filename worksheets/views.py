@@ -130,13 +130,14 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         with connection.cursor() as cursor:
+            jobid = int(request.POST['jobid'])
             if request.POST['payment_status'] == 'paid':
                 payment_status = 1
             else:
                 payment_status = 2
             params = (int(request.POST['jobid']), payment_status)
             try:
-                cursor.execute('{CALL sp_complete_job (%d,%d)}' % params)
+                cursor.callproc('sp_complete_job', params)
                 return HttpResponse(status=201)
             except DatabaseError as e:
                 return HttpResponse(status=500)
