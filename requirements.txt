@@ -12,7 +12,6 @@ django-debug-toolbar==1.8
 django-dotenv==1.4.1
 django-dynamic-fixture==1.9.5
 django-nose==1.4.5
-django-pyodbc-azure==1.11.0.0
 django-widget-tweaks==1.4.1
 docker-py==1.7.2
 dockerpty==0.4.1
