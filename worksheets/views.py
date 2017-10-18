@@ -130,7 +130,6 @@ class JobCheckIn(GroupRequiredMixin, LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         with connection.cursor() as cursor:
-            jobid = int(request.POST['jobid'])
             if request.POST['payment_status'] == 'paid':
                 payment_status = 1
             else:
