@@ -23,7 +23,6 @@ import debug_toolbar
 from views import LoginSuccess
 
 
-
 urlpatterns = [
 
     url(r'^$', lambda x: HttpResponseRedirect('/login/')),
