@@ -16,14 +16,17 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.http import HttpResponseRedirect
 
 from django.conf import settings
 import debug_toolbar
 from views import LoginSuccess
 
 
+
 urlpatterns = [
 
+    url(r'^$', lambda x: HttpResponseRedirect('/login/')),
     url(r'^__debug__/', include(debug_toolbar.urls)),
     url(r'^worksheets/', include('worksheets.urls')),
     url(r'^admin/', admin.site.urls),
