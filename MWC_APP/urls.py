@@ -20,10 +20,11 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 import debug_toolbar
 from views import LoginSuccess
+from django.http import HttpResponseRedirect
 
 
 urlpatterns = [
-
+    url(r'^$', lambda x: HttpResponseRedirect('/login/')),
     url(r'^__debug__/', include(debug_toolbar.urls)),
     url(r'^worksheets/', include('worksheets.urls')),
     url(r'^admin/', admin.site.urls),

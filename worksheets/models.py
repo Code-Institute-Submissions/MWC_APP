@@ -12,6 +12,8 @@ class JobStatus(models.Model):
     def __str__(self):
         return self.job_status_description
 
+    verbose_name_plural = "job_statuses"
+
 
 class PaymentStatus(models.Model):
     payment_status_description = models.CharField(
@@ -19,6 +21,8 @@ class PaymentStatus(models.Model):
 
     def __str__(self):
         return self.payment_status_description
+
+    verbose_name_plural = "payment_statuses"
 
 
 class Job(models.Model):
