@@ -25,7 +25,7 @@ from views import LoginSuccess
 
 urlpatterns = [
 
-    url(r'^$', lambda x: HttpResponseRedirect('/login/')),
+    url(r'^$', lambda x: HttpResponseRedirect('/customers/')),
     url(r'^__debug__/', include(debug_toolbar.urls)),
     url(r'^worksheets/', include('worksheets.urls')),
     url(r'^admin/', admin.site.urls),
